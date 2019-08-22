@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Enum\**" />
+    <Compile Remove="WorkflowDesignActivity\**" />
+    <Compile Remove="WorkflowDesign\**" />
+    <EmbeddedResource Remove="Enum\**" />
+    <EmbeddedResource Remove="WorkflowDesignActivity\**" />
+    <EmbeddedResource Remove="WorkflowDesign\**" />
+    <None Remove="Enum\**" />
+    <None Remove="WorkflowDesignActivity\**" />
+    <None Remove="WorkflowDesign\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.Core\Honeywell.Infra.Core.csproj" />
+  </ItemGroup>
+
+</Project>
