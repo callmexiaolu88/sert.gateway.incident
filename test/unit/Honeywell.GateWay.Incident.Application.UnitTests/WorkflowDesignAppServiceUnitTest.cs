@@ -1,3 +1,5 @@
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
@@ -36,5 +38,30 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             // assert
             Assert.True(1 == result.Result.Length);
         }
+
+
+        [Fact]
+        public void ImportWorkFlowDesign_Successful()
+        {
+            // arrange
+            WorkflowDesignSummaryResponseDto summaryResponseDto = new WorkflowDesignSummaryResponseDto();
+
+            _workflowDesignApiMock.Setup(x => x.Imports(It.IsAny<Stream>())).Returns();
+
+            // action
+
+            using (var workflowStream = new MemoryStream(Encoding.UTF8.GetBytes("whatever")))
+            {
+                //var result = _workflowDesignGatewayApi.ImportWorkflowDesigns(workflowStream);
+
+                //// Assert    
+                //Assert.True(result);
+            }
+            
+
+            // assert
+       
+        }
+
     }
 }

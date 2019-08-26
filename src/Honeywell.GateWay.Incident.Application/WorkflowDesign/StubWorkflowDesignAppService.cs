@@ -1,45 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Infra.Core.Ddd.Application;
+using Microsoft.AspNetCore.Http;
 
 namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
 {
     public class StubWorkflowDesignAppService : ApplicationService, IWorkflowDesignAppService
     {
-        public ExecuteResult ImportWorkflowDesigns(Stream workflowDesignStream)
+
+        public Task<ExecuteResult> ImportWorkflowDesigns(IFormFile file)
         {
-            if (workflowDesignStream == null)
+            var result = new ExecuteResult();
+            if (file == null)
             {
-                return new ExecuteResult
-                {
-                    Status = ExecuteStatus.Error,
-                    ErrorList = new List<string> { "File content cannot be empty!" }
-                };
+                result.Status = ExecuteStatus.Error;
+                result.ErrorList = new List<string> { "File content cannot be empty!" };
             }
             else
             {
-                return new ExecuteResult { Status = ExecuteStatus.Successful };
+                result.Status = ExecuteStatus.Successful;
             }
+
+            return Task.FromResult(result);
         }
 
-        public ExecuteResult DeleteWorkflowDesigns(Guid[] workflowDesignId)
+        public Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
         {
-            if (workflowDesignId == null || workflowDesignId.Length == 0)
+            var result = new ExecuteResult();
+            if (workflowDesignIds == null || workflowDesignIds.Length == 0)
             {
-                return new ExecuteResult
-                {
-                    Status = ExecuteStatus.Error,
-                    ErrorList = new List<string> { "Please select at least one sop!" }
-                };
+                result.Status = ExecuteStatus.Error;
+                result.ErrorList = new List<string> { "Please select at least one sop!" };
             }
             else
             {
-                return new ExecuteResult { Status = ExecuteStatus.Successful };
+                result.Status = ExecuteStatus.Successful;
             }
+            return Task.FromResult(result);
+        }
+
+        Task<WorkflowDesignSummaryGto[]> IWorkflowDesignGatewayApi.GetAllActiveWorkflowDesign()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
+        {
+            throw new NotImplementedException();
         }
 
         public WorkflowDesignSummaryGto[] GetAllActiveWorkflowDesign()
