@@ -1,19 +1,18 @@
 ﻿using Honeywell.Infra.Core;
-using System;
-using System.IO;
+using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.Gtos;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Honeywell.Gateway.Incident.Api
 {
     public interface IWorkflowDesignGatewayApi : IRemoteService
     {
-        JsonResult ImportWorkflowDesigns(IFormFile file);
+        Task<ExecuteResult> ImportWorkflowDesigns(IFormFile file);
 
-        JsonResult DeleteWorkflowDesigns(string[] workflowDesignIds);
+        Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds);
 
-        JsonResult GetAllActiveWorkflowDesign();
+        Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesign();
 
-        JsonResult GetWorkflowDesignsById(string workflowDesignId);
+        Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
     }
 }

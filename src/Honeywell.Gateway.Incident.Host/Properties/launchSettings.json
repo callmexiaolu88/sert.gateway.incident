@@ -24,7 +24,7 @@
     "Honeywell.Gateway.Incident.Host": {
       "commandName": "IIS",
       "launchBrowser": true,
-      "launchUrl": "api/IncidentGateway/getallactiveworkflowdesign",
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

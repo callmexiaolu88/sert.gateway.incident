@@ -1,19 +1,8 @@
-﻿using System;
-using System.IO;
-using Honeywell.Gateway.Incident.Api;
-using Honeywell.Gateway.Incident.Api.Gtos;
+﻿using Honeywell.Gateway.Incident.Api;
 
 namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
 {
-    public interface IWorkflowDesignAppService
+    public interface IWorkflowDesignAppService : IWorkflowDesignGatewayApi
     {
-        ExecuteResult ImportWorkflowDesigns(Stream workflowDesignStream);
-
-        ExecuteResult DeleteWorkflowDesigns(Guid[] workflowDesignId);
-
-        WorkflowDesignSummaryGto[] GetAllActiveWorkflowDesign();
-
-        WorkflowDesignGto[] GetWorkflowDesignsByIds(Guid[] workflowDesignIds);
-
     }
 }

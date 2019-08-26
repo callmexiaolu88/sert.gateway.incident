@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
-using Honeywell.Micro.Services.Workflow.Domain.Shared;
+using Microsoft.AspNetCore.Http;
 
 namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
 {
@@ -23,67 +23,58 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             _workflowDesignApi = workflowDesignApi;
         }
 
-        public ExecuteResult ImportWorkflowDesigns(Stream workflowDesignStream)
+        public async Task<ExecuteResult> ImportWorkflowDesigns(IFormFile file)
         {
-            var responseDtoList = _workflowDesignApi.Imports(workflowDesignStream);
+            var workflowDesignStream = file.OpenReadStream();
+            var responseDtoList = await _workflowDesignApi.Imports(workflowDesignStream);
             if (responseDtoList.IsSuccess)
             {
-                return new ExecuteResult
-                {
-                    Status = ExecuteStatus.Successful
-                };
+                return ExecuteResult.Success;
             }
-            else
-            {
-                var result = new ExecuteResult
-                {
-                    Status = ExecuteStatus.Error
-                };
-                foreach (var item in responseDtoList.ImportResponseList)
-                {
-                    foreach (var importResult in item.Results)
-                    {
-                        result.ErrorList.Add(importResult.Message);
-                    }
-                }
-                return result;
-            }
+
+            var result = new ExecuteResult {Status = ExecuteStatus.Error};
+            responseDtoList.ImportResponseList.ForEach(x => result.ErrorList.AddRange(x.Errors));
+            return result;
         }
 
-        public ExecuteResult DeleteWorkflowDesigns(Guid[] workflowDesignIds)
+        public async Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
         {
-            var result = _workflowDesignApi.Deletes(new WorkflowDesignDeleteRequestDto(){Ids = workflowDesignIds });
+            var guidList = workflowDesignIds.Select(Guid.Parse).ToArray();
+            var result = await _workflowDesignApi.Deletes(new WorkflowDesignDeleteRequestDto {Ids = guidList });
             if (result.IsSuccess)
             {
-                return new ExecuteResult
-                {
-                    Status = ExecuteStatus.Successful
-                };
+                return ExecuteResult.Success;
             }
-            else
+
+            return new ExecuteResult
             {
-                return new ExecuteResult
-                {
-                    Status = ExecuteStatus.Error,
-                    ErrorList = new List<string> { result.ToString() }
-                };
+                Status = ExecuteStatus.Error,
+                ErrorList = new List<string> { result.Message }
+            };
+        }
+
+        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesign()
+        {
+            var result = await _workflowDesignApi.GetSummaries();
+            if (result.IsSuccess)
+            {
+                return HoneyMapper.Map<WorkflowDesignSummaryDto[],
+                    WorkflowDesignSummaryGto[]>(result.Summaries.ToArray());
             }
+
+            return new WorkflowDesignSummaryGto[] { };
         }
 
-        public WorkflowDesignSummaryGto[] GetAllActiveWorkflowDesign()
+        public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
         {
-            var result = _workflowDesignApi.GetSummaries();
-
-            return HoneyMapper.Map<WorkflowDesignSummaryDto[],
-                WorkflowDesignSummaryGto[]>(result.Summaries.ToArray());
-        }
-
-        public WorkflowDesignGto[] GetWorkflowDesignsByIds(Guid[] workflowDesignIds)
-        {
-            var request = new WorkflowDesignDetailsRequestDto { Ids = workflowDesignIds };
-            var result = _workflowDesignApi.GetDetails(request);
-            return HoneyMapper.Map<WorkflowDesignDto[],
-                WorkflowDesignGto[]>(result.Details.ToArray());
+            var requestId = new[] { Guid.Parse(workflowDesignId) };
+            var result = await _workflowDesignApi.GetDetails(new WorkflowDesignDetailsRequestDto {Ids = requestId });
+            if (result.IsSuccess)
+            {
+                var workflowDesignList = HoneyMapper.Map<WorkflowDesignDto[], WorkflowDesignGto[]>(result.Details.ToArray());
+                return workflowDesignList.FirstOrDefault();
+            }
+            return null;
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Honeywell.Gateway.Incident.Api.Gtos
 {
@@ -9,7 +7,15 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
         public ExecuteStatus Status { get; set; }
 
         public List<string> ErrorList { get; set; }
+
+        public static ExecuteResult Success = new ExecuteResult { Status = ExecuteStatus.Successful };
+
+        public ExecuteResult()
+        {
+            ErrorList = new List<string>();
+        }
     }
+
 
     public enum ExecuteStatus
     {
