@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace Honeywell.Gateway.Incident.Api.Gtos
 {
     public class WorkflowDesignGto
     {
-        [DataMember(IsRequired = true)]
+        [Required]
         public Guid Id { get; set; }
 
-        [DataMember(IsRequired = true)]
+        [Required]
         public string Name { get; set; }
 
-        [DataMember(IsRequired = true)]
+        [Required]
         public string Description { get; set; }
 
-        [DataMember(IsRequired = true)]
+        [Required]
         public WorkflowStepDesignGto[] Steps { get; set; }
     }
 }
