@@ -1,6 +1,4 @@
-﻿using Honeywell.Gateway.Incident.Api;
-using Honeywell.GateWay.Incident.Application.WorkflowDesign;
-using Honeywell.Infra.Core;
+﻿using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.Infra.Core.Modular;
 using Honeywell.Infra.HoneyMapper.AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +36,7 @@ namespace Honeywell.GateWay.Incident.Application
                 {
                     config.DefaultUrl = configuration["WorkflowServiceUrl"];
                 }).BuildServiceProvider();
+
             //}
 
             IocContainer.AddHttpContextAccessor();

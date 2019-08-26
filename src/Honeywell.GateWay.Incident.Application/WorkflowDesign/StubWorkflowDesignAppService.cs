@@ -1,57 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Infra.Core.Ddd.Application;
+using Microsoft.AspNetCore.Http;
 
 namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
 {
     public class StubWorkflowDesignAppService : ApplicationService, IWorkflowDesignAppService
     {
-        public ExecuteResult ImportWorkflowDesigns(Stream workflowDesignStream)
+        public async Task<ExecuteResult> ImportWorkflowDesigns(IFormFile file)
         {
-            if (workflowDesignStream == null)
-            {
-                return new ExecuteResult
-                {
-                    Status = ExecuteStatus.Error,
-                    ErrorList = new List<string> { "File content cannot be empty!" }
-                };
-            }
-            else
-            {
-                return new ExecuteResult { Status = ExecuteStatus.Successful };
-            }
+            return new ExecuteResult { Status = ExecuteStatus.Successful };
         }
 
-        public ExecuteResult DeleteWorkflowDesigns(Guid[] workflowDesignId)
+        public async Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
         {
-            if (workflowDesignId == null || workflowDesignId.Length == 0)
-            {
-                return new ExecuteResult
-                {
-                    Status = ExecuteStatus.Error,
-                    ErrorList = new List<string> { "Please select at least one sop!" }
-                };
-            }
-            else
-            {
-                return new ExecuteResult { Status = ExecuteStatus.Successful };
-            }
+            return new ExecuteResult { Status = ExecuteStatus.Successful };
         }
 
-        public WorkflowDesignSummaryGto[] GetAllActiveWorkflowDesign()
+        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
         {
             var result = new WorkflowDesignSummaryGto[2];
-            result[0] = new WorkflowDesignSummaryGto()
+            result[0] = new WorkflowDesignSummaryGto
             {
                 Id = MockDetailStore.FirstWorkflowId,
                 Name = MockDetailStore.FirstName,
                 Description = MockDetailStore.FirstDescription
             };
-            result[1] = new WorkflowDesignSummaryGto()
+            result[1] = new WorkflowDesignSummaryGto
             {
                 Id = MockDetailStore.SecondWorkflowId,
                 Name = MockDetailStore.SecondName,
@@ -60,17 +38,10 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             return result;
         }
 
-        public WorkflowDesignGto[] GetWorkflowDesignsByIds(Guid[] workflowDesignIds)
+        public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
         {
-            var result = new List<WorkflowDesignGto>();
-            foreach (var item in MockDetailStore.Items)
-            {
-                if (workflowDesignIds.Contains(item.Id))
-                {
-                    result.Add(item);
-                }
-            }
-            return result.ToArray();
+            var result = MockDetailStore.Items.FirstOrDefault(x => x.Id.ToString() == workflowDesignId);
+            return result;
         }
     }
 
