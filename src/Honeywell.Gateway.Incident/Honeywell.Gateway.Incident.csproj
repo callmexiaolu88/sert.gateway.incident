@@ -6,9 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview8.19405.7" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

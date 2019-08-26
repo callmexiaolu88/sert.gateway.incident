@@ -11,7 +11,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds);
 
-        Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesign();
+        Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns();
 
         Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
     }

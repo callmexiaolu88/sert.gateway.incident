@@ -9,6 +9,7 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
 {
@@ -32,20 +33,22 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
                 return ExecuteResult.Success;
             }
 
-            var result = new ExecuteResult {Status = ExecuteStatus.Error};
+            var result = new ExecuteResult { Status = ExecuteStatus.Error };
             responseDtoList.ImportResponseList.ForEach(x => result.ErrorList.AddRange(x.Errors));
+            Logger.LogError($"call workflow design api Imports error:{string.Join(",", result.ErrorList)}");
             return result;
         }
 
         public async Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
         {
             var guidList = workflowDesignIds.Select(Guid.Parse).ToArray();
-            var result = await _workflowDesignApi.Deletes(new WorkflowDesignDeleteRequestDto {Ids = guidList });
+            var result = await _workflowDesignApi.Deletes(new WorkflowDesignDeleteRequestDto { Ids = guidList });
             if (result.IsSuccess)
             {
                 return ExecuteResult.Success;
             }
 
+            Logger.LogError($"call workflow design api Deletes error:{result.Message}");
             return new ExecuteResult
             {
                 Status = ExecuteStatus.Error,
@@ -53,7 +56,7 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             };
         }
 
-        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesign()
+        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
         {
             var result = await _workflowDesignApi.GetSummaries();
             if (result.IsSuccess)
@@ -62,18 +65,20 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
                     WorkflowDesignSummaryGto[]>(result.Summaries.ToArray());
             }
 
+            Logger.LogError($"call workflow design api GetSummaries error:{result.Message}");
             return new WorkflowDesignSummaryGto[] { };
         }
 
         public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
         {
             var requestId = new[] { Guid.Parse(workflowDesignId) };
-            var result = await _workflowDesignApi.GetDetails(new WorkflowDesignDetailsRequestDto {Ids = requestId });
+            var result = await _workflowDesignApi.GetDetails(new WorkflowDesignDetailsRequestDto { Ids = requestId });
             if (result.IsSuccess)
             {
                 var workflowDesignList = HoneyMapper.Map<WorkflowDesignDto[], WorkflowDesignGto[]>(result.Details.ToArray());
                 return workflowDesignList.FirstOrDefault();
             }
+            Logger.LogError($"call workflow design api GetDetails error:{result.Message}");
             return null;
         }
     }

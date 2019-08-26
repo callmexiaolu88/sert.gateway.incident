@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
@@ -23,15 +25,27 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
 
         [Fact]
-        public void Test1()
+        public void WorkflowDesignAppService_GetAllActiveWorkflowDesigns_Success()
         {
             // arrange
-            WorkflowDesignSummaryResponseDto summaryResponseDto = new WorkflowDesignSummaryResponseDto();
+            var summaryResponseDto = new WorkflowDesignSummaryResponseDto
+            {
+                IsSuccess = true,
+                Summaries = new List<WorkflowDesignSummaryDto>
+                {
+                    new WorkflowDesignSummaryDto
+                    {
+                        Id=Guid.NewGuid(),
+                        Name = "workflow design 1",
+                        Description = "workflow design 1 description"
+                    }
+                }
+            };
 
             _workflowDesignApiMock.Setup(x => x.GetSummaries()).Returns(Task.FromResult(summaryResponseDto));
 
             // action
-            var result = _workflowDesignGatewayApi.GetAllActiveWorkflowDesign();
+            var result = _workflowDesignGatewayApi.GetAllActiveWorkflowDesigns();
 
             // assert
             Assert.True(1 == result.Result.Length);
