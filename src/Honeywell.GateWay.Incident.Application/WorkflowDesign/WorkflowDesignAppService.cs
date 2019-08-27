@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
@@ -8,7 +9,6 @@ using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
@@ -24,9 +24,8 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             _workflowDesignApi = workflowDesignApi;
         }
 
-        public async Task<ExecuteResult> ImportWorkflowDesigns(IFormFile file)
+        public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
         {
-            var workflowDesignStream = file.OpenReadStream();
             var responseDtoList = await _workflowDesignApi.Imports(workflowDesignStream);
             if (responseDtoList.IsSuccess)
             {

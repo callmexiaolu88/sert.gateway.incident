@@ -1,10 +1,9 @@
-﻿using Honeywell.Gateway.Incident.Api;
+﻿using System.IO;
+using Honeywell.Gateway.Incident.Api;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace Honeywell.Gateway.Incident
 {
@@ -20,9 +19,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ImportWorkflowDesigns(IFormFile file)
+        public async Task<ExecuteResult> ImportWorkflowDesigns([FromBody]Stream workflowStream)
         {
-            var result = await _workflowDesignAppService.ImportWorkflowDesigns(file);
+            var result = await _workflowDesignAppService.ImportWorkflowDesigns(workflowStream);
             return result;
         }
 
