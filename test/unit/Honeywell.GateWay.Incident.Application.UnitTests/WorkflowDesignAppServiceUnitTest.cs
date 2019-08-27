@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
@@ -11,13 +10,14 @@ using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Import;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Moq;
 using Xunit;
 
 namespace Honeywell.GateWay.Incident.Application.UnitTests
 {
-    public class WorkflowDesignAppServiceUnitTest: ApplicationServiceTestBase
+    public class WorkflowDesignAppServiceUnitTest : ApplicationServiceTestBase
     {
         private readonly Mock<IWorkflowDesignApi> _workflowDesignApiMock;
 
@@ -142,6 +142,24 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.Null(result);
         }
 
+
+        [Fact]
+        public async Task ImportWorkFlowDesign_SuccessfulAsync()
+        {
+            // arrange
+            var responseDto = new ImportWorkflowDesignsResponseDto {IsSuccess = false};
+            responseDto.ImportResponseList.Add(new WorkflowResponseDto("workflow1",new List<string>{"duplicate name","desc over length"}));
+            _workflowDesignApiMock.Setup(x => x.Imports(It.IsAny<Stream>())).
+                Returns(Task.FromResult(responseDto));
+            // action
+
+            var result = await _workflowDesignGatewayApi.ImportWorkflowDesigns(It.IsAny<Stream>());
+
+            // assert
+            Assert.NotNull(result);
+        }
+
+
         #region private methods
 
         private WorkflowDesignSummaryResponseDto MockWorkflowDesignSummaryResponseDto()
@@ -198,30 +216,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             return details;
         }
-
-
-        [Fact]
-        public void ImportWorkFlowDesign_Successful()
-        {
-            // arrange
-            WorkflowDesignSummaryResponseDto summaryResponseDto = new WorkflowDesignSummaryResponseDto();
-
-            _workflowDesignApiMock.Setup(x => x.Imports(It.IsAny<Stream>())).Returns();
-
-            // action
-
-            using (var workflowStream = new MemoryStream(Encoding.UTF8.GetBytes("whatever")))
-            {
-                //var result = _workflowDesignGatewayApi.ImportWorkflowDesigns(workflowStream);
-
-                //// Assert    
-                //Assert.True(result);
-            }
-            
-
-            // assert
-       
-        }
+        #endregion
 
     }
 }

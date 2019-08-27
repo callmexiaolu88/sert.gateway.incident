@@ -1,13 +1,13 @@
-﻿using Honeywell.Infra.Core;
+﻿using System.IO;
+using Honeywell.Infra.Core;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Microsoft.AspNetCore.Http;
 
 namespace Honeywell.Gateway.Incident.Api
 {
     public interface IWorkflowDesignGatewayApi : IRemoteService
     {
-        Task<ExecuteResult> ImportWorkflowDesigns(IFormFile file);
+        Task<ExecuteResult> ImportWorkflowDesigns(Stream stream);
 
         Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds);
 
