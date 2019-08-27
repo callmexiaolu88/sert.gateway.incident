@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.Client.WebApi\Honeywell.Infra.Client.WebApi.csproj" />
+    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.Core\Honeywell.Infra.Core.csproj" />
+    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.HoneyMapper.AutoMapper\Honeywell.Infra.HoneyMapper.AutoMapper.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="..\..\..\sert.micro.services.workflow\src\Honeywell.Micro.Services.Workflow.Api\Honeywell.Micro.Services.Workflow.Api.csproj" />
+    <ProjectReference Include="..\Honeywell.Gateway.Incident.Api\Honeywell.Gateway.Incident.Api.csproj" />
+
+  </ItemGroup>
+
+</Project>

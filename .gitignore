@@ -260,3 +260,4 @@ ModelManifest.xml
 /src/Installer/ISOMService/Script Files/*.map
 /src/Installer/ISOMService/Script Files/*.obs
 /src/Installer/ISOMService/String*.txt
+/Output.plugins/*

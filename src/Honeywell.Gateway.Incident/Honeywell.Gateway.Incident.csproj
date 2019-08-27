@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.AspNetCore\Honeywell.Infra.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.Core\Honeywell.Infra.Core.csproj" />
+    <ProjectReference Include="..\Honeywell.Gateway.Incident.Api\Honeywell.Gateway.Incident.Api.csproj" />
+    <ProjectReference Include="..\Honeywell.GateWay.Incident.Application\Honeywell.GateWay.Incident.Application.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="powershell -ExecutionPolicy Unrestricted ^&#xD;&#xA;-File &quot;$(SolutionDir)..\..\sert.devops\Dev\PostBuildEvent.ps1&quot; ^&#xD;&#xA;-SolutionDir $(SolutionDir) ^&#xD;&#xA;-SolutionName $(SolutionName) ^&#xD;&#xA;-ConfigurationName $(ConfigurationName) ^&#xD;&#xA;-TargetDir $(TargetDir) ^&#xD;&#xA;-TargetName $(TargetName)" />
+  </Target>
+
+</Project>

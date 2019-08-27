@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.Core\Honeywell.Infra.Core.csproj" />
+    <ProjectReference Include="..\..\..\sert.micro.services.workflow\src\Honeywell.Micro.Services.Workflow.Api\Honeywell.Micro.Services.Workflow.Api.csproj" />
+  </ItemGroup>
+
+</Project>
