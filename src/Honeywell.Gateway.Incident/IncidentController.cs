@@ -19,7 +19,7 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowStream)
+        public async Task<ExecuteResult> ImportWorkflowDesigns([FromBody]Stream workflowStream)
         {
             var result = await _workflowDesignAppService.ImportWorkflowDesigns(workflowStream);
             return result;
