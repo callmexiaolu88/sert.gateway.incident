@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "unit", "unit", "{57505F0B-1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Honeywell.GateWay.Incident.Application.UnitTests", "..\test\unit\Honeywell.GateWay.Incident.Application.UnitTests\Honeywell.GateWay.Incident.Application.UnitTests.csproj", "{76A40EFA-F7B4-4980-A713-D7A89D10B5D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeywell.GateWay.Incident.ApplicationStub", "Honeywell.GateWay.Incident.ApplicationStub\Honeywell.GateWay.Incident.ApplicationStub.csproj", "{61636CE8-FF42-44DD-9A45-20C7905A5209}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{76A40EFA-F7B4-4980-A713-D7A89D10B5D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76A40EFA-F7B4-4980-A713-D7A89D10B5D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76A40EFA-F7B4-4980-A713-D7A89D10B5D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61636CE8-FF42-44DD-9A45-20C7905A5209}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61636CE8-FF42-44DD-9A45-20C7905A5209}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61636CE8-FF42-44DD-9A45-20C7905A5209}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61636CE8-FF42-44DD-9A45-20C7905A5209}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +117,7 @@ Global
 		{5AF7888B-766A-41F3-A89F-4C58CBD94525} = {BCEB78DC-BF82-4408-868F-DACE46C3EF40}
 		{57505F0B-1481-4B13-AF9E-7856CCF5BCA2} = {064CEB1E-3FDE-4577-8F4F-DA03F1EF1CEA}
 		{76A40EFA-F7B4-4980-A713-D7A89D10B5D5} = {57505F0B-1481-4B13-AF9E-7856CCF5BCA2}
+		{61636CE8-FF42-44DD-9A45-20C7905A5209} = {3D8715DC-389E-4C34-A1F4-678C85F1C7CC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D24BAF0E-B64F-4119-B01E-A24DC417ABD2}
