@@ -14,13 +14,22 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
 {
     public class StubWorkflowDesignAppService : IWorkflowDesignApi
     {
-        public Task<ImportWorkflowDesignsResponseDto> Imports(Stream workflowDesignStream)
+        public Task<ImportWorkflowDesignsResponseDto> ImportWorkflows(Stream workflowDesignStream)
         {
             var result = new ImportWorkflowDesignsResponseDto
             {
                 IsSuccess = true
             };
-            return Task.FromResult(result); 
+            return Task.FromResult(result);
+        }
+
+        public Task<ImportWorkflowDesignsResponseDto> ValidtorWorkflows(Stream workflowDesignStream)
+        {
+            var result = new ImportWorkflowDesignsResponseDto
+            {
+                IsSuccess = true
+            };
+            return Task.FromResult(result);
         }
 
         public Task<ApiResponse> Deletes(WorkflowDesignDeleteRequestDto workflowDesignDeleteRequestDto)

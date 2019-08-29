@@ -149,7 +149,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             // arrange
             var responseDto = new ImportWorkflowDesignsResponseDto {IsSuccess = false};
             responseDto.ImportResponseList.Add(new WorkflowResponseDto("workflow1",new List<string>{"duplicate name","desc over length"}));
-            _workflowDesignApiMock.Setup(x => x.Imports(It.IsAny<Stream>())).
+            _workflowDesignApiMock.Setup(x => x.ImportWorkflows(It.IsAny<Stream>())).
                 Returns(Task.FromResult(responseDto));
             // action
 
