@@ -26,7 +26,7 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
 
         public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
         {
-            var responseDtoList = await _workflowDesignApi.ImportWorkflows(workflowDesignStream);
+            var responseDtoList = await _workflowDesignApi.Imports(workflowDesignStream);
             if (responseDtoList.IsSuccess)
             {
                 return ExecuteResult.Success;
@@ -40,7 +40,7 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
 
         public async Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream)
         {
-            var responseDtoList = await _workflowDesignApi.ValidtorWorkflows(workflowDesignStream);
+            var responseDtoList = await _workflowDesignApi.Validate(workflowDesignStream);
             if (responseDtoList.IsSuccess)
             {
                 return ExecuteResult.Success;

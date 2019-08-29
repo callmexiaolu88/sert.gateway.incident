@@ -14,7 +14,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
 {
     public class StubWorkflowDesignAppService : IWorkflowDesignApi
     {
-        public Task<ImportWorkflowDesignsResponseDto> ImportWorkflows(Stream workflowDesignStream)
+        public Task<ImportWorkflowDesignsResponseDto> Imports(Stream workflowDesignStream)
         {
             var result = new ImportWorkflowDesignsResponseDto
             {
@@ -23,7 +23,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
             return Task.FromResult(result);
         }
 
-        public Task<ImportWorkflowDesignsResponseDto> ValidtorWorkflows(Stream workflowDesignStream)
+        public Task<ImportWorkflowDesignsResponseDto> Validate(Stream workflowDesignStream)
         {
             var result = new ImportWorkflowDesignsResponseDto
             {
