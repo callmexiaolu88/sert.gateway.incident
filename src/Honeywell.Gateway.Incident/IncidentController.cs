@@ -26,9 +26,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ValdatorWorkflowDesigns([FromBody]Stream workflowStream)
+        public async Task<ExecuteResult> ValidatorWorkflowDesigns([FromBody]Stream workflowStream)
         {
-            var result = await _workflowDesignAppService.ValdatorWorkflowDesigns(workflowStream);
+            var result = await _workflowDesignAppService.ValidatorWorkflowDesigns(workflowStream);
             return result;
         }
 

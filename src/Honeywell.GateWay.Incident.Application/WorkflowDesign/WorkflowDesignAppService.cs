@@ -38,7 +38,7 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             return result;
         }
 
-        public async Task<ExecuteResult> ValdatorWorkflowDesigns(Stream workflowDesignStream)
+        public async Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream)
         {
             var responseDtoList = await _workflowDesignApi.ValidtorWorkflows(workflowDesignStream);
             if (responseDtoList.IsSuccess)
