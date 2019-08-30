@@ -9,6 +9,8 @@ namespace Honeywell.Gateway.Incident.Api
     {
         Task<ExecuteResult> ImportWorkflowDesigns(Stream stream);
 
+        Task<ExecuteResult> ValidatorWorkflowDesigns(Stream stream);
+
         Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds);
 
         Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns();

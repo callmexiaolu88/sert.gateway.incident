@@ -26,6 +26,13 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
+        public async Task<ExecuteResult> ValidatorWorkflowDesigns([FromBody]Stream workflowStream)
+        {
+            var result = await _workflowDesignAppService.ValidatorWorkflowDesigns(workflowStream);
+            return result;
+        }
+
+        [HttpPost]
         public async Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
         {
             var result = await _workflowDesignAppService.DeleteWorkflowDesigns(workflowDesignIds);

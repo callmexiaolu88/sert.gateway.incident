@@ -20,7 +20,16 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
             {
                 IsSuccess = true
             };
-            return Task.FromResult(result); 
+            return Task.FromResult(result);
+        }
+
+        public Task<ImportWorkflowDesignsResponseDto> Validate(Stream workflowDesignStream)
+        {
+            var result = new ImportWorkflowDesignsResponseDto
+            {
+                IsSuccess = true
+            };
+            return Task.FromResult(result);
         }
 
         public Task<ApiResponse> Deletes(WorkflowDesignDeleteRequestDto workflowDesignDeleteRequestDto)

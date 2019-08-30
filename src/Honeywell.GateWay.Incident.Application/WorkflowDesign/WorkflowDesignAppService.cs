@@ -38,6 +38,20 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             return result;
         }
 
+        public async Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream)
+        {
+            var responseDtoList = await _workflowDesignApi.Validate(workflowDesignStream);
+            if (responseDtoList.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            var result = new ExecuteResult { Status = ExecuteStatus.Error };
+            responseDtoList.ImportResponseList.ForEach(x => result.ErrorList.AddRange(x.Errors));
+            Logger.LogError($"call workflow design api Imports error:{string.Join(",", result.ErrorList)}");
+            return result;
+        }
+
         public async Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
         {
             var guidList = workflowDesignIds.Select(Guid.Parse).ToArray();
