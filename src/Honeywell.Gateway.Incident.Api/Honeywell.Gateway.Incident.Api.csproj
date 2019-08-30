@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.Core\Honeywell.Infra.Core.csproj" />
+    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.1.*" />
   </ItemGroup>
 
 </Project>
