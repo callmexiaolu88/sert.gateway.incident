@@ -27,7 +27,7 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
         public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
         {
             var result = new ExecuteResult();
-            var responseDtoList = await _workflowDesignApi.Validate(workflowDesignStream);
+            var responseDtoList = await _workflowDesignApi.Imports(workflowDesignStream);
             responseDtoList.ImportResponseList.ForEach(x => result.ErrorList.AddRange(x.Errors));
             result.Status = responseDtoList.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error;
             Logger.LogError($"call workflow design api Imports error:{string.Join(",", result.ErrorList)}");
