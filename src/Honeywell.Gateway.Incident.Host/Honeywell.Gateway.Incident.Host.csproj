@@ -7,21 +7,18 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Honeywell.Infra.AspNetCore" Version="0.0.1.*" />
+    <PackageReference Include="Honeywell.Infra.Client.WebApi" Version="0.0.1.*" />
+    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.1.*" />
+    <PackageReference Include="Honeywell.Infra.Ddd.EfCore" Version="0.0.1.*" />
+    <PackageReference Include="Honeywell.Infra.HoneyMapper.AutoMapper" Version="0.0.1.*" />
+    <PackageReference Include="Honeywell.Micro.Services.Workflow.Api" Version="0.0.1.*" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview5-19227-01" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0-preview5.19227.9" />
     <PackageReference Include="NLog" Version="4.6.6" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.AspNetCore\Honeywell.Infra.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.Client.WebApi\Honeywell.Infra.Client.WebApi.csproj" />
-    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.Core\Honeywell.Infra.Core.csproj" />
-    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.Ddd.EfCore\Honeywell.Infra.Ddd.EfCore.csproj" />
-    <ProjectReference Include="..\..\..\sert.infra.core\src\Honeywell.Infra.HoneyMapper.AutoMapper\Honeywell.Infra.HoneyMapper.AutoMapper.csproj" />
-    <ProjectReference Include="..\..\..\sert.micro.services.workflow\src\Honeywell.Micro.Services.Workflow.Api\Honeywell.Micro.Services.Workflow.Api.csproj" />
   </ItemGroup>
 
 </Project>
