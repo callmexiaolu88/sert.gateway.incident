@@ -20,14 +20,8 @@ namespace Honeywell.GateWay.Incident.Application
             });
 
             IocContainer.AddScoped<IWorkflowDesignAppService, WorkflowDesignAppService>();
-
-            var configuration = IocContainer.BuildServiceProvider().GetRequiredService<IConfiguration>();
             IocContainer.AddRemoteService(
-                typeof(IWorkflowDesignApi).Assembly,
-                config =>
-                {
-                    config.DefaultUrl = configuration["WorkflowServiceUrl"];
-                }).BuildServiceProvider();
+                typeof(IWorkflowDesignApi).Assembly);
 
 
             // for stub
