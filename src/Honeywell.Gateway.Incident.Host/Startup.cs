@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
-using Honeywell.Infra.Core;
+﻿using Honeywell.Infra.Core;
 using Honeywell.Infra.Core.Common.Helper;
 using Honeywell.Infra.Core.Modular;
 using Microsoft.AspNetCore.Builder;
