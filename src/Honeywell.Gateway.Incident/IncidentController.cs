@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace Honeywell.Gateway.Incident
 {
@@ -51,6 +52,21 @@ namespace Honeywell.Gateway.Incident
         {
             var workflowDetail = await _workflowDesignAppService.GetWorkflowDesignById(workflowDesignId);
             return workflowDetail;
+        }
+
+        [HttpPost]
+        public async Task<WorkflowDownloadTemplateGto> DownloadWorkflowTemplate(string languageType)
+        {
+
+            var result = await _workflowDesignAppService.DownloadWorkflowTemplate(languageType);
+            if (!result.Result)
+            { return null; }
+            Response.ContentType = "application/octet-stream";
+            Response.Headers.Add("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(result.FileName, System.Text.Encoding.UTF8));
+            await Response.Body.WriteAsync(result.FileBytes);
+            Response.Body.Flush();
+            Response.Body.Close();
+            return result;
         }
     }
 }

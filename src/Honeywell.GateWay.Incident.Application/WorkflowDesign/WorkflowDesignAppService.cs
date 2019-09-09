@@ -8,6 +8,7 @@ using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.Extensions.Logging;
 
@@ -85,6 +86,19 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             }
             Logger.LogError($"call workflow design api GetDetails error:{result.Message}");
             return null;
+        }
+
+        public async Task<WorkflowDownloadTemplateGto> DownloadWorkflowTemplate(string languageType)
+        {
+            Logger.LogInformation("call workflow design api DownloadWorkflowTemplate Start,languageType:" + languageType.ToString());
+            var result = await _workflowDesignApi.DownloadTemplate(new WorkflowDownloadTemplateDto { LanguageType = languageType });
+            if (result == null)
+            {
+                Logger.LogError("call workflow design api DownloadWorkflowTemplate error: result is null.");
+                return null;
+            }
+            WorkflowDownloadTemplateGto workflowDownloadTemplateGto = new WorkflowDownloadTemplateGto(result.Result, result.FileName, result.FileBytes);
+            return workflowDownloadTemplateGto;
         }
     }
 }

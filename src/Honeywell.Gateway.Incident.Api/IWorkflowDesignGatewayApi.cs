@@ -16,5 +16,7 @@ namespace Honeywell.Gateway.Incident.Api
         Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns();
 
         Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
+
+        Task<WorkflowDownloadTemplateGto> DownloadWorkflowTemplate(string languageType);
     }
 }
