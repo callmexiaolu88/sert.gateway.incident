@@ -38,10 +38,6 @@ namespace Honeywell.Gateway.Incident.Host
             }
 
             mvcBuilder.AddNewtonsoftJson();
-            var _client = new HttpClient(new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true,
-            });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
