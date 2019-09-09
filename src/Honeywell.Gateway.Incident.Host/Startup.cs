@@ -1,4 +1,6 @@
-﻿using Honeywell.Infra.Core;
+﻿using System.Net.Http;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Honeywell.Infra.Core;
 using Honeywell.Infra.Core.Common.Helper;
 using Honeywell.Infra.Core.Modular;
 using Microsoft.AspNetCore.Builder;
@@ -36,6 +38,10 @@ namespace Honeywell.Gateway.Incident.Host
             }
 
             mvcBuilder.AddNewtonsoftJson();
+            var _client = new HttpClient(new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true,
+            });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>

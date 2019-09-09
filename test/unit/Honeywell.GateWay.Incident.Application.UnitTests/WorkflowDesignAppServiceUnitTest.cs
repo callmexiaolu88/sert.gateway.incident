@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.GateWay.Incident.Application.WorkflowDesign;
+using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
@@ -21,12 +21,12 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
     {
         private readonly Mock<IWorkflowDesignApi> _workflowDesignApiMock;
 
-        private readonly IWorkflowDesignGatewayApi _workflowDesignGatewayApi;
+        private readonly IIncidentGatewayApi _incidentGatewayApi;
 
         public WorkflowDesignAppServiceUnitTest()
         {
             _workflowDesignApiMock = new Mock<IWorkflowDesignApi>();
-            _workflowDesignGatewayApi = new WorkflowDesignAppService(_workflowDesignApiMock.Object);
+            _incidentGatewayApi = new IncidentAppService(_workflowDesignApiMock.Object);
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(Task.FromResult(new ApiResponse { IsSuccess = true }));
 
             // action
-            var result = await _workflowDesignGatewayApi.DeleteWorkflowDesigns(new[] { It.IsAny<Guid>().ToString() });
+            var result = await _incidentGatewayApi.DeleteWorkflowDesigns(new[] { It.IsAny<Guid>().ToString() });
 
             // assert
             Assert.Equal(ExecuteStatus.Successful, result.Status);
@@ -52,7 +52,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(Task.FromResult(mockResult));
 
             // action
-            var result = await _workflowDesignGatewayApi.DeleteWorkflowDesigns(new[] { It.IsAny<Guid>().ToString() });
+            var result = await _incidentGatewayApi.DeleteWorkflowDesigns(new[] { It.IsAny<Guid>().ToString() });
 
             // assert
             Assert.Equal(ExecuteStatus.Error, result.Status);
@@ -69,7 +69,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _workflowDesignApiMock.Setup(x => x.GetSummaries()).Returns(Task.FromResult(summaryResponseDto));
 
             // action
-            var result = await _workflowDesignGatewayApi.GetAllActiveWorkflowDesigns();
+            var result = await _incidentGatewayApi.GetAllActiveWorkflowDesigns();
 
             // assert
             Assert.True(1 == result.Length);
@@ -91,7 +91,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _workflowDesignApiMock.Setup(x => x.GetSummaries()).Returns(Task.FromResult(summaryResponseDto));
 
             // action
-            var result = await _workflowDesignGatewayApi.GetAllActiveWorkflowDesigns();
+            var result = await _incidentGatewayApi.GetAllActiveWorkflowDesigns();
 
             // assert
             Assert.True(0 == result.Length);
@@ -107,7 +107,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(Task.FromResult(workflowDesignDto));
 
             // action
-            var result = await _workflowDesignGatewayApi.GetWorkflowDesignById(Guid.NewGuid().ToString());
+            var result = await _incidentGatewayApi.GetWorkflowDesignById(Guid.NewGuid().ToString());
 
             // assert
             Assert.NotNull(result);
@@ -136,7 +136,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(Task.FromResult(workflowDesignDto));
 
             // action
-            var result = await _workflowDesignGatewayApi.GetWorkflowDesignById(Guid.NewGuid().ToString());
+            var result = await _incidentGatewayApi.GetWorkflowDesignById(Guid.NewGuid().ToString());
 
             // assert
             Assert.Null(result);
@@ -153,7 +153,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 Returns(Task.FromResult(responseDto));
             // action
 
-            var result = await _workflowDesignGatewayApi.ImportWorkflowDesigns(It.IsAny<Stream>());
+            var result = await _incidentGatewayApi.ImportWorkflowDesigns(It.IsAny<Stream>());
 
             // assert
             Assert.NotNull(result);
