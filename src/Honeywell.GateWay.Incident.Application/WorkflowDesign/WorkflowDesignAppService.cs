@@ -8,7 +8,6 @@ using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.Extensions.Logging;
 
@@ -19,10 +18,12 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
         IWorkflowDesignAppService
     {
         private readonly IWorkflowDesignApi _workflowDesignApi;
+        private readonly IWorkflowDownloadTemplateApi _workflowDownloadTemplateApi;
 
-        public WorkflowDesignAppService(IWorkflowDesignApi workflowDesignApi)
+        public WorkflowDesignAppService(IWorkflowDesignApi workflowDesignApi, IWorkflowDownloadTemplateApi workflowDownloadTemplateApi)
         {
             _workflowDesignApi = workflowDesignApi;
+            _workflowDownloadTemplateApi = workflowDownloadTemplateApi;
         }
 
         public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
@@ -88,16 +89,16 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             return null;
         }
 
-        public async Task<WorkflowDownloadTemplateGto> DownloadWorkflowTemplate(string languageType)
+        public async Task<WorkflowDownloadTemplateGto> DownloadWorkflowTemplate()
         {
-            Logger.LogInformation("call workflow design api DownloadWorkflowTemplate Start,languageType:" + languageType.ToString());
-            var result = await _workflowDesignApi.DownloadTemplate(new WorkflowDownloadTemplateDto { LanguageType = languageType });
+            Logger.LogInformation("call workflow design api DownloadWorkflowTemplate Start");
+            var result = await _workflowDownloadTemplateApi.DownloadTemplate();
             if (result == null)
             {
                 Logger.LogError("call workflow design api DownloadWorkflowTemplate error: result is null.");
                 return null;
             }
-            WorkflowDownloadTemplateGto workflowDownloadTemplateGto = new WorkflowDownloadTemplateGto(result.Result, result.FileName, result.FileBytes);
+            WorkflowDownloadTemplateGto workflowDownloadTemplateGto = new WorkflowDownloadTemplateGto(result.IsSuccess? ExecuteStatus.Successful: ExecuteStatus.Error, result.FileName, result.FileBytes);
             return workflowDownloadTemplateGto;
         }
     }

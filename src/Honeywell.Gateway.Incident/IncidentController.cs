@@ -55,11 +55,11 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<WorkflowDownloadTemplateGto> DownloadWorkflowTemplate(string languageType)
+        public async Task<WorkflowDownloadTemplateGto> DownloadWorkflowTemplate()
         {
 
-            var result = await _workflowDesignAppService.DownloadWorkflowTemplate(languageType);
-            if (!result.Result)
+            var result = await _workflowDesignAppService.DownloadWorkflowTemplate();
+            if (result.Status != ExecuteStatus.Successful)
             { return null; }
             Response.ContentType = "application/octet-stream";
             Response.Headers.Add("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(result.FileName, System.Text.Encoding.UTF8));
