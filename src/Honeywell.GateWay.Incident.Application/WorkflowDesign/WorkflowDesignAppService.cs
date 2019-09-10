@@ -18,12 +18,10 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
         IWorkflowDesignAppService
     {
         private readonly IWorkflowDesignApi _workflowDesignApi;
-        private readonly IWorkflowDownloadTemplateApi _workflowDownloadTemplateApi;
 
-        public WorkflowDesignAppService(IWorkflowDesignApi workflowDesignApi, IWorkflowDownloadTemplateApi workflowDownloadTemplateApi)
+        public WorkflowDesignAppService(IWorkflowDesignApi workflowDesignApi)
         {
             _workflowDesignApi = workflowDesignApi;
-            _workflowDownloadTemplateApi = workflowDownloadTemplateApi;
         }
 
         public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
@@ -92,12 +90,7 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
         public async Task<WorkflowDownloadTemplateGto> DownloadWorkflowTemplate()
         {
             Logger.LogInformation("call workflow design api DownloadWorkflowTemplate Start");
-            var result = await _workflowDownloadTemplateApi.DownloadTemplate();
-            if (result == null)
-            {
-                Logger.LogError("call workflow design api DownloadWorkflowTemplate error: result is null.");
-                return null;
-            }
+            var result = await _workflowDesignApi.DownloadTemplate();
             WorkflowDownloadTemplateGto workflowDownloadTemplateGto = new WorkflowDownloadTemplateGto(result.IsSuccess? ExecuteStatus.Successful: ExecuteStatus.Error, result.FileName, result.FileBytes);
             return workflowDownloadTemplateGto;
         }

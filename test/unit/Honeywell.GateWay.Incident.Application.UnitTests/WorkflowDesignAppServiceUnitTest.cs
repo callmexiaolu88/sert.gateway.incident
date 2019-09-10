@@ -21,16 +21,13 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
     public class WorkflowDesignAppServiceUnitTest : ApplicationServiceTestBase
     {
         private readonly Mock<IWorkflowDesignApi> _workflowDesignApiMock;
-        private readonly Mock<IWorkflowDownloadTemplateApi> _workflowDownloadTemplateApiMock;
 
         private readonly IWorkflowDesignGatewayApi _workflowDesignGatewayApi;
-        private readonly IWorkflowDownloadTemplateApi _workflowDownloadTemplateApi;
 
         public WorkflowDesignAppServiceUnitTest()
         {
             _workflowDesignApiMock = new Mock<IWorkflowDesignApi>();
-            _workflowDownloadTemplateApiMock = new Mock<IWorkflowDownloadTemplateApi>();
-            _workflowDesignGatewayApi = new WorkflowDesignAppService(_workflowDesignApiMock.Object, _workflowDownloadTemplateApiMock.Object);
+            _workflowDesignGatewayApi = new WorkflowDesignAppService(_workflowDesignApiMock.Object);
         }
 
         [Fact]
@@ -167,7 +164,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public async Task DownloadWorkflowTemplate_Success()
         {
             var responseDto = new WorkflowDownloadTemplateResultDto { IsSuccess = true };
-            _workflowDownloadTemplateApiMock.Setup(x => x.DownloadTemplate()).Returns(Task.FromResult(responseDto));
+            _workflowDesignApiMock.Setup(x => x.DownloadTemplate()).Returns(Task.FromResult(responseDto));
             var result = await _workflowDesignGatewayApi.DownloadWorkflowTemplate();
             // assert
             Assert.True(result.Status == ExecuteStatus.Successful);

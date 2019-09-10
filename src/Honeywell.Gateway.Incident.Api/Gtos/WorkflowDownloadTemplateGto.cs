@@ -11,6 +11,7 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
         public byte[] FileBytes { get; set; }
         public WorkflowDownloadTemplateGto()
         {
+            Status = ExecuteStatus.Error;
         }
         public WorkflowDownloadTemplateGto(ExecuteStatus result, string filename, byte[] bytes)
         {
