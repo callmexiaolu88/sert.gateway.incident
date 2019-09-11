@@ -61,9 +61,14 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             };
         }
 
-        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
+        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns(string workflowName)
         {
-            var result = await _workflowDesignApi.GetSummaries();
+            var workflowDesignSummaryRequestDto = new WorkflowDesignSummaryRequestDto()
+            {
+                workflowName =workflowName
+            };
+
+            var result = await _workflowDesignApi.GetSummaries(workflowDesignSummaryRequestDto);
             if (result.IsSuccess)
             {
                 return HoneyMapper.Map<WorkflowDesignSummaryDto[],

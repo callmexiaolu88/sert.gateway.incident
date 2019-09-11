@@ -66,10 +66,11 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             // arrange
             var summaryResponseDto = MockWorkflowDesignSummaryResponseDto();
-            _workflowDesignApiMock.Setup(x => x.GetSummaries()).Returns(Task.FromResult(summaryResponseDto));
+            var workflowDesignSummaryRequestDto = MockWorkflowDesignSummaryRequestDto();
+            _workflowDesignApiMock.Setup(x => x.GetSummaries(It.IsAny < WorkflowDesignSummaryRequestDto>())).Returns(Task.FromResult(summaryResponseDto));
 
             // action
-            var result = await _workflowDesignGatewayApi.GetAllActiveWorkflowDesigns();
+            var result = await _workflowDesignGatewayApi.GetAllActiveWorkflowDesigns(workflowDesignSummaryRequestDto.workflowName);
 
             // assert
             Assert.True(1 == result.Length);
@@ -87,11 +88,12 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public async Task WorkflowDesign_GetAllActiveWorkflowDesigns_Failed()
         {
             // arrange
+            var workflowDesignSummaryRequestDto = MockWorkflowDesignSummaryRequestDto();
             var summaryResponseDto = new WorkflowDesignSummaryResponseDto { IsSuccess = false, Message = "error 1" };
-            _workflowDesignApiMock.Setup(x => x.GetSummaries()).Returns(Task.FromResult(summaryResponseDto));
+            _workflowDesignApiMock.Setup(x => x.GetSummaries(It.IsAny<WorkflowDesignSummaryRequestDto>())).Returns(Task.FromResult(summaryResponseDto));
 
             // action
-            var result = await _workflowDesignGatewayApi.GetAllActiveWorkflowDesigns();
+            var result = await _workflowDesignGatewayApi.GetAllActiveWorkflowDesigns(workflowDesignSummaryRequestDto.workflowName);
 
             // assert
             Assert.True(0 == result.Length);
@@ -161,6 +163,16 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
 
         #region private methods
+
+        private WorkflowDesignSummaryRequestDto MockWorkflowDesignSummaryRequestDto()
+        {
+            var workflowDesignSummaryRequestDto = new WorkflowDesignSummaryRequestDto
+            {
+                workflowName = ""
+            };
+
+            return workflowDesignSummaryRequestDto;
+        }
 
         private WorkflowDesignSummaryResponseDto MockWorkflowDesignSummaryResponseDto()
         {

@@ -40,9 +40,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
+        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns(string workflowName)
         {
-            var workflowDesignList = await _workflowDesignAppService.GetAllActiveWorkflowDesigns();
+            var workflowDesignList = await _workflowDesignAppService.GetAllActiveWorkflowDesigns(workflowName);
             return workflowDesignList;
         }
 

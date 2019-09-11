@@ -41,7 +41,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
             return Task.FromResult(result);
         }
 
-        public Task<WorkflowDesignSummaryResponseDto> GetSummaries()
+        public Task<WorkflowDesignSummaryResponseDto> GetSummaries(WorkflowDesignSummaryRequestDto workflowDesignSummaryRequestDto)
         {
             var result = new WorkflowDesignSummaryResponseDto
             {
