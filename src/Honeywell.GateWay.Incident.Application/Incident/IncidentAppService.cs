@@ -11,15 +11,15 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.Extensions.Logging;
 
-namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
+namespace Honeywell.GateWay.Incident.Application.Incident
 {
-    public class WorkflowDesignAppService :
+    public class IncidentAppService :
         ApplicationService,
-        IWorkflowDesignAppService
+        IIncidentAppService
     {
         private readonly IWorkflowDesignApi _workflowDesignApi;
 
-        public WorkflowDesignAppService(IWorkflowDesignApi workflowDesignApi)
+        public IncidentAppService(IWorkflowDesignApi workflowDesignApi)
         {
             _workflowDesignApi = workflowDesignApi;
         }
