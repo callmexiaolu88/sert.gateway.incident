@@ -87,11 +87,12 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             return null;
         }
 
-        public async Task<WorkflowDownloadTemplateGto> DownloadWorkflowTemplate()
+        public async Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
         {
             Logger.LogInformation("call workflow design api DownloadWorkflowTemplate Start");
             var result = await _workflowDesignApi.DownloadTemplate();
-            WorkflowDownloadTemplateGto workflowDownloadTemplateGto = new WorkflowDownloadTemplateGto(result.IsSuccess? ExecuteStatus.Successful: ExecuteStatus.Error, result.FileName, result.FileBytes);
+            WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(
+                result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error, result.FileName, result.FileBytes);
             return workflowDownloadTemplateGto;
         }
     }

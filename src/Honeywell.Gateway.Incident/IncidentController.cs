@@ -55,7 +55,7 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<WorkflowDownloadTemplateGto> DownloadWorkflowTemplate()
+        public async Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
         {
 
             var result = await _workflowDesignAppService.DownloadWorkflowTemplate();

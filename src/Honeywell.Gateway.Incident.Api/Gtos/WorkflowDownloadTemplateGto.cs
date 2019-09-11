@@ -5,15 +5,15 @@ using System.Text;
 
 namespace Honeywell.Gateway.Incident.Api.Gtos
 {
-    public class WorkflowDownloadTemplateGto: ExecuteResult
+    public class WorkflowTemplateGto: ExecuteResult
     {
         public string FileName { get; set; }
         public byte[] FileBytes { get; set; }
-        public WorkflowDownloadTemplateGto()
+        public WorkflowTemplateGto()
         {
             Status = ExecuteStatus.Error;
         }
-        public WorkflowDownloadTemplateGto(ExecuteStatus result, string filename, byte[] bytes)
+        public WorkflowTemplateGto(ExecuteStatus result, string filename, byte[] bytes)
         {
             Status = result;
             FileName = filename;
