@@ -14,6 +14,7 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Import;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Moq;
 using Xunit;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.DownloadTemplate;
 
 namespace Honeywell.GateWay.Incident.Application.UnitTests
 {
@@ -159,7 +160,15 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.NotNull(result);
         }
 
-
+        [Fact]
+        public async Task DownloadWorkflowTemplate_Success()
+        {
+            var responseDto = new WorkflowDownloadTemplateResultDto() { IsSuccess = true };
+            _workflowDesignApiMock.Setup(x => x.DownloadTemplate()).Returns(Task.FromResult(responseDto));
+            var result = await _workflowDesignGatewayApi.DownloadWorkflowTemplate();
+            // assert
+            Assert.True(result.Status == ExecuteStatus.Successful);
+        }
         #region private methods
 
         private WorkflowDesignSummaryResponseDto MockWorkflowDesignSummaryResponseDto()
