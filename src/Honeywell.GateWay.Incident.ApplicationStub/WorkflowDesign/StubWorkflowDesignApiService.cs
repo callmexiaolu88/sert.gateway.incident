@@ -112,7 +112,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
 
         public Task<WorkflowDownloadTemplateResultDto> DownloadTemplate()
         {
-            var result = new WorkflowDownloadTemplateResultDto(true, string.Empty, null);
+            var result = new WorkflowDownloadTemplateResultDto() { IsSuccess = true };
                 
             return Task.FromResult(result);
         }
