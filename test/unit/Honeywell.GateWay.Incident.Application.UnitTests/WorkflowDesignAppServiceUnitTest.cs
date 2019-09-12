@@ -165,7 +165,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             var responseDto = new WorkflowDownloadTemplateResultDto() { IsSuccess = true };
             _workflowDesignApiMock.Setup(x => x.DownloadTemplate()).Returns(Task.FromResult(responseDto));
-            var result = await _workflowDesignGatewayApi.DownloadWorkflowTemplate();
+            var result = await _incidentGatewayApi.DownloadWorkflowTemplate();
             // assert
             Assert.True(result.Status == ExecuteStatus.Successful);
         }
