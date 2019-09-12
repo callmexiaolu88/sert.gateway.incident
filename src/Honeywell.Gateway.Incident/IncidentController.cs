@@ -52,5 +52,12 @@ namespace Honeywell.Gateway.Incident
             var workflowDetail = await _incidentAppService.GetWorkflowDesignById(workflowDesignId);
             return workflowDetail;
         }
+
+        [HttpPost]
+        public async Task<IncidentGto> GetIncidentById(string incidentId)
+        {
+           var incident = await _incidentAppService.GetIncidentById(incidentId);
+           return incident;
+        }
     }
 }

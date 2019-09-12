@@ -9,7 +9,7 @@ namespace Honeywell.GateWay.Incident.Application
     {
         public AutoMapperProfile()
         {
-            CreateMap<WorkflowStepDesignDto, WorkflowStepDesignGto>();
+            CreateMap<WorkflowStepDesignDto, WorkflowDesignStepGto>();
 
             CreateMap<WorkflowDesignDto, WorkflowDesignGto>();
 

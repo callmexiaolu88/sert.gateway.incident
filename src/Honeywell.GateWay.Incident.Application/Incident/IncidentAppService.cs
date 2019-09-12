@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Infra.Core.Ddd.Application;
+using Honeywell.Micro.Services.Incident.Api;
+using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
@@ -18,10 +20,16 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         IIncidentAppService
     {
         private readonly IWorkflowDesignApi _workflowDesignApi;
+        private readonly IIncidentMicroApi _incidentMicroApi;
+        private readonly IWorkflowInstanceApi _workflowInstanceApi;
 
-        public IncidentAppService(IWorkflowDesignApi workflowDesignApi)
+        public IncidentAppService(IWorkflowDesignApi workflowDesignApi,
+            IIncidentMicroApi incidentMicroApi,
+            IWorkflowInstanceApi workflowInstanceApi)
         {
             _workflowDesignApi = workflowDesignApi;
+            _incidentMicroApi = incidentMicroApi;
+            _workflowInstanceApi = workflowInstanceApi;
         }
 
         public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
@@ -85,6 +93,16 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
             Logger.LogError($"call workflow design api GetDetails error:{result.Message}");
             return null;
+        }
+
+        public async Task<IncidentGto> GetIncidentById(string incidentId)
+        {
+            var requestId = new[] { Guid.Parse(incidentId) };
+            var incidents = await _incidentMicroApi.GetIncidentDetails(new IncidentDetailsRequestDto {Ids = requestId});
+            
+            //var workflows = _workflowInstanceApi(incidents.Details.Select(m=>m.WorkflowId).ToArray());
+            //return Task.FromResult(null);
+            
         }
     }
 }
