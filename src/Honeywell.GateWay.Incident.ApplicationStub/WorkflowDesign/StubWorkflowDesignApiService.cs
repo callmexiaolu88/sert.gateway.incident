@@ -117,10 +117,6 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
             return Task.FromResult(result);
         }
 
-        public Task<WorkflowDownloadTemplateResultDto> DownloadTemplate()
-        {
-            throw new NotImplementedException();
-        }
     }
 
     public class MockDetailStore

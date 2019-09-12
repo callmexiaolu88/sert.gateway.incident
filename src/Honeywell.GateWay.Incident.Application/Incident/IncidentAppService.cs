@@ -108,10 +108,12 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             var requestId = new[] { Guid.Parse(incidentId) };
             var incidents = await _incidentMicroApi.GetIncidentDetails(new IncidentDetailsRequestDto {Ids = requestId});
-            
-            //var workflows = _workflowInstanceApi(incidents.Details.Select(m=>m.WorkflowId).ToArray());
-            //return Task.FromResult(null);
-            
+            var incidentGto = HoneyMapper.Map<IncidentDto, IncidentGto>(incidents[0]);
+
+            var workflows = await _workflowInstanceApi.GetWorkflowDetails(new WorkflowDetailsRequestDto
+                {Ids = incidents.Details.Select(m => m.WorkflowId).ToArray()});
+            HoneyMapper.Map<WorkflowDto, IncidentGto>(workflows[0], incidentGto);
+            return Task.FromResult(incidentGto);
         }
     }
 }
