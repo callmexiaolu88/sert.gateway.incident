@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Honeywell.GateWay.Incident.Application.WorkflowDesign;
+using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Core;
 using Honeywell.Infra.Core.HoneyMapper;
 using Honeywell.Infra.HoneyMapper.AutoMapper;
@@ -14,7 +14,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
     {
         public ApplicationServiceTestBase()
         {
-            var loggerMock = new Mock<ILogger<WorkflowDesignAppService>>();
+            var loggerMock = new Mock<ILogger<IncidentAppService>>();
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddScoped(x => loggerMock.Object);
             serviceCollection.AddSingleton(typeof(AutomapperAccessor));

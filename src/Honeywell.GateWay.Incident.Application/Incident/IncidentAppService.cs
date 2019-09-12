@@ -11,15 +11,15 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.Extensions.Logging;
 
-namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
+namespace Honeywell.GateWay.Incident.Application.Incident
 {
-    public class WorkflowDesignAppService :
+    public class IncidentAppService :
         ApplicationService,
-        IWorkflowDesignAppService
+        IIncidentAppService
     {
         private readonly IWorkflowDesignApi _workflowDesignApi;
 
-        public WorkflowDesignAppService(IWorkflowDesignApi workflowDesignApi)
+        public IncidentAppService(IWorkflowDesignApi workflowDesignApi)
         {
             _workflowDesignApi = workflowDesignApi;
         }
@@ -90,6 +90,15 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             }
             Logger.LogError($"call workflow design api GetDetails error:{result.Message}");
             return null;
+        }
+
+        public async Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
+        {
+            Logger.LogInformation("call workflow design api DownloadWorkflowTemplate Start");
+            var result = await _workflowDesignApi.DownloadTemplate();
+            WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(
+                result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error, result.FileName, result.FileBytes);
+            return workflowDownloadTemplateGto;
         }
     }
 }

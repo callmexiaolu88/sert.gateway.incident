@@ -7,6 +7,7 @@ using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Import;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 
@@ -107,6 +108,13 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
                 }.Where(x=>workflowDesignDetailsRequestDto.Ids.Contains(x.Id)).ToList()
             };
             return Task.FromResult(result); 
+        }
+
+        public Task<WorkflowDownloadTemplateResultDto> DownloadTemplate()
+        {
+            var result = new WorkflowDownloadTemplateResultDto() { IsSuccess = true };
+                
+            return Task.FromResult(result);
         }
     }
 
