@@ -95,6 +95,15 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return null;
         }
 
+        public async Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
+        {
+            Logger.LogInformation("call workflow design api DownloadWorkflowTemplate Start");
+            var result = await _workflowDesignApi.DownloadTemplate();
+            WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(
+                result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error, result.FileName, result.FileBytes);
+            return workflowDownloadTemplateGto;
+        }
+
         public async Task<IncidentGto> GetIncidentById(string incidentId)
         {
             var requestId = new[] { Guid.Parse(incidentId) };
