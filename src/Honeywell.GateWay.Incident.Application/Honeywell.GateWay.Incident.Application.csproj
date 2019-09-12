@@ -6,8 +6,8 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Honeywell.Infra.Client.WebApi" Version="0.0.1.108" />
-    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.1.108" />
+    <PackageReference Include="Honeywell.Infra.Client.WebApi" Version="0.0.1.*" />
+    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.1.*" />
     <PackageReference Include="Honeywell.Infra.HoneyMapper.AutoMapper" Version="0.0.1.*" />
     <PackageReference Include="Honeywell.Micro.Services.Workflow.Api" Version="0.0.1.*" />
     <ProjectReference Include="..\Honeywell.Gateway.Incident.Api\Honeywell.Gateway.Incident.Api.csproj" />

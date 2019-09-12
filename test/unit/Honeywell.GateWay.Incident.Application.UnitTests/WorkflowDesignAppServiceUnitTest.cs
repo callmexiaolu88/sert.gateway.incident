@@ -168,7 +168,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             var workflowDesignSummaryRequestDto = new WorkflowDesignSummaryRequestDto
             {
-                workflowName = ""
+                workflowName = string.Empty
             };
 
             return workflowDesignSummaryRequestDto;
