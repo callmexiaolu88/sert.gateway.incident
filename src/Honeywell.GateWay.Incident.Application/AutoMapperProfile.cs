@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 
@@ -9,11 +11,18 @@ namespace Honeywell.GateWay.Incident.Application
     {
         public AutoMapperProfile()
         {
-            CreateMap<WorkflowStepDesignDto, WorkflowDesignStepGto>();
+            CreateMap<WorkflowStepDesignDto, WorkflowStepDesignGto>();
 
             CreateMap<WorkflowDesignDto, WorkflowDesignGto>();
 
             CreateMap<WorkflowDesignSummaryDto, WorkflowDesignSummaryGto>();
+
+            CreateMap<IncidentDto, IncidentGto>();
+            CreateMap<WorkflowDto, IncidentGto>()
+                .ForMember(dest => dest.WorkflowName, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.WorkflowDescription, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.WorkflowOwner, opt => opt.MapFrom(src => src.Owner));
+            CreateMap<IncidentStepGto, WorkflowStepDto>();
         }
     }
 }

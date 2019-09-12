@@ -8,6 +8,7 @@ using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Workflow.Api;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
@@ -106,14 +107,20 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
         public async Task<IncidentGto> GetIncidentById(string incidentId)
         {
+      
             var requestId = new[] { Guid.Parse(incidentId) };
-            var incidents = await _incidentMicroApi.GetIncidentDetails(new IncidentDetailsRequestDto {Ids = requestId});
-            var incidentGto = HoneyMapper.Map<IncidentDto, IncidentGto>(incidents[0]);
+            var incidentResponse = await _incidentMicroApi.GetDetails(new GetIncidentDetailsRequestDto { Ids = requestId });
+            if (!incidentResponse.IsSuccess || incidentResponse.Details.Count == 0)
+                return await Task.FromResult(new IncidentGto());
 
-            var workflows = await _workflowInstanceApi.GetWorkflowDetails(new WorkflowDetailsRequestDto
-                {Ids = incidents.Details.Select(m => m.WorkflowId).ToArray()});
-            HoneyMapper.Map<WorkflowDto, IncidentGto>(workflows[0], incidentGto);
-            return Task.FromResult(incidentGto);
+            var incidentGto = HoneyMapper.Map<IncidentDto, IncidentGto>(incidentResponse.Details[0]);
+
+            var workflowResponse = await _workflowInstanceApi.GetWorkflowDetails(new WorkflowDetailsRequestDto { Ids = incidentResponse.Details.Select(m => m.WorkflowId).ToArray() });
+            if (!workflowResponse.IsSuccess || workflowResponse.Details.Count == 0)
+                return await Task.FromResult(new IncidentGto());
+
+            HoneyMapper.Map(workflowResponse.Details[0], incidentGto);
+            return await Task.FromResult(incidentGto);
         }
     }
 }
