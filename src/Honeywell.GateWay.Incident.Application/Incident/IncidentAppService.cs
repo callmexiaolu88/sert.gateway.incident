@@ -107,19 +107,23 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
         public async Task<IncidentGto> GetIncidentById(string incidentId)
         {
-      
+
+            Logger.LogInformation("call Incident api GetIncidentById Start");
+            var result = new IncidentGto();
             var requestId = new[] { Guid.Parse(incidentId) };
             var incidentResponse = await _incidentMicroApi.GetDetails(new GetIncidentDetailsRequestDto { Ids = requestId });
-            if (!incidentResponse.IsSuccess || incidentResponse.Details.Count == 0)
-                return await Task.FromResult(new IncidentGto());
+            if (!incidentResponse.IsSuccess|| !incidentResponse.Details.Any())
+                return await Task.FromResult(result);
 
             var incidentGto = HoneyMapper.Map<IncidentDto, IncidentGto>(incidentResponse.Details[0]);
 
             var workflowResponse = await _workflowInstanceApi.GetWorkflowDetails(new WorkflowDetailsRequestDto { Ids = incidentResponse.Details.Select(m => m.WorkflowId).ToArray() });
             if (!workflowResponse.IsSuccess || workflowResponse.Details.Count == 0)
-                return await Task.FromResult(new IncidentGto());
+                return await Task.FromResult(result);
 
             HoneyMapper.Map(workflowResponse.Details[0], incidentGto);
+            HoneyMapper.Map(workflowResponse.Details[0].WorkflowSteps, incidentGto.IncidentSteps);
+            result.Status = ExecuteStatus.Successful;
             return await Task.FromResult(incidentGto);
         }
     }
