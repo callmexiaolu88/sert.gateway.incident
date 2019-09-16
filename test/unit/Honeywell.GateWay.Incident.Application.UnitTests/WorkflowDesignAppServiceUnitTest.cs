@@ -7,6 +7,7 @@ using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
+using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
@@ -27,7 +28,11 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public WorkflowDesignAppServiceUnitTest()
         {
             _workflowDesignApiMock = new Mock<IWorkflowDesignApi>();
-            _incidentGatewayApi = new IncidentAppService(_workflowDesignApiMock.Object);
+            var mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
+            var mockWorkflowInstanceApi = new Mock<IWorkflowInstanceApi>();
+            _incidentGatewayApi = new IncidentAppService(_workflowDesignApiMock.Object, 
+                mockIncidentMicroApi.Object, 
+                mockWorkflowInstanceApi.Object);
         }
 
         [Fact]

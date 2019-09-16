@@ -18,5 +18,7 @@ namespace Honeywell.Gateway.Incident.Api
         Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
 
         Task<WorkflowTemplateGto> DownloadWorkflowTemplate();
+
+        Task<IncidentGto> GetIncidentById(string incidentId);
     }
 }

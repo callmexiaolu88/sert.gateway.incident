@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Honeywell.Infra.Core" Version="0.0.1.*" />
+    <PackageReference Include="Honeywell.Micro.Services.Incident.Api" Version="0.0.1.*" />
   </ItemGroup>
 
 </Project>
