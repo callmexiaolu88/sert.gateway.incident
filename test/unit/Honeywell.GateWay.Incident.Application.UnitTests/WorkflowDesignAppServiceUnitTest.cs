@@ -22,17 +22,17 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
     public class WorkflowDesignAppServiceUnitTest : ApplicationServiceTestBase
     {
         private readonly Mock<IWorkflowDesignApi> _workflowDesignApiMock;
-        private readonly Mock<IIncidentMicroApi> _mockIncidentMicroApi;
-        private readonly Mock<IWorkflowInstanceApi> _mockWorkflowInstanceApi;
 
         private readonly IIncidentGatewayApi _incidentGatewayApi;
 
         public WorkflowDesignAppServiceUnitTest()
         {
             _workflowDesignApiMock = new Mock<IWorkflowDesignApi>();
+            var mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
+            var mockWorkflowInstanceApi = new Mock<IWorkflowInstanceApi>();
             _incidentGatewayApi = new IncidentAppService(_workflowDesignApiMock.Object, 
-                _mockIncidentMicroApi.Object, 
-                _mockWorkflowInstanceApi.Object);
+                mockIncidentMicroApi.Object, 
+                mockWorkflowInstanceApi.Object);
         }
 
         [Fact]
