@@ -93,7 +93,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
-        public async Task WorkflowDesign_GetWorkflowDesignsSelectorByName_Success()
+        public async Task WorkflowDesign_GetWorkflowDesignSelectorsByName_Success()
         {
             // arrange
             var selectorResponseDto = MockWorkflowDesignSelectorResponseDto();
@@ -104,7 +104,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _workflowDesignApiMock.Setup(x => x.GetSelector(It.IsAny<WorkflowDesignSelectorRequestDto>())).Returns(Task.FromResult(selectorResponseDto));
 
             // action
-            var result = await _incidentGatewayApi.GetWorkflowDesignsSelectorByName(workflowDesignSelectorRequestDto.WorkflowName);
+            var result = await _incidentGatewayApi.GetWorkflowDesignSelectorsByName(workflowDesignSelectorRequestDto.WorkflowName);
 
             // assert
             Assert.True(1 == result.Length);

@@ -15,7 +15,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns();
 
-        Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignsSelectorByName(string workflowName);
+        Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName);
 
         Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
 
