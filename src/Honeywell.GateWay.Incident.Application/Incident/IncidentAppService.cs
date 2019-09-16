@@ -77,11 +77,14 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
         public async Task<WorkflowDesignSelectorGto[]> GetSelectorWorkflowDesignsByName(string workflowName)
         {
-            var workflowDesignSelectorRequestDto = new WorkflowDesignSelectorRequestDto()
+            var workflowDesignSelectorRequestDto = new WorkflowDesignSelectorRequestDto();
+
+            if (string.IsNullOrEmpty(workflowName))
             {
-                WorkflowName = workflowName
-            };
-            var result = await _workflowDesignApi.GetSelector(workflowDesignSelectorRequestDto);
+                workflowName = "";
+            }
+            workflowDesignSelectorRequestDto.WorkflowName = workflowName;
+           var result = await _workflowDesignApi.GetSelector(workflowDesignSelectorRequestDto);
             if (result.IsSuccess)
             {
                 return HoneyMapper.Map<WorkflowDesignSelectorDto[],
