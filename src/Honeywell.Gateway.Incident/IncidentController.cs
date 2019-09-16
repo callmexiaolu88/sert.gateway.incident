@@ -73,5 +73,12 @@ namespace Honeywell.Gateway.Incident
             Response.Body.Close();
             return result;
         }
+
+        [HttpPost]
+        public async Task<IncidentGto> GetIncidentById(string incidentId)
+        {
+           var incident = await _incidentAppService.GetIncidentById(incidentId);
+           return incident;
+        }
     }
 }

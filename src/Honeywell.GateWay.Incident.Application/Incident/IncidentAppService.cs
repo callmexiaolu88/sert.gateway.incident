@@ -5,7 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Infra.Core.Ddd.Application;
+using Honeywell.Micro.Services.Incident.Api;
+using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Workflow.Api;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
@@ -19,10 +22,16 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         IIncidentAppService
     {
         private readonly IWorkflowDesignApi _workflowDesignApi;
+        private readonly IIncidentMicroApi _incidentMicroApi;
+        private readonly IWorkflowInstanceApi _workflowInstanceApi;
 
-        public IncidentAppService(IWorkflowDesignApi workflowDesignApi)
+        public IncidentAppService(IWorkflowDesignApi workflowDesignApi,
+            IIncidentMicroApi incidentMicroApi,
+            IWorkflowInstanceApi workflowInstanceApi)
         {
             _workflowDesignApi = workflowDesignApi;
+            _incidentMicroApi = incidentMicroApi;
+            _workflowInstanceApi = workflowInstanceApi;
         }
 
         public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
@@ -115,6 +124,28 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(
                 result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error, result.FileName, result.FileBytes);
             return workflowDownloadTemplateGto;
+        }
+
+        public async Task<IncidentGto> GetIncidentById(string incidentId)
+        {
+
+            Logger.LogInformation("call Incident api GetIncidentById Start");
+            var result = new IncidentGto();
+            var requestId = new[] { Guid.Parse(incidentId) };
+            var incidentResponse = await _incidentMicroApi.GetDetails(new GetIncidentDetailsRequestDto { Ids = requestId });
+            if (!incidentResponse.IsSuccess|| !incidentResponse.Details.Any())
+                return await Task.FromResult(result);
+
+            var incidentGto = HoneyMapper.Map<IncidentDto, IncidentGto>(incidentResponse.Details[0]);
+
+            var workflowResponse = await _workflowInstanceApi.GetWorkflowDetails(new WorkflowDetailsRequestDto { Ids = incidentResponse.Details.Select(m => m.WorkflowId).ToArray() });
+            if (!workflowResponse.IsSuccess || workflowResponse.Details.Count == 0)
+                return await Task.FromResult(result);
+
+            HoneyMapper.Map(workflowResponse.Details[0], incidentGto);
+            HoneyMapper.Map(workflowResponse.Details[0].WorkflowSteps, incidentGto.IncidentSteps);
+            result.Status = ExecuteStatus.Successful;
+            return await Task.FromResult(incidentGto);
         }
     }
 }
