@@ -9,6 +9,7 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Import;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 
 namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
@@ -60,6 +61,31 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
                         Id = MockDetailStore.SecondWorkflowId,
                         Name = MockDetailStore.SecondName,
                         Description = MockDetailStore.SecondDescription
+                    }
+                }
+            };
+            return Task.FromResult(result);
+        }
+
+
+        public Task<WorkflowDesignSelectorResponseDto> GetSelector(WorkflowDesignSelectorRequestDto workflowDesignSelectorRequestDto)
+        {
+            var result = new WorkflowDesignSelectorResponseDto()
+            {
+                IsSuccess = true,
+                Selectors = new List<WorkflowDesignSelectorDto>
+                {
+                    new WorkflowDesignSelectorDto
+                    {
+                        Id = MockSelectorStore.FirstWorkflowId,
+                        Name = MockSelectorStore.FirstName,
+                        ReferenceId = MockSelectorStore.FirstReferenceId
+                    },
+                    new WorkflowDesignSelectorDto
+                    {
+                        Id = MockSelectorStore.SecondWorkflowId,
+                        Name = MockSelectorStore.SecondName,
+                        ReferenceId = MockSelectorStore.FirstReferenceId
                     }
                 }
             };
@@ -136,5 +162,17 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
         public static readonly string SecondWorkflowStepInstruction = "Dispatch local first responders to investigate alarm and maintain communications. X37007";
         public static readonly string SecondWorkflowStepHelpText = "Zoom in to region where the smoke detector alarm is. ";
         public static readonly bool SecondWorkflowStepIsOptional = false;
+    }
+
+    public class MockSelectorStore
+    {
+        public static readonly Guid FirstWorkflowId = Guid.Parse("aec60e83-53fb-4e6c-bd78-322264df4c90");
+        public static readonly string FirstName = "Asset Damage";
+        public static readonly Guid FirstReferenceId = Guid.Parse("aec60e83-53fb-4e6c-bd78-322264df4c90");
+
+        public static readonly Guid SecondWorkflowId = Guid.Parse("76caed17-1ad5-4110-855b-366674dfaf58");
+        public static readonly string SecondName = "Fire";
+        public static readonly Guid SecondReferenceId = Guid.Parse("76caed17-1ad5-4110-855b-366674dfaf58");
+
     }
 }

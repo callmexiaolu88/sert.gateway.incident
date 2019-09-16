@@ -3,6 +3,7 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 
 namespace Honeywell.GateWay.Incident.Application
@@ -17,6 +18,8 @@ namespace Honeywell.GateWay.Incident.Application
 
             CreateMap<WorkflowDesignSummaryDto, WorkflowDesignSummaryGto>();
 
+            CreateMap<WorkflowDesignSelectorDto, WorkflowDesignSelectorGto>();
+
             CreateMap<IncidentDto, IncidentGto>();
             CreateMap<WorkflowDto, IncidentGto>()
                 .ForMember(dest => dest.WorkflowName, opt => opt.MapFrom(src => src.Name))
@@ -25,6 +28,7 @@ namespace Honeywell.GateWay.Incident.Application
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Owner, opt => opt.Ignore());
             CreateMap<WorkflowStepDto, IncidentStepGto>();
+
         }
     }
 }
