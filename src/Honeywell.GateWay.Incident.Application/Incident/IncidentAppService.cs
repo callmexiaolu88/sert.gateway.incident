@@ -8,6 +8,7 @@ using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.Extensions.Logging;
 
@@ -61,14 +62,9 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             };
         }
 
-        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns(string workflowName)
+        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
         {
-            var workflowDesignSummaryRequestDto = new WorkflowDesignSummaryRequestDto()
-            {
-                workflowName =workflowName
-            };
-
-            var result = await _workflowDesignApi.GetSummaries(workflowDesignSummaryRequestDto);
+            var result = await _workflowDesignApi.GetSummaries();
             if (result.IsSuccess)
             {
                 return HoneyMapper.Map<WorkflowDesignSummaryDto[],
@@ -77,6 +73,23 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
             Logger.LogError($"call workflow design api GetSummaries error:{result.Message}");
             return new WorkflowDesignSummaryGto[] { };
+        }
+
+        public async Task<WorkflowDesignSelectorGto[]> GetSelectorWorkflowDesignsByName(string workflowName)
+        {
+            var workflowDesignSelectorRequestDto = new WorkflowDesignSelectorRequestDto()
+            {
+                WorkflowName = workflowName
+            };
+            var result = await _workflowDesignApi.GetSelector(workflowDesignSelectorRequestDto);
+            if (result.IsSuccess)
+            {
+                return HoneyMapper.Map<WorkflowDesignSelectorDto[],
+                    WorkflowDesignSelectorGto[]>(result.Selectors.ToArray());
+            }
+
+            Logger.LogError($"call workflow design api GetSelectors error:{result.Message}");
+            return new WorkflowDesignSelectorGto[] { };
         }
 
         public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)

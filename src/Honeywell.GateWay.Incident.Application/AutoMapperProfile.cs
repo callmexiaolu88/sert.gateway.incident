@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 
 namespace Honeywell.GateWay.Incident.Application
@@ -14,6 +15,8 @@ namespace Honeywell.GateWay.Incident.Application
             CreateMap<WorkflowDesignDto, WorkflowDesignGto>();
 
             CreateMap<WorkflowDesignSummaryDto, WorkflowDesignSummaryGto>();
+
+            CreateMap<WorkflowDesignSelectorDto, WorkflowDesignSelectorGto>();
         }
     }
 }

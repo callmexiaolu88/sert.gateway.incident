@@ -15,6 +15,7 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Moq;
 using Xunit;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.DownloadTemplate;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 
 namespace Honeywell.GateWay.Incident.Application.UnitTests
 {
@@ -44,6 +45,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.Equal(ExecuteStatus.Successful, result.Status);
         }
 
+
+
         [Fact]
         public async Task WorkflowDesign_DeleteWorkflowDesigns_Failed()
         {
@@ -67,13 +70,10 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             // arrange
             var summaryResponseDto = MockWorkflowDesignSummaryResponseDto();
-            var workflowDesignSummaryRequestDto = MockWorkflowDesignSummaryRequestDto();
-            _workflowDesignApiMock.Setup(x => x.GetSummaries(It.IsAny < WorkflowDesignSummaryRequestDto>())).Returns(Task.FromResult(summaryResponseDto));
+            _workflowDesignApiMock.Setup(x => x.GetSummaries()).Returns(Task.FromResult(summaryResponseDto));
 
             // action
-
-            var result = await _incidentGatewayApi.GetAllActiveWorkflowDesigns(workflowDesignSummaryRequestDto.workflowName);
-
+            var result = await _incidentGatewayApi.GetAllActiveWorkflowDesigns();
 
             // assert
             Assert.True(1 == result.Length);
@@ -88,16 +88,40 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
+        public async Task WorkflowDesign_GetSelectorWorkflowDesigns_Success()
+        {
+            // arrange
+            var selectorResponseDto = MockWorkflowDesignSelectorResponseDto();
+            var workflowDesignSelectorRequestDto = new WorkflowDesignSelectorRequestDto()
+            {
+                WorkflowName = ""
+            };
+            _workflowDesignApiMock.Setup(x => x.GetSelector(It.IsAny<WorkflowDesignSelectorRequestDto>())).Returns(Task.FromResult(selectorResponseDto));
+
+            // action
+            var result = await _incidentGatewayApi.GetSelectorWorkflowDesignsByName(workflowDesignSelectorRequestDto.WorkflowName);
+
+            // assert
+            Assert.True(1 == result.Length);
+
+            foreach (var item in result)
+            {
+                var expectedItem = selectorResponseDto.Selectors.FirstOrDefault(x => x.Id == item.Id);
+                Assert.NotNull(expectedItem);
+                Assert.Equal(expectedItem.Name, item.Name);
+            }
+        }
+
+        [Fact]
         public async Task WorkflowDesign_GetAllActiveWorkflowDesigns_Failed()
         {
             // arrange
-            var workflowDesignSummaryRequestDto = MockWorkflowDesignSummaryRequestDto();
             var summaryResponseDto = new WorkflowDesignSummaryResponseDto { IsSuccess = false, Message = "error 1" };
-            _workflowDesignApiMock.Setup(x => x.GetSummaries(It.IsAny<WorkflowDesignSummaryRequestDto>())).Returns(Task.FromResult(summaryResponseDto));
+            _workflowDesignApiMock.Setup(x => x.GetSummaries()).Returns(Task.FromResult(summaryResponseDto));
 
             // action
+            var result = await _incidentGatewayApi.GetAllActiveWorkflowDesigns();
 
-            var result = await _incidentGatewayApi.GetAllActiveWorkflowDesigns(workflowDesignSummaryRequestDto.workflowName);
             // assert
             Assert.True(0 == result.Length);
         }
@@ -175,16 +199,6 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
         #region private methods
 
-        private WorkflowDesignSummaryRequestDto MockWorkflowDesignSummaryRequestDto()
-        {
-            var workflowDesignSummaryRequestDto = new WorkflowDesignSummaryRequestDto
-            {
-                workflowName = string.Empty
-            };
-
-            return workflowDesignSummaryRequestDto;
-        }
-
         private WorkflowDesignSummaryResponseDto MockWorkflowDesignSummaryResponseDto()
         {
             var summaryResponseDto = new WorkflowDesignSummaryResponseDto
@@ -201,6 +215,24 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 }
             };
             return summaryResponseDto;
+        }
+
+        private WorkflowDesignSelectorResponseDto MockWorkflowDesignSelectorResponseDto()
+        {
+            var selectorResponseDto = new WorkflowDesignSelectorResponseDto
+            {
+                IsSuccess = true,
+                Selectors = new List<WorkflowDesignSelectorDto>
+                {
+                    new WorkflowDesignSelectorDto
+                    {
+                        Id=Guid.NewGuid(),
+                        Name = "workflow design 1",
+                        ReferenceId = Guid.NewGuid()
+                    }
+                }
+            };
+            return selectorResponseDto;
         }
 
 
