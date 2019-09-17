@@ -11,6 +11,7 @@ using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.Extensions.Logging;
 
@@ -81,6 +82,26 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
             Logger.LogError($"call workflow design api GetSummaries error:{result.Message}");
             return new WorkflowDesignSummaryGto[] { };
+        }
+
+        public async Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName)
+        {
+            var workflowDesignSelectorRequestDto = new WorkflowDesignSelectorRequestDto();
+
+            if (string.IsNullOrEmpty(workflowName))
+            {
+                workflowName = "";
+            }
+            workflowDesignSelectorRequestDto.WorkflowName = workflowName;
+           var result = await _workflowDesignApi.GetSelector(workflowDesignSelectorRequestDto);
+            if (result.IsSuccess)
+            {
+                return HoneyMapper.Map<WorkflowDesignSelectorDto[],
+                    WorkflowDesignSelectorGto[]>(result.Selectors.ToArray());
+            }
+
+            Logger.LogError($"call workflow design api GetSelectors error:{result.Message}");
+            return new WorkflowDesignSelectorGto[] { };
         }
 
         public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)

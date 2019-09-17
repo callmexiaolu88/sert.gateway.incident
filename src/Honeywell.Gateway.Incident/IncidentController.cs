@@ -48,6 +48,13 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
+        public async Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName)
+        {
+            var workflowDesignSelectorList = await _incidentAppService.GetWorkflowDesignSelectorsByName(workflowName);
+            return workflowDesignSelectorList;
+        }
+
+        [HttpPost]
         public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
         {
             var workflowDetail = await _incidentAppService.GetWorkflowDesignById(workflowDesignId);

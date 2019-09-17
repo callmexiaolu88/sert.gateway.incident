@@ -16,6 +16,7 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Moq;
 using Xunit;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.DownloadTemplate;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 
 namespace Honeywell.GateWay.Incident.Application.UnitTests
 {
@@ -48,6 +49,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             // assert
             Assert.Equal(ExecuteStatus.Successful, result.Status);
         }
+
+
 
         [Fact]
         public async Task WorkflowDesign_DeleteWorkflowDesigns_Failed()
@@ -86,6 +89,31 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 Assert.NotNull(expectedItem);
                 Assert.Equal(expectedItem.Name, item.Name);
                 Assert.Equal(expectedItem.Description, item.Description);
+            }
+        }
+
+        [Fact]
+        public async Task WorkflowDesign_GetWorkflowDesignSelectorsByName_Success()
+        {
+            // arrange
+            var selectorResponseDto = MockWorkflowDesignSelectorResponseDto();
+            var workflowDesignSelectorRequestDto = new WorkflowDesignSelectorRequestDto()
+            {
+                WorkflowName = ""
+            };
+            _workflowDesignApiMock.Setup(x => x.GetSelector(It.IsAny<WorkflowDesignSelectorRequestDto>())).Returns(Task.FromResult(selectorResponseDto));
+
+            // action
+            var result = await _incidentGatewayApi.GetWorkflowDesignSelectorsByName(workflowDesignSelectorRequestDto.WorkflowName);
+
+            // assert
+            Assert.True(1 == result.Length);
+
+            foreach (var item in result)
+            {
+                var expectedItem = selectorResponseDto.Selectors.FirstOrDefault(x => x.Id == item.Id);
+                Assert.NotNull(expectedItem);
+                Assert.Equal(expectedItem.Name, item.Name);
             }
         }
 
@@ -192,6 +220,24 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 }
             };
             return summaryResponseDto;
+        }
+
+        private WorkflowDesignSelectorResponseDto MockWorkflowDesignSelectorResponseDto()
+        {
+            var selectorResponseDto = new WorkflowDesignSelectorResponseDto
+            {
+                IsSuccess = true,
+                Selectors = new List<WorkflowDesignSelectorDto>
+                {
+                    new WorkflowDesignSelectorDto
+                    {
+                        Id=Guid.NewGuid(),
+                        Name = "workflow design 1",
+                        ReferenceId = Guid.NewGuid()
+                    }
+                }
+            };
+            return selectorResponseDto;
         }
 
 
