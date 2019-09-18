@@ -82,9 +82,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<string> CreateIncident(string workflowDesignId, string priority, string description)
+        public async Task<string> CreateIncident(CreateIncidentRequestGto request)
         {
-            var incidentId = await _incidentAppService.CreateIncident(workflowDesignId, priority, description);
+            var incidentId = await _incidentAppService.CreateIncident(request);
             return incidentId;
         }
     }

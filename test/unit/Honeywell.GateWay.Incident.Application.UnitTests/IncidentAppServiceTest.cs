@@ -141,9 +141,16 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void CreateIncident_Success()
         {
             //arrange
-            var workflowDesignId = Guid.NewGuid().ToString();
+            var workflowDesignReferenceId = Guid.NewGuid().ToString();
             var priority = "HIGH";
             var description = "description";
+
+            var request = new CreateIncidentRequestGto
+            {
+                WorkflowDesignReferenceId = workflowDesignReferenceId,
+                Priority = priority,
+                Description = description
+            };
 
             var createIncidentResponse = new CreateIncidentResponseDto
             {
@@ -155,7 +162,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(Task.FromResult(createIncidentResponse));
 
             //act
-            var incidentId = _testObj.CreateIncident(workflowDesignId, priority, description);
+            var incidentId = _testObj.CreateIncident(request);
 
             //assert
             Assert.Equal(createIncidentResponse.IncidentId.ToString(), incidentId.Result);
