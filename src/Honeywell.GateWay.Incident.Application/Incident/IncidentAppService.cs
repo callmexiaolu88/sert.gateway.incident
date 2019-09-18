@@ -152,36 +152,42 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await Task.FromResult(incidentGto);
         }
 
-        public async Task<string> CreateIncident(string workflowDesignId, string priority, string description)
+        public async Task<string> CreateIncident(CreateIncidentRequestGto request)
         {
             Logger.LogInformation("call Incident api CreateIncident Start");
-
-            var request = new CreateIncidentRequestDto
+            if (!Guid.TryParse(request.WorkflowDesignReferenceId, out var workflowDesignReferenceId))
             {
-                WorkflowDesignId = Guid.Parse(workflowDesignId),
-                Priority = ConvertPriority(priority),
-                Description = description
+                Logger.LogError($"wrong WorkflowDesignReferenceId value: {request.WorkflowDesignReferenceId}");
+                return string.Empty;
+            }
+
+            if (!Enum.TryParse<IncidentPriority>(request.Priority, true, out var priority))
+            {
+                Logger.LogError($"wrong priority value: {request.Priority}");
+                return string.Empty;
+            }
+
+            var facadeRequest = new CreateIncidentRequestDto
+            {
+                WorkflowDesignReferenceId = workflowDesignReferenceId,
+                Priority = priority,
+                Description = request.Description
             };
 
-            var response = await _incidentFacadeApi.CreateIncident(request);
+            var response = await _incidentFacadeApi.CreateIncident(facadeRequest);
 
             if (response.IsSuccess)
             {
                 return response.IncidentId.ToString();
             }
 
+            Logger.LogError("Failed to create incident!");
             return string.Empty;
         }
 
         private IncidentPriority ConvertPriority(string priority)
         {
-            switch (priority)
-            {
-                case "HIGH": return IncidentPriority.High;
-                case "URGENT": return IncidentPriority.Urgent;
-                case "LOW":
-                default: return IncidentPriority.Low;
-            }
+            return (IncidentPriority) Enum.Parse(typeof(IncidentPriority), priority);
         }
     }
 }

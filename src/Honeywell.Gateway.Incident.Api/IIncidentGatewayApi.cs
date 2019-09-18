@@ -23,6 +23,6 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<IncidentGto> GetIncidentById(string incidentId);
 
-        Task<string> CreateIncident(string workflowDesignId, string priority, string description);
+        Task<string> CreateIncident(CreateIncidentRequestGto request);
     }
 }
