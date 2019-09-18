@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Honeywell.Facade.Services.Incident.Api" Version="0.0.1.*" />
     <PackageReference Include="Honeywell.Infra.Client.WebApi" Version="0.0.1.*" />
     <PackageReference Include="Honeywell.Infra.Core" Version="0.0.1.*" />
     <PackageReference Include="Honeywell.Infra.HoneyMapper.AutoMapper" Version="0.0.1.*" />

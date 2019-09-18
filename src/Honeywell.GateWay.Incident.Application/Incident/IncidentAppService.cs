@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Honeywell.Facade.Services.Incident.Api;
+using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Incident.Api;
@@ -24,14 +26,16 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         private readonly IWorkflowDesignApi _workflowDesignApi;
         private readonly IIncidentMicroApi _incidentMicroApi;
         private readonly IWorkflowInstanceApi _workflowInstanceApi;
+        private readonly IIncidentFacadeApi _incidentFacadeApi;
 
         public IncidentAppService(IWorkflowDesignApi workflowDesignApi,
             IIncidentMicroApi incidentMicroApi,
-            IWorkflowInstanceApi workflowInstanceApi)
+            IWorkflowInstanceApi workflowInstanceApi, IIncidentFacadeApi incidentFacadeApi)
         {
             _workflowDesignApi = workflowDesignApi;
             _incidentMicroApi = incidentMicroApi;
             _workflowInstanceApi = workflowInstanceApi;
+            _incidentFacadeApi = incidentFacadeApi;
         }
 
         public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
@@ -146,6 +150,38 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             HoneyMapper.Map(workflowResponse.Details[0].WorkflowSteps, incidentGto.IncidentSteps);
             result.Status = ExecuteStatus.Successful;
             return await Task.FromResult(incidentGto);
+        }
+
+        public async Task<string> CreateIncident(string workflowDesignId, string priority, string description)
+        {
+            Logger.LogInformation("call Incident api CreateIncident Start");
+
+            var request = new CreateIncidentRequestDto
+            {
+                WorkflowDesignId = Guid.Parse(workflowDesignId),
+                Priority = ConvertPriority(priority),
+                Description = description
+            };
+
+            var response = await _incidentFacadeApi.CreateIncident(request);
+
+            if (response.IsSuccess)
+            {
+                return response.IncidentId.ToString();
+            }
+
+            return string.Empty;
+        }
+
+        private IncidentPriority ConvertPriority(string priority)
+        {
+            switch (priority)
+            {
+                case "HIGH": return IncidentPriority.High;
+                case "URGENT": return IncidentPriority.Urgent;
+                case "LOW":
+                default: return IncidentPriority.Low;
+            }
         }
     }
 }

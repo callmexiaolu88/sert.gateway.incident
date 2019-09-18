@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Honeywell.Facade.Services.Incident.Api;
+using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Micro.Services.Incident.Api;
@@ -11,6 +13,7 @@ using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using Moq;
 using Xunit;
+using IncidentPriority = Honeywell.Micro.Services.Incident.Domain.Shared.IncidentPriority;
 
 namespace Honeywell.GateWay.Incident.Application.UnitTests
 {
@@ -18,6 +21,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
     {
         private readonly Mock<IIncidentMicroApi> _mockIncidentMicroApi;
         private readonly Mock<IWorkflowInstanceApi> _mockWorkflowInstanceApi;
+        private readonly Mock<IIncidentFacadeApi> _mockIncidentFacadeApi;
 
         private readonly IIncidentAppService _testObj;
 
@@ -26,7 +30,12 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockWorkflowDesignApi = new Mock<IWorkflowDesignApi>();
             _mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
             _mockWorkflowInstanceApi = new Mock<IWorkflowInstanceApi>();
-            _testObj = new IncidentAppService(mockWorkflowDesignApi.Object, _mockIncidentMicroApi.Object, _mockWorkflowInstanceApi.Object);
+            _mockIncidentFacadeApi = new Mock<IIncidentFacadeApi>();
+            _testObj = new IncidentAppService(
+                mockWorkflowDesignApi.Object, 
+                _mockIncidentMicroApi.Object,
+                _mockWorkflowInstanceApi.Object, 
+                _mockIncidentFacadeApi.Object);
         }
 
         [Fact]
@@ -128,6 +137,29 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.True(response.Result.Status == ExecuteStatus.Error);
         }
 
+        [Fact]
+        public void CreateIncident_Success()
+        {
+            //arrange
+            var workflowDesignId = Guid.NewGuid().ToString();
+            var priority = "HIGH";
+            var description = "description";
+
+            var createIncidentResponse = new CreateIncidentResponseDto
+            {
+                IsSuccess = true,
+                IncidentId = Guid.NewGuid()
+            };
+
+            _mockIncidentFacadeApi.Setup(api => api.CreateIncident(It.IsAny<CreateIncidentRequestDto>()))
+                .Returns(Task.FromResult(createIncidentResponse));
+
+            //act
+            var incidentId = _testObj.CreateIncident(workflowDesignId, priority, description);
+
+            //assert
+            Assert.Equal(createIncidentResponse.IncidentId.ToString(), incidentId.Result);
+        }
 
         private List<WorkflowDto> MocksWorkflowDtos(List<WorkflowStepDto> workflowSteps)
         {

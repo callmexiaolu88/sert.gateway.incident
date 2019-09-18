@@ -261,3 +261,5 @@ ModelManifest.xml
 /src/Installer/ISOMService/Script Files/*.obs
 /src/Installer/ISOMService/String*.txt
 /Output.plugins/*
+/test/unit/Honeywell.GateWay.Incident.Application.UnitTests/report
+/test/unit/Honeywell.GateWay.Incident.Application.UnitTests/coverage.opencover.xml
