@@ -87,7 +87,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void GetIncident_Incident_NotFound()
         {
             var incidentId = Guid.NewGuid().ToString();
-            var incidentResponse = Task.FromResult(MockIncidentResponse(true, new List<IncidentDto>()));
+            var incidentResponse = Task.FromResult(MockIncidentResponse(false, new List<IncidentDto>()));
             _mockIncidentMicroApi.Setup(x => x.GetDetails(It.IsAny<GetIncidentDetailsRequestDto>())).Returns(incidentResponse);
             var response = _testObj.GetIncidentById(incidentId);
             Assert.NotNull(response);
@@ -128,7 +128,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var incidentId = Guid.NewGuid();
             var incidentResponse = MockIncidentResponse(true, MockIncidentDtos(incidentId));
             _mockIncidentMicroApi.Setup(x => x.GetDetails(It.IsAny<GetIncidentDetailsRequestDto>())).Returns(Task.FromResult(incidentResponse));
-            var workflowResponse = MockWorkflowResponse(true, new List<WorkflowDto>());
+            var workflowResponse = MockWorkflowResponse(false, new List<WorkflowDto>());
             _mockWorkflowInstanceApi.Setup(x => x.GetWorkflowDetails(It.IsAny<WorkflowDetailsRequestDto>()))
                 .Returns(Task.FromResult(workflowResponse));
             var response = _testObj.GetIncidentById(incidentId.ToString());
@@ -230,7 +230,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var response = new WorkflowDetailsResponseDto()
             {
                 Details = details,
-                IsSuccess = isSuccess
+                IsSuccess = isSuccess,
+                Message = "Any Valid Message"
             };
             return response;
         }
@@ -241,7 +242,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var response = new GetIncidentDetailsResponseDto()
             {
                 Details = details,
-                IsSuccess = isSuccess
+                IsSuccess = isSuccess,
+                Message = "Any Valid Message"
             };
             return response;
         }
