@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Honeywell.Facade.Services.Incident.Api;
+using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Incident.Api;
@@ -24,14 +26,16 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         private readonly IWorkflowDesignApi _workflowDesignApi;
         private readonly IIncidentMicroApi _incidentMicroApi;
         private readonly IWorkflowInstanceApi _workflowInstanceApi;
+        private readonly IIncidentFacadeApi _incidentFacadeApi;
 
         public IncidentAppService(IWorkflowDesignApi workflowDesignApi,
             IIncidentMicroApi incidentMicroApi,
-            IWorkflowInstanceApi workflowInstanceApi)
+            IWorkflowInstanceApi workflowInstanceApi, IIncidentFacadeApi incidentFacadeApi)
         {
             _workflowDesignApi = workflowDesignApi;
             _incidentMicroApi = incidentMicroApi;
             _workflowInstanceApi = workflowInstanceApi;
+            _incidentFacadeApi = incidentFacadeApi;
         }
 
         public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
@@ -150,6 +154,44 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             HoneyMapper.Map(workflowResponse.Details[0].WorkflowSteps, incidentGto.IncidentSteps);
             result.Status = ExecuteStatus.Successful;
             return await Task.FromResult(incidentGto);
+        }
+
+        public async Task<string> CreateIncident(CreateIncidentRequestGto request)
+        {
+            Logger.LogInformation("call Incident api CreateIncident Start");
+            if (!Guid.TryParse(request.WorkflowDesignReferenceId, out var workflowDesignReferenceId))
+            {
+                Logger.LogError($"wrong WorkflowDesignReferenceId value: {request.WorkflowDesignReferenceId}");
+                return string.Empty;
+            }
+
+            if (!Enum.TryParse<IncidentPriority>(request.Priority, true, out var priority))
+            {
+                Logger.LogError($"wrong priority value: {request.Priority}");
+                return string.Empty;
+            }
+
+            var facadeRequest = new CreateIncidentRequestDto
+            {
+                WorkflowDesignReferenceId = workflowDesignReferenceId,
+                Priority = priority,
+                Description = request.Description
+            };
+
+            var response = await _incidentFacadeApi.CreateIncident(facadeRequest);
+
+            if (response.IsSuccess)
+            {
+                return response.IncidentId.ToString();
+            }
+
+            Logger.LogError("Failed to create incident!");
+            return string.Empty;
+        }
+
+        private IncidentPriority ConvertPriority(string priority)
+        {
+            return (IncidentPriority) Enum.Parse(typeof(IncidentPriority), priority);
         }
     }
 }

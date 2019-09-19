@@ -1,4 +1,5 @@
-﻿using Honeywell.GateWay.Incident.Application.Incident;
+﻿using Honeywell.Facade.Services.Incident.Api;
+using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Core.Modular;
 using Honeywell.Infra.HoneyMapper.AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,13 +22,10 @@ namespace Honeywell.GateWay.Incident.Application
             });
 
             IocContainer.AddScoped<IIncidentAppService, IncidentAppService>();
-            IocContainer.AddRemoteService(
-                typeof(IWorkflowDesignApi).Assembly);
-            IocContainer.AddRemoteService(
-                typeof(IIncidentMicroApi).Assembly);
-            IocContainer.AddRemoteService(
-                typeof(IWorkflowInstanceApi).Assembly);
-
+            IocContainer.AddRemoteService(typeof(IWorkflowDesignApi).Assembly);
+            IocContainer.AddRemoteService(typeof(IWorkflowInstanceApi).Assembly);
+            IocContainer.AddRemoteService(typeof(IIncidentMicroApi).Assembly);
+            IocContainer.AddRemoteService(typeof(IIncidentFacadeApi).Assembly);
 
             // for stub
             //IocContainer.AddScoped<IWorkflowDesignApi, StubWorkflowDesignAppService>();
