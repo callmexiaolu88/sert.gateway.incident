@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Honeywell.Infra.Client.WebApi;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Workflow.Api;
-using Microsoft.Extensions.Configuration;
 
 namespace Honeywell.GateWay.Incident.Application
 {
@@ -27,10 +26,6 @@ namespace Honeywell.GateWay.Incident.Application
                 typeof(IIncidentMicroApi).Assembly);
             IocContainer.AddRemoteService(
                 typeof(IWorkflowInstanceApi).Assembly);
-
-
-            // for stub
-            //IocContainer.AddScoped<IWorkflowDesignApi, StubWorkflowDesignAppService>();
 
             IocContainer.AddHttpContextAccessor();
         }

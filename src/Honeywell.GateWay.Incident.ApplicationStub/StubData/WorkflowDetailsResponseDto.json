@@ -1,0 +1,52 @@
+{
+  "Details": [
+    {
+      "Id": "8ad6bc44-baea-42e1-bec9-bde418826702",
+      "Owner": "Admin1",
+      "Status": 0,
+      "Number": 1,
+      "WorkflowSteps": [
+        {
+          "Id": "ffd49773-23a0-4928-895d-24decc4f26ba",
+          "IsComplete": false,
+          "IsOptional": true,
+          "Instruction": "Curzon Hall Lobby Court West external Gates can be unlocked remotely.",
+          "HelpText": "3 gates labelled as: Door 2, 3, 4."
+        },
+        {
+          "Id": "ffd49773-23a0-4928-895d-24decc4f26bb",
+          "IsComplete": true,
+          "IsOptional": false,
+          "Instruction": "Curzon Hall Lobby staircase pressurisation can be triggered from fire alarm.",
+          "HelpText": "Must inform control room if triggering fire alarm."
+        },
+        {
+          "Id": "ffd49773-23a0-4928-895d-24decc4f26bc",
+          "IsComplete": false,
+          "IsOptional": true,
+          "Instruction": "Confirm with event manager on final event requirements and special needs.  Provide link to event preparation contract.",
+          "HelpText": "View event booking calendar. On the calendar, link to event contract."
+        },
+        {
+          "Id": "ffd49773-23a0-4928-895d-24decc4f26bd",
+          "IsComplete": false,
+          "IsOptional": false,
+          "Instruction": "If required by the event, engage Energy team for pre-event check.",
+          "HelpText": "Any cabling on special electricity supply? Backup generators ready?"
+        },
+        {
+          "Id": "ffd49773-23a0-4928-895d-24decc4f26be",
+          "IsComplete": true,
+          "IsOptional": true,
+          "Instruction": "Threat assessment has been performed.",
+          "HelpText": "Link to security plan for the event."
+        }
+      ],
+      "Version": 1,
+      "Name": "Event Prep Master",
+      "Description": "This procedure shall be completed 48hours before any events.  This procedure is for Convention Centre buildings."
+    }
+  ],
+  "IsSuccess": true,
+  "Message": "Any Valid Message"
+}

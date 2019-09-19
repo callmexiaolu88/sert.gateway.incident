@@ -6,8 +6,21 @@
 
   <ItemGroup>
     <PackageReference Include="Honeywell.Infra.Core" Version="0.0.1.*" />
-    <PackageReference Include="Honeywell.Micro.Services.Incident.Api" Version="0.0.1.33" />
+    <PackageReference Include="Honeywell.Micro.Services.Incident.Api" Version="0.0.1.*" />
     <PackageReference Include="Honeywell.Micro.Services.Workflow.Api" Version="0.0.1.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Honeywell.GateWay.Incident.Application\Honeywell.GateWay.Incident.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="StubData\GetIncidentDetailsResponseDto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StubData\WorkflowDetailsResponseDto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
