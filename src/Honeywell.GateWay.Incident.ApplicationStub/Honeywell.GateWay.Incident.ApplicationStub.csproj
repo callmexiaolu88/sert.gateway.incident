@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.1.*" />
-    <PackageReference Include="Honeywell.Micro.Services.Workflow.Api" Version="0.0.1.*" />
+    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.2.*" />
+    <PackageReference Include="Honeywell.Micro.Services.Workflow.Api" Version="0.0.2.*" />
   </ItemGroup>
 
 </Project>
