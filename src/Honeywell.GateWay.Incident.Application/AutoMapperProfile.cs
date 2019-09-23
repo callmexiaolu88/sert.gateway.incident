@@ -27,7 +27,9 @@ namespace Honeywell.GateWay.Incident.Application
                 .ForMember(dest => dest.WorkflowOwner, opt => opt.MapFrom(src => src.Owner))
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Description, opt => opt.Ignore())
+                .ForMember(dest => dest.CreateAtUtc, opt => opt.Ignore())
                 .ForMember(dest => dest.Owner, opt => opt.Ignore());
+
             CreateMap<WorkflowStepDto, IncidentStepGto>();
 
         }
