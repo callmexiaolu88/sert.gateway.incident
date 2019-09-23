@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
+using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
@@ -31,9 +32,12 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _workflowDesignApiMock = new Mock<IWorkflowDesignApi>();
             var mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
             var mockWorkflowInstanceApi = new Mock<IWorkflowInstanceApi>();
-            _incidentGatewayApi = new IncidentAppService(_workflowDesignApiMock.Object, 
+            var mockIncidentFacadeApi = new Mock<IIncidentFacadeApi>();
+            _incidentGatewayApi = new IncidentAppService(
+                _workflowDesignApiMock.Object, 
                 mockIncidentMicroApi.Object, 
-                mockWorkflowInstanceApi.Object);
+                mockWorkflowInstanceApi.Object,
+                mockIncidentFacadeApi.Object);
         }
 
         [Fact]
