@@ -18,6 +18,7 @@ using Moq;
 using Xunit;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
 
 namespace Honeywell.GateWay.Incident.Application.UnitTests
 {
@@ -205,6 +206,19 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var result = await _incidentGatewayApi.DownloadWorkflowTemplate();
             // assert
             Assert.True(result.Status == ExecuteStatus.Successful);
+        }
+
+        [Fact]
+        public async Task ExportWorkflowDesigns_Success()
+        {
+            var guidIds = new Guid[] { Guid.NewGuid(), Guid.NewGuid() };
+            string[] strIds = guidIds.Select(x => x.ToString()).ToArray();
+            ExportWorkflowsResponseDto workflowsDto = new ExportWorkflowsResponseDto() { IsSuccess = true, WorkflowsBytes = new byte[100] };
+            _workflowDesignApiMock.Setup(x => x.ExportWorkflows(guidIds)).Returns(Task.FromResult(workflowsDto));
+            var result = await _incidentGatewayApi.ExportWorkflowDesigns(strIds);
+            // assert
+            Assert.True(result.Status == ExecuteStatus.Successful);
+            Assert.True(result.FileBytes.Length > 0);
         }
         #region private methods
 
