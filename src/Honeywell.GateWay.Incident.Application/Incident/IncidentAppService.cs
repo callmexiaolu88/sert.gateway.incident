@@ -135,9 +135,9 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             Logger.LogInformation("call workflow design api ExportWorkflows Start");
             Guid[] guidWorkflowIds = workflowIds.Select(o => Guid.Parse(o)).ToArray();
             var result = await _workflowDesignApi.ExportWorkflows(guidWorkflowIds);
-
             WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(
                 result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error, result.WorkflowsBytes);
+            Logger.LogInformation($"call workflow design api ExportWorkflowDesigns End|bytes.Length:{result.WorkflowsBytes.Length.ToString()}");
             return workflowDownloadTemplateGto;
         }
 
