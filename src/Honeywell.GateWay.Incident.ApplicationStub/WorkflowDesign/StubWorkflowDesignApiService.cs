@@ -8,6 +8,7 @@ using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.DownloadTemplate;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Import;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
@@ -143,6 +144,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
             return Task.FromResult(result);
         }
 
+        public Task<ExportWorkflowsResponseDto> ExportWorkflows(ExportWorkflowRequestDto exportWorkflowRequestDto)
+        {
+            var result = new ExportWorkflowsResponseDto() { IsSuccess = true };
+            return Task.FromResult(result);
+        }
     }
 
     public class MockDetailStore

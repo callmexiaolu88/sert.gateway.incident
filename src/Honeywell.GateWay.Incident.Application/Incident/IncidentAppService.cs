@@ -13,6 +13,7 @@ using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.Extensions.Logging;
@@ -134,9 +135,12 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             Logger.LogInformation("call workflow design api ExportWorkflows Start");
             Guid[] guidWorkflowIds = workflowIds.Select(o => Guid.Parse(o)).ToArray();
-            var result = await _workflowDesignApi.ExportWorkflows(guidWorkflowIds);
-            WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(
-                result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error, result.WorkflowsBytes);
+            var exportWorkflowRequestDto = new ExportWorkflowRequestDto() { WorkflowIds = guidWorkflowIds };
+
+            var result = await _workflowDesignApi.ExportWorkflows(exportWorkflowRequestDto);
+            var status = result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error;
+            WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(status, result.WorkflowsBytes);
+
             Logger.LogInformation($"call workflow design api ExportWorkflowDesigns End|bytes.Length:{result.WorkflowsBytes.Length.ToString()}");
             return workflowDownloadTemplateGto;
         }

@@ -214,8 +214,11 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var guidIds = new Guid[] { Guid.NewGuid(), Guid.NewGuid() };
             string[] strIds = guidIds.Select(x => x.ToString()).ToArray();
             ExportWorkflowsResponseDto workflowsDto = new ExportWorkflowsResponseDto() { IsSuccess = true, WorkflowsBytes = new byte[100] };
-            _workflowDesignApiMock.Setup(x => x.ExportWorkflows(guidIds)).Returns(Task.FromResult(workflowsDto));
+
+            var exportWorkflowRequestDto = new ExportWorkflowRequestDto() { WorkflowIds = guidIds };
+            _workflowDesignApiMock.Setup(x => x.ExportWorkflows(exportWorkflowRequestDto)).Returns(Task.FromResult(workflowsDto));
             var result = await _incidentGatewayApi.ExportWorkflowDesigns(strIds);
+
             // assert
             Assert.True(result.Status == ExecuteStatus.Successful);
             Assert.True(result.FileBytes.Length > 0);
