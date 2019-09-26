@@ -19,5 +19,11 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
             FileName = filename;
             FileBytes = bytes;
         }
+
+        public WorkflowTemplateGto(ExecuteStatus result, byte[] bytes)
+        {
+            Status = result;
+            FileBytes = bytes;
+        }
     }
 }
