@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using System.Net.Http.Headers;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Infra.Client.WebApi;
 using Microsoft.Extensions.Configuration;
