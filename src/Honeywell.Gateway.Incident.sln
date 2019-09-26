@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Honeywell.GateWay.Incident.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apitest", "apitest", "{34EAA26A-3F98-4759-8449-3CD52D531E9A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Incident.ApiTests", "..\test\intergration\Incident.IntegrationTest\Incident.ApiTests.csproj", "{9273EC95-7363-46CF-B416-D407B7A7FFC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Incident.ApiTests", "..\test\api\Incident.ApiTests\Incident.ApiTests.csproj", "{9273EC95-7363-46CF-B416-D407B7A7FFC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
