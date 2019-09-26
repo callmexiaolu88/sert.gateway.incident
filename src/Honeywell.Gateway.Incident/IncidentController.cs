@@ -10,7 +10,7 @@ namespace Honeywell.Gateway.Incident
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class IncidentController : ControllerBase, IIncidentGatewayApi
+    public class IncidentController : ControllerBase, IIncidentApi
     {
         private readonly IIncidentAppService _incidentAppService;
 
