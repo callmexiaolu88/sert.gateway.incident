@@ -25,7 +25,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
     {
         private readonly Mock<IWorkflowDesignApi> _workflowDesignApiMock;
 
-        private readonly IIncidentGatewayApi _incidentGatewayApi;
+        private readonly IIncidentApi _incidentGatewayApi;
 
         public WorkflowDesignAppServiceUnitTest()
         {
