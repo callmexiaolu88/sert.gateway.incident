@@ -5,7 +5,7 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 
 namespace Honeywell.Gateway.Incident.Api
 {
-    public interface IIncidentGatewayApi : IRemoteService
+    public interface IIncidentApi : IRemoteService
     {
         Task<ExecuteResult> ImportWorkflowDesigns(Stream stream);
 
