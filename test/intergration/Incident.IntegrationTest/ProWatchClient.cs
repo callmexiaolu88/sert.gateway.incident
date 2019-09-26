@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Incident.SystemTests
+namespace Incident.ApiTests
 {
-
-
     public class ProWatchClient
     {
         private readonly IConfiguration _configuration;

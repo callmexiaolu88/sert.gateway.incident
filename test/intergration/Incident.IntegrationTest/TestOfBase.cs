@@ -4,7 +4,7 @@ using Honeywell.Infra.Client.WebApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Incident.SystemTests
+namespace Incident.ApiTests
 {
     public class TestOfBase
     {
