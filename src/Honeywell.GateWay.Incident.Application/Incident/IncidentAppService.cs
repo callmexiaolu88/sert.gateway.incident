@@ -7,8 +7,10 @@ using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Infra.Core.Ddd.Application;
+using Honeywell.Infra.Core.HoneyMapper;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
@@ -207,6 +209,39 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         private IncidentPriority ConvertPriority(string priority)
         {
             return (IncidentPriority) Enum.Parse(typeof(IncidentPriority), priority);
+        }
+
+        public async Task<ActiveIncidentGto[]> GetActiveIncidentList()
+        {
+            Logger.LogInformation("call Incident api GetActiveIncidentList Start");
+            var result = await _incidentMicroApi.GetActiveList();
+            if (result.IsSuccess)
+            {
+                var workflowIds = result.List.Select(x => x.WorkflowId).ToArray();
+                var workflowSummaries = _workflowInstanceApi.GetWorkflowSummaries(workflowIds);
+
+                var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], ActiveIncidentGto[]>(result.List.ToArray());
+
+                int i = 1;
+                foreach (var activeIncident in activeIncidentsGto)
+                {
+                    activeIncident.SequenceId = i++;
+                    foreach (var workflowSummary in workflowSummaries)
+                    {
+                        if (activeIncident.WorkflowId == workflowSummary.WorkflowId)
+                        {
+                            activeIncident.WorkflowDesignName = workflowSummary.WorkflowDesignName;
+                            activeIncident.CompletedSteps = workflowSummary.CompletedSteps;
+                            activeIncident.TotalSteps = workflowSummary.TotalSteps;
+                        }
+                    }
+                }
+
+                return activeIncidentsGto;
+            }
+
+            Logger.LogError($"call workflow design api GetSelectors error:{result.Message}");
+            return new ActiveIncidentGto[] { };
         }
     }
 }

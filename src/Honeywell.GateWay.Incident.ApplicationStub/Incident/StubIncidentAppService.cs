@@ -3,6 +3,7 @@ using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Close;
 using Honeywell.Micro.Services.Incident.Api.Incident.Create;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
 using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
 
@@ -31,6 +32,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.Incident
         }
 
         public Task<CloseIncidentResponseDto> Close(CloseIncidentRequestDto request)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<GetIncidentListResponseDto> GetActiveList()
         {
             throw new System.NotImplementedException();
         }
