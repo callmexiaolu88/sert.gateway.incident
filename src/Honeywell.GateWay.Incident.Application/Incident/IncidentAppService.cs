@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.GateWay.Incident.Repository;
+using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
@@ -29,18 +29,18 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         private readonly IIncidentMicroApi _incidentMicroApi;
         private readonly IWorkflowInstanceApi _workflowInstanceApi;
         private readonly IIncidentFacadeApi _incidentFacadeApi;
-        private readonly IProwatchRepository _prowatchRepository;
+        private readonly IDeviceRepository _deviceRepository;
 
         public IncidentAppService(IWorkflowDesignApi workflowDesignApi,
             IIncidentMicroApi incidentMicroApi,
             IWorkflowInstanceApi workflowInstanceApi, IIncidentFacadeApi incidentFacadeApi,
-            IProwatchRepository prowatchRepository)
+            IDeviceRepository deviceRepository)
         {
             _workflowDesignApi = workflowDesignApi;
             _incidentMicroApi = incidentMicroApi;
             _workflowInstanceApi = workflowInstanceApi;
             _incidentFacadeApi = incidentFacadeApi;
-            _prowatchRepository = prowatchRepository;
+            _deviceRepository = deviceRepository;
         }
 
         public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
@@ -208,11 +208,11 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return string.Empty;
         }
 
-        public async Task<ProwatchDeviceGto[]> GetProwatchDevices()
+        public async Task<DeviceGto[]> GetDevices()
         {
             Logger.LogInformation("call Incident api GetProwatchDeviceList Start");
-            var result = await _prowatchRepository.GetDevices();
-            var devices = result.Config.Select(x => new ProwatchDeviceGto
+            var result = await _deviceRepository.GetDevices();
+            var devices = result.Config.Select(x => new DeviceGto
             {
                 SiteId = x.Relation[0].Id,
                 SiteName = x.Relation[0].EntityId,

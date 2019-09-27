@@ -5,10 +5,10 @@ using Honeywell.Infra.Core;
 
 namespace Honeywell.GateWay.Incident.Repository.Data
 {
-    public interface IProwatchApi: IRemoteService
+    public interface IDeviceApi: IRemoteService
     {
         [HttpGet]
         [Route("/PWWebAPI/ISOM/DeviceMgmt/Devices/config")]
-        Task<ProwatchDevicesEntity> GetDevices();
+        Task<DevicesEntity> GetDevices();
     }
 }

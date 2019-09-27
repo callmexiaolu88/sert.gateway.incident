@@ -1,6 +1,6 @@
 ﻿namespace Honeywell.Gateway.Incident.Api.Gtos
 {
-    public class ProwatchDeviceGto
+    public class DeviceGto
     {
         public string DeviceId { get; set; }
 

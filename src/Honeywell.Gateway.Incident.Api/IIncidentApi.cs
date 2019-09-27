@@ -27,6 +27,6 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);
 
-        Task<ProwatchDeviceGto[]> GetProwatchDevices();
+        Task<DeviceGto[]> GetDevices();
     }
 }

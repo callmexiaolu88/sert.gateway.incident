@@ -6,6 +6,7 @@ using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
+using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
@@ -23,7 +24,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         private readonly Mock<IIncidentMicroApi> _mockIncidentMicroApi;
         private readonly Mock<IWorkflowInstanceApi> _mockWorkflowInstanceApi;
         private readonly Mock<IIncidentFacadeApi> _mockIncidentFacadeApi;
-        private readonly Mock<IProwatchRepository> _mockProwatchRespository;
+        private readonly Mock<IDeviceRepository> _mockDeviceRespository;
 
         private readonly IIncidentAppService _testObj;
 
@@ -33,13 +34,13 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
             _mockWorkflowInstanceApi = new Mock<IWorkflowInstanceApi>();
             _mockIncidentFacadeApi = new Mock<IIncidentFacadeApi>();
-            _mockProwatchRespository = new Mock<IProwatchRepository>();
+            _mockDeviceRespository = new Mock<IDeviceRepository>();
             _testObj = new IncidentAppService(
                 mockWorkflowDesignApi.Object, 
                 _mockIncidentMicroApi.Object,
                 _mockWorkflowInstanceApi.Object, 
                 _mockIncidentFacadeApi.Object,
-                _mockProwatchRespository.Object);
+                _mockDeviceRespository.Object);
         }
 
         [Fact]

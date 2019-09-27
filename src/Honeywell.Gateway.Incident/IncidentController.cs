@@ -100,9 +100,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ProwatchDeviceGto[]> GetProwatchDevices()
+        public async Task<DeviceGto[]> GetDevices()
         {
-            var devices = await _incidentAppService.GetProwatchDevices();
+            var devices = await _incidentAppService.GetDevices();
             return devices;
         }
     }

@@ -1,11 +1,11 @@
 ﻿namespace Honeywell.GateWay.Incident.Repository.Data
 {
-    public class ProwatchDevicesEntity
+    public class DevicesEntity
     {
-        public ProwatchDeviceEntity[] Config { get; set; }
+        public DeviceEntity[] Config { get; set; }
     }
 
-    public class ProwatchDeviceEntity
+    public class DeviceEntity
     {
         public IdentifiersEntity Identifiers { get; set; }
 
