@@ -74,10 +74,10 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] guidWorkflowIds)
+        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds)
         {
 
-            var result = await _incidentAppService.ExportWorkflowDesigns(guidWorkflowIds);
+            var result = await _incidentAppService.ExportWorkflowDesigns(workflowDesignIds);
             Response.ContentType = "application/octet-stream";
             await Response.Body.WriteAsync(result.FileBytes);
             Response.Body.Flush();
