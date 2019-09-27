@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Honeywell.Micro.Services.Incident.Api;
+using Honeywell.Micro.Services.Incident.Api.Incident.Close;
 using Honeywell.Micro.Services.Incident.Api.Incident.Create;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
@@ -15,19 +16,24 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.Incident
             return StubData<CreateIncidentResponseDto>();
         }
 
+        public Task<RespondIncidentResponseDto> Respond(RespondIncidentRequestDto request)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<TakeoverIncidentResponseDto> Takeover(TakeoverIncidentRequestDto request)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Task<GetIncidentDetailsResponseDto> GetDetails(GetIncidentDetailsRequestDto request)
         {
             return StubData<GetIncidentDetailsResponseDto>();
         }
 
-        public Task<RespondIncidentResponseDto> Respond(RespondIncidentRequestDto request)
+        public Task<CloseIncidentResponseDto> Close(CloseIncidentRequestDto request)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<TakeoverIncidentResponseDto> Takeover(TakeoverIncidentRequestDto request)
-        {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
     }
 }

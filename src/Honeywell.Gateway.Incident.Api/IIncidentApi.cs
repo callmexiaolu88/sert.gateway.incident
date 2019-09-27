@@ -5,7 +5,7 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 
 namespace Honeywell.Gateway.Incident.Api
 {
-    public interface IIncidentGatewayApi : IRemoteService
+    public interface IIncidentApi : IRemoteService
     {
         Task<ExecuteResult> ImportWorkflowDesigns(Stream stream);
 
@@ -20,6 +20,8 @@ namespace Honeywell.Gateway.Incident.Api
         Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
 
         Task<WorkflowTemplateGto> DownloadWorkflowTemplate();
+
+        Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds);
 
         Task<IncidentGto> GetIncidentById(string incidentId);
 

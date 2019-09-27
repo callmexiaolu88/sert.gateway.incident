@@ -2,7 +2,7 @@
 
 namespace Honeywell.GateWay.Incident.Application.Incident
 {
-    public interface IIncidentAppService : IIncidentGatewayApi
+    public interface IIncidentAppService : IIncidentApi
     {
     }
 }

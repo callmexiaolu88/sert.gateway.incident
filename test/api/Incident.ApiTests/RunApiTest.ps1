@@ -1,0 +1,1 @@
+dotnet vstest Incident.ApiTests.dll
