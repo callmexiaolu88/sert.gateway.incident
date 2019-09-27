@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
@@ -28,15 +29,18 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         private readonly IIncidentMicroApi _incidentMicroApi;
         private readonly IWorkflowInstanceApi _workflowInstanceApi;
         private readonly IIncidentFacadeApi _incidentFacadeApi;
+        private readonly IDeviceRepository _deviceRepository;
 
         public IncidentAppService(IWorkflowDesignApi workflowDesignApi,
             IIncidentMicroApi incidentMicroApi,
-            IWorkflowInstanceApi workflowInstanceApi, IIncidentFacadeApi incidentFacadeApi)
+            IWorkflowInstanceApi workflowInstanceApi, IIncidentFacadeApi incidentFacadeApi,
+            IDeviceRepository deviceRepository)
         {
             _workflowDesignApi = workflowDesignApi;
             _incidentMicroApi = incidentMicroApi;
             _workflowInstanceApi = workflowInstanceApi;
             _incidentFacadeApi = incidentFacadeApi;
+            _deviceRepository = deviceRepository;
         }
 
         public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
@@ -202,6 +206,23 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
             Logger.LogError("Failed to create incident!");
             return string.Empty;
+        }
+
+        public async Task<DeviceGto[]> GetDevices()
+        {
+            Logger.LogInformation("call Incident api GetProwatchDeviceList Start");
+            var result = await _deviceRepository.GetDevices();
+            var devices = result.Config.Select(x => new DeviceGto
+            {
+                SiteId = x.Relation[0].Id,
+                SiteName = x.Relation[0].EntityId,
+                DeviceId = x.Identifiers.Id,
+                DeviceDisplayName =  x.Identifiers.Name,
+                DeviceType = x.Type
+            });
+
+            Logger.LogInformation("call Incident api GetProwatchDeviceList end");
+            return devices.ToArray();
         }
 
         private IncidentPriority ConvertPriority(string priority)

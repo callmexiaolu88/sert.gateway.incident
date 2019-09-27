@@ -7,6 +7,8 @@ using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
+using Honeywell.GateWay.Incident.Repository;
+using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Workflow.Api;
@@ -25,6 +27,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
     public class WorkflowDesignAppServiceUnitTest : ApplicationServiceTestBase
     {
         private readonly Mock<IWorkflowDesignApi> _workflowDesignApiMock;
+        private readonly Mock<IDeviceRepository> _mockDeviceRespository;
 
         private readonly IIncidentApi _incidentGatewayApi;
 
@@ -34,11 +37,13 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
             var mockWorkflowInstanceApi = new Mock<IWorkflowInstanceApi>();
             var mockIncidentFacadeApi = new Mock<IIncidentFacadeApi>();
+            _mockDeviceRespository = new Mock<IDeviceRepository>();
             _incidentGatewayApi = new IncidentAppService(
                 _workflowDesignApiMock.Object, 
                 mockIncidentMicroApi.Object, 
                 mockWorkflowInstanceApi.Object,
-                mockIncidentFacadeApi.Object);
+                mockIncidentFacadeApi.Object,
+                _mockDeviceRespository.Object);
         }
 
         [Fact]

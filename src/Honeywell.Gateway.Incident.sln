@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apitest", "apitest", "{34EA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Incident.ApiTests", "..\test\api\Incident.ApiTests\Incident.ApiTests.csproj", "{9273EC95-7363-46CF-B416-D407B7A7FFC8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeywell.GateWay.Incident.Repository", "Honeywell.GateWay.Incident.Repository\Honeywell.GateWay.Incident.Repository.csproj", "{4A0C480B-971C-4B60-8D1D-79BFA7F31A21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{9273EC95-7363-46CF-B416-D407B7A7FFC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9273EC95-7363-46CF-B416-D407B7A7FFC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9273EC95-7363-46CF-B416-D407B7A7FFC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A0C480B-971C-4B60-8D1D-79BFA7F31A21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A0C480B-971C-4B60-8D1D-79BFA7F31A21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A0C480B-971C-4B60-8D1D-79BFA7F31A21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A0C480B-971C-4B60-8D1D-79BFA7F31A21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{61636CE8-FF42-44DD-9A45-20C7905A5209} = {3D8715DC-389E-4C34-A1F4-678C85F1C7CC}
 		{34EAA26A-3F98-4759-8449-3CD52D531E9A} = {064CEB1E-3FDE-4577-8F4F-DA03F1EF1CEA}
 		{9273EC95-7363-46CF-B416-D407B7A7FFC8} = {34EAA26A-3F98-4759-8449-3CD52D531E9A}
+		{4A0C480B-971C-4B60-8D1D-79BFA7F31A21} = {3D8715DC-389E-4C34-A1F4-678C85F1C7CC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D24BAF0E-B64F-4119-B01E-A24DC417ABD2}
