@@ -98,5 +98,12 @@ namespace Honeywell.Gateway.Incident
             var incidentId = await _incidentAppService.CreateIncident(request);
             return incidentId;
         }
+
+        [HttpPost]
+        public async Task<DeviceGto[]> GetDevices()
+        {
+            var devices = await _incidentAppService.GetDevices();
+            return devices;
+        }
     }
 }
