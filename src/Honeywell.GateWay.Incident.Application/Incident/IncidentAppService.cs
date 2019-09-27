@@ -126,23 +126,31 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             Logger.LogInformation("call workflow design api DownloadWorkflowTemplate Start");
             var result = await _workflowDesignApi.DownloadTemplate();
-            WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(
+
+            if(result.IsSuccess)
+            {
+                WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(
                 result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error, result.FileName, result.FileBytes);
-            return workflowDownloadTemplateGto;
+                return workflowDownloadTemplateGto;
+            }
+            Logger.LogError($"call workflow design api DownloadWorkflowTemplate error:|{result.Message}");
+            return new WorkflowTemplateGto() { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
 
         public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
         {
-            Logger.LogInformation("call workflow design api ExportWorkflows Start");
+            Logger.LogInformation(string.Format("call workflow design api ExportWorkflows Start|workflowId.Length:{0},guids:{1}", workflowIds.Length, string.Join(",", workflowIds.ToArray())));
             Guid[] guidWorkflowIds = workflowIds.Select(o => Guid.Parse(o)).ToArray();
             var exportWorkflowRequestDto = new ExportWorkflowRequestDto() { WorkflowIds = guidWorkflowIds };
-
             var result = await _workflowDesignApi.ExportWorkflows(exportWorkflowRequestDto);
-            var status = result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error;
-            WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(status, result.WorkflowsBytes);
-
-            Logger.LogInformation($"call workflow design api ExportWorkflowDesigns End|bytes.Length:{result.WorkflowsBytes.Length.ToString()}");
-            return workflowDownloadTemplateGto;
+            if(result.IsSuccess)
+            {
+                var status = result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error;
+                WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(status, result.WorkflowsBytes);
+                return workflowDownloadTemplateGto;
+            }
+            Logger.LogError($"call workflow design api ExportWorkflowDesigns error:{result.Message}");
+            return new WorkflowTemplateGto() { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
 
         public async Task<IncidentGto> GetIncidentById(string incidentId)
