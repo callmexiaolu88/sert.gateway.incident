@@ -146,7 +146,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.WorkflowDesign
 
         public Task<ExportWorkflowsResponseDto> ExportWorkflows(ExportWorkflowRequestDto exportWorkflowRequestDto)
         {
-            var result = new ExportWorkflowsResponseDto() { IsSuccess = true,WorkflowsBytes=new byte[10] };
+            var result = new ExportWorkflowsResponseDto() { IsSuccess = true };
             return Task.FromResult(result);
         }
     }

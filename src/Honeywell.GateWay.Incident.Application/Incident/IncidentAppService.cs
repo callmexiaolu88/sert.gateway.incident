@@ -131,12 +131,13 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             Logger.LogInformation("call workflow design api DownloadWorkflowTemplate Start");
             var result = await _workflowDesignApi.DownloadTemplate();
 
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
-                WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(
-                result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error, result.FileName, result.FileBytes);
+                var status = result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error;
+                WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(status, result.FileName, result.FileBytes);
                 return workflowDownloadTemplateGto;
             }
+
             Logger.LogError($"call workflow design api DownloadWorkflowTemplate error:|{result.Message}");
             return new WorkflowTemplateGto() { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
@@ -147,12 +148,14 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             Guid[] guidWorkflowIds = workflowIds.Select(o => Guid.Parse(o)).ToArray();
             var exportWorkflowRequestDto = new ExportWorkflowRequestDto() { WorkflowIds = guidWorkflowIds };
             var result = await _workflowDesignApi.ExportWorkflows(exportWorkflowRequestDto);
+
             if(result.IsSuccess)
             {
                 var status = result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error;
                 WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(status, result.WorkflowsBytes);
                 return workflowDownloadTemplateGto;
             }
+
             Logger.LogError($"call workflow design api ExportWorkflowDesigns error:{result.Message}");
             return new WorkflowTemplateGto() { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
