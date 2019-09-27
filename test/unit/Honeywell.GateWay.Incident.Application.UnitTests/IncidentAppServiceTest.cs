@@ -9,6 +9,8 @@ using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
+using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
@@ -171,6 +173,102 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             //assert
             Assert.Equal(createIncidentResponse.IncidentId.ToString(), incidentId.Result);
+        }
+
+        [Fact]
+        public void RespondIncident_Success()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Respond(It.Is<RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new RespondIncidentResponseDto {IsSuccess = true});
+
+            //act
+            var result = _testObj.RespondIncident(incidentId.ToString());
+
+            //assert
+            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
+        }
+
+        [Fact]
+        public void RespondIncident_InvalidIncidentId_ReturnError()
+        {
+            //arrange
+            var incidentId = "wrong incident id";
+           
+            //act
+            var result = _testObj.RespondIncident(incidentId);
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+        }
+
+        [Fact]
+        public void RespondIncident_CallMicroServiceFailed_ReturnError()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Respond(It.Is<RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new RespondIncidentResponseDto { IsSuccess = false });
+
+
+            //act
+            var result = _testObj.RespondIncident(incidentId.ToString());
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+        }
+
+
+        [Fact]
+        public void TakeoverIncident_Success()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Takeover(It.Is<TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new TakeoverIncidentResponseDto {IsSuccess = true});
+
+            //act
+            var result = _testObj.TakeoverIncident(incidentId.ToString());
+
+            //assert
+            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
+        }
+
+        [Fact]
+        public void TakeoverIncident_InvalidIncidentId_ReturnError()
+        {
+            //arrange
+            var incidentId = "wrong incident id";
+
+            //act
+            var result = _testObj.TakeoverIncident(incidentId);
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+        }
+
+        [Fact]
+        public void TakeoverIncident_CallMicroServiceFailed_ReturnError()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Takeover(It.Is<TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new TakeoverIncidentResponseDto { IsSuccess = false });
+
+            //act
+            var result = _testObj.TakeoverIncident(incidentId.ToString());
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
         }
 
         private List<WorkflowDto> MocksWorkflowDtos(List<WorkflowStepDto> workflowSteps)
