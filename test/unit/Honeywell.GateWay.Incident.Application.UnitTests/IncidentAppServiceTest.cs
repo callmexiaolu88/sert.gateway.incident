@@ -5,9 +5,14 @@ using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
+using Honeywell.GateWay.Incident.Repository;
+using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Micro.Services.Incident.Api;
+using Honeywell.Micro.Services.Incident.Api.Incident.Close;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
+using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
+using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
@@ -24,6 +29,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         private readonly Mock<IIncidentMicroApi> _mockIncidentMicroApi;
         private readonly Mock<IWorkflowInstanceApi> _mockWorkflowInstanceApi;
         private readonly Mock<IIncidentFacadeApi> _mockIncidentFacadeApi;
+        private readonly Mock<IDeviceRepository> _mockDeviceRespository;
 
         private readonly IIncidentAppService _testObj;
 
@@ -33,11 +39,13 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
             _mockWorkflowInstanceApi = new Mock<IWorkflowInstanceApi>();
             _mockIncidentFacadeApi = new Mock<IIncidentFacadeApi>();
+            _mockDeviceRespository = new Mock<IDeviceRepository>();
             _testObj = new IncidentAppService(
                 mockWorkflowDesignApi.Object, 
                 _mockIncidentMicroApi.Object,
                 _mockWorkflowInstanceApi.Object, 
-                _mockIncidentFacadeApi.Object);
+                _mockIncidentFacadeApi.Object,
+                _mockDeviceRespository.Object);
         }
 
         [Fact]
@@ -216,6 +224,153 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.Equal(createIncidentResponse.IncidentId.ToString(), incidentId.Result);
         }
 
+
+        [Fact]
+        public void RespondIncident_Success()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Respond(It.Is<RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new RespondIncidentResponseDto {IsSuccess = true});
+
+            //act
+            var result = _testObj.RespondIncident(incidentId.ToString());
+
+            //assert
+            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
+        }
+
+        [Fact]
+        public void RespondIncident_InvalidIncidentId_ReturnError()
+        {
+            //arrange
+            var incidentId = "wrong incident id";
+           
+            //act
+            var result = _testObj.RespondIncident(incidentId);
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+        }
+
+        [Fact]
+        public void RespondIncident_CallMicroServiceFailed_ReturnError()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Respond(It.Is<RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new RespondIncidentResponseDto { IsSuccess = false });
+
+
+            //act
+            var result = _testObj.RespondIncident(incidentId.ToString());
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+        }
+
+
+        [Fact]
+        public void TakeoverIncident_Success()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Takeover(It.Is<TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new TakeoverIncidentResponseDto {IsSuccess = true});
+
+            //act
+            var result = _testObj.TakeoverIncident(incidentId.ToString());
+
+            //assert
+            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
+        }
+
+        [Fact]
+        public void TakeoverIncident_InvalidIncidentId_ReturnError()
+        {
+            //arrange
+            var incidentId = "wrong incident id";
+
+            //act
+            var result = _testObj.TakeoverIncident(incidentId);
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+        }
+
+        [Fact]
+        public void TakeoverIncident_CallMicroServiceFailed_ReturnError()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Takeover(It.Is<TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new TakeoverIncidentResponseDto { IsSuccess = false });
+
+            //act
+            var result = _testObj.TakeoverIncident(incidentId.ToString());
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+        }
+
+
+        [Fact]
+        public void CloseIncident_Success()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            var reason = "close reason";
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Close(It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new CloseIncidentResponseDto { IsSuccess = true });
+
+            //act
+            var result = _testObj.CloseIncident(incidentId.ToString(), reason);
+
+            //assert
+            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
+        }
+
+        [Fact]
+        public void CloseIncident_InvalidIncidentId_ReturnError()
+        {
+            //arrange
+            var incidentId = "wrong incident id";
+            var reason = "close reason";
+
+            //act
+            var result = _testObj.CloseIncident(incidentId, reason);
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+        }
+
+        [Fact]
+        public void CloseIncident_CallMicroServiceFailed_ReturnError()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            var reason = "close reason";
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Close(It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new CloseIncidentResponseDto { IsSuccess = false });
+
+            //act
+            var result = _testObj.CloseIncident(incidentId.ToString(), reason);
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+        }
 
 
         private List<WorkflowDto> MocksWorkflowDtos(List<WorkflowStepDto> workflowSteps)

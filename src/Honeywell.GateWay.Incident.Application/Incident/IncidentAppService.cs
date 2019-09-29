@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Incident.Api;
+using Honeywell.Micro.Services.Incident.Api.Incident.Close;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
+using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
+using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
@@ -29,15 +33,18 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         private readonly IIncidentMicroApi _incidentMicroApi;
         private readonly IWorkflowInstanceApi _workflowInstanceApi;
         private readonly IIncidentFacadeApi _incidentFacadeApi;
+        private readonly IDeviceRepository _deviceRepository;
 
         public IncidentAppService(IWorkflowDesignApi workflowDesignApi,
             IIncidentMicroApi incidentMicroApi,
-            IWorkflowInstanceApi workflowInstanceApi, IIncidentFacadeApi incidentFacadeApi)
+            IWorkflowInstanceApi workflowInstanceApi, IIncidentFacadeApi incidentFacadeApi,
+            IDeviceRepository deviceRepository)
         {
             _workflowDesignApi = workflowDesignApi;
             _incidentMicroApi = incidentMicroApi;
             _workflowInstanceApi = workflowInstanceApi;
             _incidentFacadeApi = incidentFacadeApi;
+            _deviceRepository = deviceRepository;
         }
 
         public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
@@ -127,23 +134,34 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             Logger.LogInformation("call workflow design api DownloadWorkflowTemplate Start");
             var result = await _workflowDesignApi.DownloadTemplate();
-            WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(
-                result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error, result.FileName, result.FileBytes);
-            return workflowDownloadTemplateGto;
+
+            if (result.IsSuccess)
+            {
+                var status = result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error;
+                WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(status, result.FileName, result.FileBytes);
+                return workflowDownloadTemplateGto;
+            }
+
+            Logger.LogError($"call workflow design api DownloadWorkflowTemplate error:|{result.Message}");
+            return new WorkflowTemplateGto() { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
 
         public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
         {
-            Logger.LogInformation("call workflow design api ExportWorkflows Start");
+            Logger.LogInformation(string.Format("call workflow design api ExportWorkflows Start|workflowId.Length:{0},guids:{1}", workflowIds.Length, string.Join(",", workflowIds.ToArray())));
             Guid[] guidWorkflowIds = workflowIds.Select(o => Guid.Parse(o)).ToArray();
             var exportWorkflowRequestDto = new ExportWorkflowRequestDto() { WorkflowIds = guidWorkflowIds };
-
             var result = await _workflowDesignApi.ExportWorkflows(exportWorkflowRequestDto);
-            var status = result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error;
-            WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(status, result.WorkflowsBytes);
 
-            Logger.LogInformation($"call workflow design api ExportWorkflowDesigns End|bytes.Length:{result.WorkflowsBytes.Length.ToString()}");
-            return workflowDownloadTemplateGto;
+            if(result.IsSuccess)
+            {
+                var status = result.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error;
+                WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(status, result.WorkflowsBytes);
+                return workflowDownloadTemplateGto;
+            }
+
+            Logger.LogError($"call workflow design api ExportWorkflowDesigns error:{result.Message}");
+            return new WorkflowTemplateGto() { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
 
         public async Task<IncidentGto> GetIncidentById(string incidentId)
@@ -203,6 +221,84 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
             Logger.LogError("Failed to create incident!");
             return string.Empty;
+        }
+
+        public async Task<DeviceGto[]> GetDevices()
+        {
+            Logger.LogInformation("call Incident api GetProwatchDeviceList Start");
+            var result = await _deviceRepository.GetDevices();
+            var devices = result.Config.Select(x => new DeviceGto
+            {
+                SiteId = x.Relation[0].Id,
+                SiteName = x.Relation[0].EntityId,
+                DeviceId = x.Identifiers.Id,
+                DeviceDisplayName =  x.Identifiers.Name,
+                DeviceType = x.Type
+            });
+
+            Logger.LogInformation("call Incident api GetProwatchDeviceList end");
+            return devices.ToArray();
+        }
+
+        public async Task<ExecuteResult> RespondIncident(string incidentId)
+        {
+            Logger.LogInformation("call Incident api RespondIncident Start");
+            if (!Guid.TryParse(incidentId, out var incidentGuid))
+            {
+                Logger.LogError($"wrong incident id: {incidentId}");
+                return ExecuteResult.Error;
+            }
+
+            var request = new RespondIncidentRequestDto {IncidentId = incidentGuid};
+
+            var response = await _incidentMicroApi.Respond(request);
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to respond incident!");
+            return ExecuteResult.Error;
+        }
+
+        public async Task<ExecuteResult> TakeoverIncident(string incidentId)
+        {
+            Logger.LogInformation("call Incident api TakeoverIncident Start");
+            if (!Guid.TryParse(incidentId, out var incidentGuid))
+            {
+                Logger.LogError($"wrong incident id: {incidentId}");
+                return ExecuteResult.Error;
+            }
+
+            var request = new TakeoverIncidentRequestDto { IncidentId = incidentGuid };
+            var response = await _incidentMicroApi.Takeover(request);
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to takeover incident!");
+            return ExecuteResult.Error;
+        }
+
+        public async Task<ExecuteResult> CloseIncident(string incidentId, string reason)
+        {
+            Logger.LogInformation("call Incident api CloseIncident Start");
+            if (!Guid.TryParse(incidentId, out var incidentGuid))
+            {
+                Logger.LogError($"wrong incident id: {incidentId}");
+                return ExecuteResult.Error;
+            }
+
+            var request = new CloseIncidentRequestDto { IncidentId = incidentGuid, Reason = reason};
+            var response = await _incidentMicroApi.Close(request);
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to close incident!");
+            return ExecuteResult.Error;
         }
 
         private IncidentPriority ConvertPriority(string priority)

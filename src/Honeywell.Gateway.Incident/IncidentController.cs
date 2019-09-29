@@ -74,10 +74,10 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] guidWorkflowIds)
+        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds)
         {
 
-            var result = await _incidentAppService.ExportWorkflowDesigns(guidWorkflowIds);
+            var result = await _incidentAppService.ExportWorkflowDesigns(workflowDesignIds);
             Response.ContentType = "application/octet-stream";
             await Response.Body.WriteAsync(result.FileBytes);
             Response.Body.Flush();
@@ -104,6 +104,30 @@ namespace Honeywell.Gateway.Incident
         {
             var activeIncidents = await _incidentAppService.GetActiveIncidentList();
             return activeIncidents;
+        }
+
+        public async Task<DeviceGto[]> GetDevices()
+        {
+            var devices = await _incidentAppService.GetDevices();
+            return devices;
+        }
+
+        public async Task<ExecuteResult> RespondIncident(string incidentId)
+        {
+            var result = await _incidentAppService.RespondIncident(incidentId);
+            return result;
+        }
+
+        public async Task<ExecuteResult> TakeoverIncident(string incidentId)
+        {
+            var result = await _incidentAppService.TakeoverIncident(incidentId);
+            return result;
+        }
+
+        public async Task<ExecuteResult> CloseIncident(string incidentId, string reason)
+        {
+            var result = await _incidentAppService.CloseIncident(incidentId, reason);
+            return result;
         }
     }
 }
