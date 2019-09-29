@@ -7,9 +7,11 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using Moq;
 using Xunit;
@@ -81,6 +83,52 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.Equal(incidentGto.IncidentSteps[0].IsOptional, workflowSteps[0].IsOptional);
 
         }
+
+
+        [Fact]
+        public void GetActiveIncidentList_Successful()
+        {
+            //assign
+            var workflowId = Guid.NewGuid();
+            var incidentListItemDto = MockIncdentListItemDtos(workflowId);
+            var incidentResponse = MockIncidentListResponse(true, incidentListItemDto);
+            _mockIncidentMicroApi.Setup(x => x.GetActiveList()).Returns(Task.FromResult(incidentResponse));
+
+            var workflowSummaries = MockWorkflowSummaryDtos(workflowId).ToArray();
+            _mockWorkflowInstanceApi.Setup(x => x.GetWorkflowSummaries(new[]{workflowId})).Returns(workflowSummaries);
+
+            //action
+            var response = _testObj.GetActiveIncidentList();
+
+            //assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.Result);
+            var activeIncidentGto = response.Result;
+            Assert.Equal(activeIncidentGto[0].WorkflowId, workflowId);
+            Assert.Equal(activeIncidentGto[0].WorkflowDesignName, workflowSummaries[0].WorkflowDesignName);
+            Assert.Equal(activeIncidentGto[0].TotalSteps, workflowSummaries[0].TotalSteps);
+            Assert.Equal(activeIncidentGto[0].CompletedSteps, workflowSummaries[0].CompletedSteps);
+            Assert.Equal(activeIncidentGto[0].CreateAtUtc, incidentResponse.List[0].CreateAtUtc);
+            Assert.Equal(activeIncidentGto[0].Owner, incidentResponse.List[0].Owner);
+            Assert.Equal(1, activeIncidentGto[0].SequenceId);
+        }
+
+        [Fact]
+        public void GetActiveIncidentList_NotFound()
+        {
+            //assign
+            var incidentListResponse = Task.FromResult(MockIncidentListResponse(false, new List<IncidentListItemDto>()));
+            _mockIncidentMicroApi.Setup(x => x.GetActiveList()).Returns(incidentListResponse);
+
+            //action
+            var response = _testObj.GetActiveIncidentList();
+
+            //assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.Result);
+            Assert.True(0 == response.Result.Length );
+        }
+
 
 
         [Fact]
@@ -168,6 +216,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.Equal(createIncidentResponse.IncidentId.ToString(), incidentId.Result);
         }
 
+
+
         private List<WorkflowDto> MocksWorkflowDtos(List<WorkflowStepDto> workflowSteps)
         {
             var workflows = new List<WorkflowDto>
@@ -222,6 +272,51 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 }
             };
             return incidents;
+        }
+
+        private List<IncidentListItemDto> MockIncdentListItemDtos(Guid workflowId)
+        {
+            var incidents = new List<IncidentListItemDto>
+            {
+                new IncidentListItemDto
+                {
+                    Id = Guid.NewGuid(),
+                    WorkflowId=workflowId,
+                    CreateAtUtc = DateTime.Now,
+                    Owner = "Admin1",
+                    State = IncidentState.Active,
+                }
+            };
+            return incidents;
+        }
+
+        private GetIncidentListResponseDto MockIncidentListResponse(bool isSuccess, List<IncidentListItemDto> list)
+        {
+            var response = new GetIncidentListResponseDto()
+            {
+                List = list,
+                IsSuccess = isSuccess,
+                Message = "Any Valid Message"
+            };
+            return response;
+        }
+
+        private List<WorkflowSummaryDto> MockWorkflowSummaryDtos(Guid workflowId)
+        {
+            var workflowSummaryDto = new List<WorkflowSummaryDto>
+            {
+                new WorkflowSummaryDto
+                {
+                    WorkflowId = workflowId,
+                    Number = 1,
+                    Owner = "Admin1",
+                    WorkflowDesignName = "Any Valid WorkflowDesignName",
+                    Status = WorkflowStatus.Active,
+                    TotalSteps = 6,
+                    CompletedSteps = 3
+                }
+            };
+            return workflowSummaryDto;
         }
 
 

@@ -7,7 +7,6 @@ using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Infra.Core.Ddd.Application;
-using Honeywell.Infra.Core.HoneyMapper;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
@@ -240,7 +239,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 return activeIncidentsGto;
             }
 
-            Logger.LogError($"call workflow design api GetSelectors error:{result.Message}");
+            Logger.LogError($"call workflow design api GetActiveIncidentList error:{result.Message}");
             return new ActiveIncidentGto[] { };
         }
     }
