@@ -10,6 +10,8 @@ using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
+using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
@@ -234,6 +236,47 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
             Logger.LogInformation("call Incident api GetProwatchDeviceList end");
             return devices.ToArray();
+        }
+
+        public async Task<ExecuteResult> RespondIncident(string incidentId)
+        {
+            Logger.LogInformation("call Incident api RespondIncident Start");
+            if (!Guid.TryParse(incidentId, out var incidentGuid))
+            {
+                Logger.LogError($"wrong incident id: {incidentId}");
+                return ExecuteResult.Error;
+            }
+
+            var request = new RespondIncidentRequestDto {IncidentId = incidentGuid};
+
+            var response = await _incidentMicroApi.Respond(request);
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to respond incident!");
+            return ExecuteResult.Error;
+        }
+
+        public async Task<ExecuteResult> TakeoverIncident(string incidentId)
+        {
+            Logger.LogInformation("call Incident api RespondIncident Start");
+            if (!Guid.TryParse(incidentId, out var incidentGuid))
+            {
+                Logger.LogError($"wrong incident id: {incidentId}");
+                return ExecuteResult.Error;
+            }
+
+            var request = new TakeoverIncidentRequestDto { IncidentId = incidentGuid };
+            var response = await _incidentMicroApi.Takeover(request);
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to respond incident!");
+            return ExecuteResult.Error;
         }
 
         private IncidentPriority ConvertPriority(string priority)

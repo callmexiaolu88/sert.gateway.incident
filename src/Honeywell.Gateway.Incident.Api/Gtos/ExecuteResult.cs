@@ -10,6 +10,8 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 
         public static ExecuteResult Success = new ExecuteResult { Status = ExecuteStatus.Successful };
 
+        public static ExecuteResult Error = new ExecuteResult {Status = ExecuteStatus.Error};
+
         public ExecuteResult()
         {
             ErrorList = new List<string>();

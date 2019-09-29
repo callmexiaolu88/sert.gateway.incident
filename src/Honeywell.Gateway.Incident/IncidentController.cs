@@ -105,5 +105,17 @@ namespace Honeywell.Gateway.Incident
             var devices = await _incidentAppService.GetDevices();
             return devices;
         }
+
+        public async Task<ExecuteResult> RespondIncident(string incidentId)
+        {
+            var result = await _incidentAppService.RespondIncident(incidentId);
+            return result;
+        }
+
+        public async Task<ExecuteResult> TakeoverIncident(string incidentId)
+        {
+            var result = await _incidentAppService.TakeoverIncident(incidentId);
+            return result;
+        }
     }
 }
