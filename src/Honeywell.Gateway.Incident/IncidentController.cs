@@ -117,5 +117,11 @@ namespace Honeywell.Gateway.Incident
             var result = await _incidentAppService.TakeoverIncident(incidentId);
             return result;
         }
+
+        public async Task<ExecuteResult> CloseIncident(string incidentId, string reason)
+        {
+            var result = await _incidentAppService.CloseIncident(incidentId, reason);
+            return result;
+        }
     }
 }

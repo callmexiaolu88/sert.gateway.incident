@@ -8,6 +8,7 @@ using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Micro.Services.Incident.Api;
+using Honeywell.Micro.Services.Incident.Api.Incident.Close;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
 using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
@@ -270,6 +271,58 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //assert
             Assert.Equal(ExecuteStatus.Error, result.Result.Status);
         }
+
+
+        [Fact]
+        public void CloseIncident_Success()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            var reason = "close reason";
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Close(It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new CloseIncidentResponseDto { IsSuccess = true });
+
+            //act
+            var result = _testObj.CloseIncident(incidentId.ToString(), reason);
+
+            //assert
+            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
+        }
+
+        [Fact]
+        public void CloseIncident_InvalidIncidentId_ReturnError()
+        {
+            //arrange
+            var incidentId = "wrong incident id";
+            var reason = "close reason";
+
+            //act
+            var result = _testObj.CloseIncident(incidentId, reason);
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+        }
+
+        [Fact]
+        public void CloseIncident_CallMicroServiceFailed_ReturnError()
+        {
+            //arrange
+            var incidentId = Guid.NewGuid();
+            var reason = "close reason";
+            _mockIncidentMicroApi
+                .Setup(api =>
+                    api.Close(It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new CloseIncidentResponseDto { IsSuccess = false });
+
+            //act
+            var result = _testObj.CloseIncident(incidentId.ToString(), reason);
+
+            //assert
+            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+        }
+
 
         private List<WorkflowDto> MocksWorkflowDtos(List<WorkflowStepDto> workflowSteps)
         {
