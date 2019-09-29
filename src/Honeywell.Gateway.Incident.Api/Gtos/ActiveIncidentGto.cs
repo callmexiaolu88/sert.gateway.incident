@@ -17,12 +17,13 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 
         public string WorkflowDesignName { get; set; }
 
+        public DateTime CreateAtUtc { get; set; }
+
         public string Owner { get; set; }
 
-        public DateTime CreateAtUtc { get; set; }
+        public int CompletedSteps { get; set; }
 
         public int TotalSteps { get; set; }
 
-        public int CompletedSteps { get; set; }
     }
 }
