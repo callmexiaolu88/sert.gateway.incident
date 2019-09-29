@@ -9,6 +9,7 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Incident.Api;
+using Honeywell.Micro.Services.Incident.Api.Incident.Close;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
 using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
@@ -261,7 +262,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
         public async Task<ExecuteResult> TakeoverIncident(string incidentId)
         {
-            Logger.LogInformation("call Incident api RespondIncident Start");
+            Logger.LogInformation("call Incident api TakeoverIncident Start");
             if (!Guid.TryParse(incidentId, out var incidentGuid))
             {
                 Logger.LogError($"wrong incident id: {incidentId}");
@@ -275,7 +276,27 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 return ExecuteResult.Success;
             }
 
-            Logger.LogError("Failed to respond incident!");
+            Logger.LogError("Failed to takeover incident!");
+            return ExecuteResult.Error;
+        }
+
+        public async Task<ExecuteResult> CloseIncident(string incidentId, string reason)
+        {
+            Logger.LogInformation("call Incident api CloseIncident Start");
+            if (!Guid.TryParse(incidentId, out var incidentGuid))
+            {
+                Logger.LogError($"wrong incident id: {incidentId}");
+                return ExecuteResult.Error;
+            }
+
+            var request = new CloseIncidentRequestDto { IncidentId = incidentGuid, Reason = reason};
+            var response = await _incidentMicroApi.Close(request);
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to close incident!");
             return ExecuteResult.Error;
         }
 

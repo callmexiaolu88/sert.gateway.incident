@@ -32,5 +32,7 @@ namespace Honeywell.Gateway.Incident.Api
         Task<ExecuteResult> RespondIncident(string incidentId);
 
         Task<ExecuteResult> TakeoverIncident(string incidentId);
+
+        Task<ExecuteResult> CloseIncident(string incidentId, string reason);
     }
 }

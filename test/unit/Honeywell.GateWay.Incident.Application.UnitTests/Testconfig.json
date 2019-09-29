@@ -1,8 +1,9 @@
-{Config:[
-  {
-  "Include": "Honeywell.GateWay.Incident.Application",
-  "Exclude": ""
-  }  
-]
+{
+  "Config": [
+    {
+      "Include": "Honeywell.GateWay.Incident.Application",
+      "Exclude": ""
+    }
+  ]
 }
 
