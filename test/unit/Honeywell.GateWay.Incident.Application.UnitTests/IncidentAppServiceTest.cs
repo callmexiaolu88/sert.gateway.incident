@@ -187,11 +187,16 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
-        public void GetActiveIncidentList_ActiveIncidentListCount_EqualZero()
+        public void GetActiveIncidentList_CallGetActiveList_Failed()
         {
             //assign
-            var incidentListResponse = Task.FromResult(MockIncidentListResponse(false, new List<IncidentListItemDto>()));
-            _mockIncidentMicroApi.Setup(x => x.GetActiveList()).Returns(incidentListResponse);
+            var mockIncidentListResponse = new GetIncidentListResponseDto()
+            {
+                List = new List<IncidentListItemDto>(),
+                IsSuccess =false,
+                Message = "Any Valid Message"
+            };
+            _mockIncidentMicroApi.Setup(x => x.GetActiveList()).ReturnsAsync(mockIncidentListResponse);
 
             //action
             var response = _testObj.GetActiveIncidentList();
@@ -199,6 +204,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //assert
             Assert.NotNull(response);
             Assert.NotNull(response.Result);
+            Assert.True(response.Result.Status == ExecuteStatus.Error);
             Assert.True(0 == response.Result.List.Count);
         }
 
@@ -465,19 +471,6 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             };
             return incidents;
         }
-
-
-        private GetIncidentListResponseDto MockIncidentListResponse(bool isSuccess, List<IncidentListItemDto> list)
-        {
-            var response = new GetIncidentListResponseDto()
-            {
-                List = list,
-                IsSuccess = isSuccess,
-                Message = "Any Valid Message"
-            };
-            return response;
-        }
-
 
         private WorkflowDetailsResponseDto MockWorkflowResponse(bool isSuccess, List<WorkflowDto> details)
         {

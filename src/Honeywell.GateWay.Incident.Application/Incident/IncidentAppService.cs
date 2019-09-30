@@ -329,7 +329,6 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 return new ActiveIncidentListGto() { Status = ExecuteStatus.Error };
             }
 
-
             var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], ActiveIncidentGto[]>(result.List.ToArray());
             foreach (var activeIncident in activeIncidentsGto)
             {
