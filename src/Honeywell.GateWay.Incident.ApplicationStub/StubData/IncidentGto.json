@@ -1,0 +1,30 @@
+﻿{
+  "id": "17320F8C-52E5-4AAE-A2A2-B50A2F1F77D8",
+  "description": "The National Fire Incident Reporting System (NFIRS) is a reporting standard that fire departments use to uniformly report on the full range of their activities, from fire to Emergency Medical Services (EMS) to severe weather and natural disasters.",
+  "number": 237,
+  "createAtUtc": "2019-09-27 21:03:33",
+  "lastUpdateAtUtc": "2019-09-27 21:03:33",
+  "owner": "admin1",
+  "priority": 0,
+  "state": 0,
+  "workflowName": "Event Prep Master",
+  "workflowDescription": "This procedure shall be completed 48hours before any events.",
+  "workflowOwner": "admin1",
+  "incidentSteps": [
+    {
+      "id": "ED6073E2-3961-4BB6-86C4-264CC4ED295D",
+      "isComplete": false,
+      "isOptional": false,
+      "instruction": "Curzon Hall Lobby staircase pressurisation can be triggered from fire alarm.",
+      "helpText": "Must inform control room if triggering fire alarm."
+    },
+    {
+      "id": "F377A0DE-8029-4333-8E10-002E4558454E",
+      "isComplete": false,
+      "isOptional": false,
+      "instruction": "Curzon Hall Lobby Court West external Gates can be unlocked remotely.",
+      "helpText": "3 gates labelled as: Door 2, 3, 4."
+    }
+  ],
+  "status": 0
+}

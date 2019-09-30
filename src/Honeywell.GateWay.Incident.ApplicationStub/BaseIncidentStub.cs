@@ -28,7 +28,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                 T items = JsonConvert.DeserializeObject<T>(json);
                 return Task.FromResult(items);
             }
-            throw new Exception($"can not identity the type {typeof(T).FullName}"); ;
+            throw new Exception($"can not identity the type {typeof(T).FullName}");
         }
     }
 }
