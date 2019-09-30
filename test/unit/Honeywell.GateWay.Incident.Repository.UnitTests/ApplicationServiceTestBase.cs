@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using Honeywell.GateWay.Incident.Application;
 using Honeywell.Infra.Core;
 using Honeywell.Infra.Core.HoneyMapper;
 using Honeywell.Infra.HoneyMapper.AutoMapper;
 using Honeywell.Infra.HoneyMapper.AutoMapper.Imp;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Honeywell.GateWay.Incident.Application.UnitTests
+namespace Honeywell.GateWay.Incident.Repository.UnitTests
 {
     public class ApplicationServiceTestBase
     {

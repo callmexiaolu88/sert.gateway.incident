@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Honeywell.GateWay.Incident.Repository.Data;
 using Honeywell.Infra.Client.WebApi.Attributes.HttpMethodAttributes;
 using Honeywell.Infra.Client.WebApi.Attributes.RouteAttribute;
 using Honeywell.Infra.Core;
 
-namespace Honeywell.GateWay.Incident.Repository.Data
+namespace Honeywell.GateWay.Incident.Repository
 {
     public interface IDeviceApi: IRemoteService
     {
