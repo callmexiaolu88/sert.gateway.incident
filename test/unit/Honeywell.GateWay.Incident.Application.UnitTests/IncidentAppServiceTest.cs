@@ -203,7 +203,6 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
 
-
         [Fact]
         public void GetIncident_Incident_NotFound()
         {
@@ -467,23 +466,6 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             return incidents;
         }
 
-        private List<IncidentListItemDto> MockIncdentListItemDtos(Guid workflowId)
-        {
-            var incidents = new List<IncidentListItemDto>
-            {
-                new IncidentListItemDto
-                {
-                    Id = Guid.NewGuid(),
-                    WorkflowId=workflowId,
-                    CreateAtUtc = DateTime.Now,
-                    Owner = "Admin1",
-                    State = IncidentState.Active,
-                    Number =10,
-                    Priority =IncidentPriority.High
-                }
-            };
-            return incidents;
-        }
 
         private GetIncidentListResponseDto MockIncidentListResponse(bool isSuccess, List<IncidentListItemDto> list)
         {
@@ -495,29 +477,6 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             };
             return response;
         }
-
-
-     
-
-        private List<WorkflowSummaryDto> MockWorkflowSummaryDtos(Guid workflowId)
-        {
-            var workflowSummaryDto = new List<WorkflowSummaryDto>
-            {
-                new WorkflowSummaryDto
-                {
-                    WorkflowId = workflowId,
-                    Number = 1,
-                    Owner = "Admin1",
-                    WorkflowDesignName = "Any Valid WorkflowDesignName",
-                    Status = WorkflowStatus.Active,
-                    TotalSteps = 6,
-                    CompletedSteps = 3
-                }
-            };
-            return workflowSummaryDto;
-        }
-
-
 
 
         private WorkflowDetailsResponseDto MockWorkflowResponse(bool isSuccess, List<WorkflowDto> details)
