@@ -11,8 +11,6 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
             Status = ExecuteStatus.Error;
         }
 
-        public int SequenceId { get; set; }
-
         public Guid WorkflowId { get; set; }
 
         public string WorkflowDesignName { get; set; }
@@ -24,6 +22,10 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
         public int CompletedSteps { get; set; }
 
         public int TotalSteps { get; set; }
+
+        public IncidentPriority Priority { get; set; }
+
+        public long Number { get; set; }
 
     }
 }

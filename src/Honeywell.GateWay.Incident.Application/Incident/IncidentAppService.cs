@@ -16,6 +16,7 @@ using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
 using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
@@ -310,33 +311,43 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             Logger.LogInformation("call Incident api GetActiveIncidentList Start");
             var result = await _incidentMicroApi.GetActiveList();
-            if (result.IsSuccess)
+
+            if (!result.IsSuccess)
             {
-                var workflowIds = result.List.Select(x => x.WorkflowId).ToArray();
-                var workflowSummaries = _workflowInstanceApi.GetWorkflowSummaries(workflowIds);
-
-                var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], ActiveIncidentGto[]>(result.List.ToArray());
-
-                int i = 1;
-                foreach (var activeIncident in activeIncidentsGto)
-                {
-                    activeIncident.SequenceId = i++;
-                    foreach (var workflowSummary in workflowSummaries)
-                    {
-                        if (activeIncident.WorkflowId == workflowSummary.WorkflowId)
-                        {
-                            activeIncident.WorkflowDesignName = workflowSummary.WorkflowDesignName;
-                            activeIncident.CompletedSteps = workflowSummary.CompletedSteps;
-                            activeIncident.TotalSteps = workflowSummary.TotalSteps;
-                        }
-                    }
-                }
-
-                return activeIncidentsGto;
+                Logger.LogError($"call workflow design api GetActiveList error:{result.Message}");
+                return new ActiveIncidentGto[] { };
             }
 
-            Logger.LogError($"call workflow design api GetActiveIncidentList error:{result.Message}");
-            return new ActiveIncidentGto[] { };
+            var workflowIds = result.List.Select(x => x.WorkflowId).ToArray();
+            var request = new WorkflowSummaryRequestDto
+            {
+                WorkflowIds = workflowIds
+            };
+
+            var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], ActiveIncidentGto[]>(result.List.ToArray());
+
+            var workflowSummaries = await _workflowInstanceApi.GetWorkflowSummaries(request);
+
+            if (!workflowSummaries.IsSuccess)
+            {
+                Logger.LogError($"call workflow design api GetWorkflowSummaries error:{result.Message}");
+                return new ActiveIncidentGto[] { };
+            }
+
+            foreach (var activeIncident in activeIncidentsGto)
+            {
+                foreach (var workflowSummary in workflowSummaries.Summaries)
+                {
+                    if (activeIncident.WorkflowId == workflowSummary.WorkflowId)
+                    {
+                        activeIncident.WorkflowDesignName = workflowSummary.WorkflowDesignName;
+                        activeIncident.CompletedSteps = workflowSummary.CompletedSteps;
+                        activeIncident.TotalSteps = workflowSummary.TotalSteps;
+                    }
+                }
+            }
+
+            return activeIncidentsGto;
         }
     }
 }
