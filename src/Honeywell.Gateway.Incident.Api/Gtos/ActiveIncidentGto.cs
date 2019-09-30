@@ -4,13 +4,8 @@ using Honeywell.Micro.Services.Incident.Domain.Shared;
 
 namespace Honeywell.Gateway.Incident.Api.Gtos
 {
-    public class ActiveIncidentGto:ExecuteResult
+    public class ActiveIncidentGto
     {
-        public ActiveIncidentGto()
-        {
-            Status = ExecuteStatus.Error;
-        }
-
         public Guid WorkflowId { get; set; }
 
         public string WorkflowDesignName { get; set; }

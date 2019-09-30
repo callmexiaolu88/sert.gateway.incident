@@ -174,8 +174,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //assert
             Assert.NotNull(response);
             Assert.NotNull(response.Result);
-            Assert.True(1 == response.Result.Length);
-            var activeIncidentGto = response.Result[0];
+            Assert.True(1 == response.Result.List.Count);
+            var activeIncidentGto = response.Result.List[0];
             Assert.Equal(workflowId,activeIncidentGto.WorkflowId);
             Assert.Equal(mockWorkflowSummary.WorkflowDesignName,activeIncidentGto.WorkflowDesignName);
             Assert.Equal(mockWorkflowSummary.TotalSteps,activeIncidentGto.TotalSteps);
@@ -187,7 +187,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
-        public void GetActiveIncidentList_ActiveIncidentNotFound_ReturnTrue()
+        public void GetActiveIncidentList_ActiveIncidentListCount_EqualZero()
         {
             //assign
             var incidentListResponse = Task.FromResult(MockIncidentListResponse(false, new List<IncidentListItemDto>()));
@@ -199,7 +199,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //assert
             Assert.NotNull(response);
             Assert.NotNull(response.Result);
-            Assert.True(0 == response.Result.Length);
+            Assert.True(0 == response.Result.List.Count);
         }
 
 

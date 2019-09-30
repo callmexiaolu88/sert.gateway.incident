@@ -75,5 +75,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.Workflow
         {
             throw new NotImplementedException();
         }
+
+        public Task<WorkflowSummaryResponseDto> GetWorkflowSummaries(WorkflowSummaryRequestDto request)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

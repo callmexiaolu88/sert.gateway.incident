@@ -307,15 +307,14 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return (IncidentPriority) Enum.Parse(typeof(IncidentPriority), priority);
         }
 
-        public async Task<ActiveIncidentGto[]> GetActiveIncidentList()
+        public async Task<ActiveIncidentListGto> GetActiveIncidentList()
         {
             Logger.LogInformation("call Incident api GetActiveIncidentList Start");
             var result = await _incidentMicroApi.GetActiveList();
-
             if (!result.IsSuccess)
             {
                 Logger.LogError($"call workflow design api GetActiveList error:{result.Message}");
-                return new ActiveIncidentGto[] { };
+                return new ActiveIncidentListGto() { Status = ExecuteStatus.Error};
             }
 
             var workflowIds = result.List.Select(x => x.WorkflowId).ToArray();
@@ -323,17 +322,15 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             {
                 WorkflowIds = workflowIds
             };
-
-            var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], ActiveIncidentGto[]>(result.List.ToArray());
-
             var workflowSummaries = await _workflowInstanceApi.GetWorkflowSummaries(request);
-
             if (!workflowSummaries.IsSuccess)
             {
                 Logger.LogError($"call workflow design api GetWorkflowSummaries error:{result.Message}");
-                return new ActiveIncidentGto[] { };
+                return new ActiveIncidentListGto() { Status = ExecuteStatus.Error };
             }
 
+
+            var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], ActiveIncidentGto[]>(result.List.ToArray());
             foreach (var activeIncident in activeIncidentsGto)
             {
                 foreach (var workflowSummary in workflowSummaries.Summaries)
@@ -347,7 +344,11 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 }
             }
 
-            return activeIncidentsGto;
+            return new ActiveIncidentListGto()
+            {
+                Status = ExecuteStatus.Successful,
+                List = activeIncidentsGto.ToList()
+            };
         }
     }
 }

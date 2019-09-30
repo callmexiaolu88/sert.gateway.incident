@@ -27,7 +27,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);
 
-        Task<ActiveIncidentGto[]> GetActiveIncidentList();
+        Task<ActiveIncidentListGto> GetActiveIncidentList();
 
         Task<DeviceGto[]> GetDevices();
 
