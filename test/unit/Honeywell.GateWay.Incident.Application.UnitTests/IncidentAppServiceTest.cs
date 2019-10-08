@@ -1,407 +1,228 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
+using System.IO;
 using System.Threading.Tasks;
-using Honeywell.Facade.Services.Incident.Api;
-using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
+using Honeywell.GateWay.Incident.Repository.Data;
 using Honeywell.GateWay.Incident.Repository.Device;
-using Honeywell.Micro.Services.Incident.Api;
-using Honeywell.Micro.Services.Incident.Api.Incident.Close;
-using Honeywell.Micro.Services.Incident.Api.Incident.Details;
-using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
-using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
-using Honeywell.Micro.Services.Incident.Domain.Shared;
-using Honeywell.Micro.Services.Workflow.Api;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
-using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using Moq;
 using Xunit;
-using IncidentPriority = Honeywell.Micro.Services.Incident.Domain.Shared.IncidentPriority;
 
 namespace Honeywell.GateWay.Incident.Application.UnitTests
 {
     public class IncidentAppServiceTest : ApplicationServiceTestBase
     {
-        private readonly Mock<IIncidentMicroApi> _mockIncidentMicroApi;
-        private readonly Mock<IWorkflowInstanceApi> _mockWorkflowInstanceApi;
-        private readonly Mock<IIncidentFacadeApi> _mockIncidentFacadeApi;
-        private readonly Mock<IDeviceRepository> _mockDeviceRespository;
-
         private readonly IIncidentAppService _testObj;
+        private readonly Mock<IIncidentRepository> _mockIncidentRepository;
+        private readonly Mock<IDeviceRepository> _mockDeviceRepository;
 
         public IncidentAppServiceTest()
         {
-            var mockWorkflowDesignApi = new Mock<IWorkflowDesignApi>();
-            _mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
-            _mockWorkflowInstanceApi = new Mock<IWorkflowInstanceApi>();
-            _mockIncidentFacadeApi = new Mock<IIncidentFacadeApi>();
-            _mockDeviceRespository = new Mock<IDeviceRepository>();
-            _testObj = new IncidentAppService(
-                mockWorkflowDesignApi.Object, 
-                _mockIncidentMicroApi.Object,
-                _mockWorkflowInstanceApi.Object, 
-                _mockIncidentFacadeApi.Object,
-                _mockDeviceRespository.Object);
+            _mockDeviceRepository = new Mock<IDeviceRepository>();
+            _mockIncidentRepository = new Mock<IIncidentRepository>();
+            _testObj = new IncidentAppService(_mockIncidentRepository.Object,
+                _mockDeviceRepository.Object);
+        }
+
+        private Task<ExecuteResult> MockExecuteResult()
+        {
+            return Task.FromResult(new ExecuteResult { Status = ExecuteStatus.Successful });
+        }
+
+        private void VerifyResult(Task<ExecuteResult> result)
+        {
+            Assert.NotNull(result);
+            Assert.True(result.Result.Status == ExecuteStatus.Successful);
         }
 
         [Fact]
-        public void GetIncident_Successful()
+        public void ImportWorkflowDesigns_Test()
         {
-
-            //assign
-            var incidentId = Guid.NewGuid();
-            var incidentDto = MockIncidentDtos(incidentId);
-            var incidentResponse = MockIncidentResponse(true, incidentDto);
-            _mockIncidentMicroApi.Setup(x => x.GetDetails(It.IsAny<GetIncidentDetailsRequestDto>())).Returns(Task.FromResult(incidentResponse));
-
-            var workflowSteps = MockWorkflowSteps();
-            var workflows = MocksWorkflowDtos(workflowSteps);
-            var workflowResponse = MockWorkflowResponse(true, workflows);
-            _mockWorkflowInstanceApi.Setup(x => x.GetWorkflowDetails(It.IsAny<WorkflowDetailsRequestDto>()))
-                .Returns(Task.FromResult(workflowResponse));
-
-            //action
-            var response = _testObj.GetIncidentById(incidentId.ToString());
-
-            //assert
-            Assert.NotNull(response);
-            Assert.NotNull(response.Result);
-            var incidentGto = response.Result;
-            Assert.True(incidentGto.Status == ExecuteStatus.Successful);
-            Assert.Equal(incidentGto.State, incidentDto[0].State);
-            Assert.Equal(incidentGto.LastUpdateAtUtc, incidentDto[0].LastUpdateAtUtc);
-            Assert.Equal(incidentGto.Description, incidentDto[0].Description);
-            Assert.Equal(incidentGto.Id, incidentDto[0].Id);
-            Assert.Equal(incidentGto.Number, incidentDto[0].Number);
-            Assert.Equal(incidentGto.Priority, incidentDto[0].Priority);
-            Assert.Equal(incidentGto.Owner, incidentDto[0].Owner);
-            Assert.Equal(incidentGto.CreateAtUtc, incidentDto[0].CreateAtUtc);
-            Assert.Equal(incidentGto.State, incidentDto[0].State);
-            Assert.Equal(incidentGto.WorkflowName, workflows[0].Name);
-            Assert.Equal(incidentGto.WorkflowDescription, workflows[0].Description);
-            Assert.Equal(incidentGto.WorkflowOwner, workflows[0].Owner);
-            Assert.Equal(incidentGto.IncidentSteps[0].Id, workflowSteps[0].Id);
-            Assert.Equal(incidentGto.IncidentSteps[0].HelpText, workflowSteps[0].HelpText);
-            Assert.Equal(incidentGto.IncidentSteps[0].Instruction, workflowSteps[0].Instruction);
-            Assert.Equal(incidentGto.IncidentSteps[0].IsComplete, workflowSteps[0].IsComplete);
-            Assert.Equal(incidentGto.IncidentSteps[0].IsOptional, workflowSteps[0].IsOptional);
-
-        }
-
-
-        [Fact]
-        public void GetIncident_Incident_NotFound()
-        {
-            var incidentId = Guid.NewGuid().ToString();
-            var incidentResponse = Task.FromResult(MockIncidentResponse(false, new List<IncidentDto>()));
-            _mockIncidentMicroApi.Setup(x => x.GetDetails(It.IsAny<GetIncidentDetailsRequestDto>())).Returns(incidentResponse);
-            var response = _testObj.GetIncidentById(incidentId);
-            Assert.NotNull(response);
-            Assert.NotNull(response.Result);
-            Assert.True(response.Result.Status == ExecuteStatus.Error);
+            _mockIncidentRepository.Setup(x => x.ImportWorkflowDesigns(It.IsAny<Stream>()))
+                .Returns(MockExecuteResult());
+            var result = _testObj.ImportWorkflowDesigns(It.IsAny<Stream>());
+            VerifyResult(result);
         }
 
         [Fact]
-        public void GetIncident_Incident_ErrorNotFound()
+        public void ValidatorWorkflowDesigns_Test()
         {
-            var incidentId = Guid.NewGuid().ToString();
-            var incidentResponse = MockIncidentResponse(false, new List<IncidentDto>());
-            _mockIncidentMicroApi.Setup(x => x.GetDetails(It.IsAny<GetIncidentDetailsRequestDto>())).Returns(Task.FromResult(incidentResponse));
-            var response = _testObj.GetIncidentById(incidentId);
-            Assert.NotNull(response);
-            Assert.NotNull(response.Result);
-            Assert.True(response.Result.Status == ExecuteStatus.Error);
+            _mockIncidentRepository.Setup(x => x.ValidatorWorkflowDesigns(It.IsAny<Stream>()))
+                .Returns(MockExecuteResult());
+            var result = _testObj.ValidatorWorkflowDesigns(It.IsAny<Stream>());
+            Assert.NotNull(result);
+            Assert.True(result.Result.Status == ExecuteStatus.Successful);
         }
 
         [Fact]
-        public void GetIncident_Workflow_NotFound()
+        public void DeleteWorkflowDesigns_Test()
         {
-            var incidentId = Guid.NewGuid();
-            var incidentResponse = MockIncidentResponse(true, MockIncidentDtos(incidentId));
-            _mockIncidentMicroApi.Setup(x => x.GetDetails(It.IsAny<GetIncidentDetailsRequestDto>())).Returns(Task.FromResult(incidentResponse));
-            var workflowResponse = MockWorkflowResponse(false, MocksWorkflowDtos(MockWorkflowSteps()));
-            _mockWorkflowInstanceApi.Setup(x => x.GetWorkflowDetails(It.IsAny<WorkflowDetailsRequestDto>()))
-                .Returns(Task.FromResult(workflowResponse));
-            var response = _testObj.GetIncidentById(incidentId.ToString());
-            Assert.NotNull(response);
-            Assert.NotNull(response.Result);
-            Assert.True(response.Result.Status == ExecuteStatus.Error);
+            _mockIncidentRepository.Setup(x => x.DeleteWorkflowDesigns(It.IsAny<string[]>()))
+                .Returns(MockExecuteResult());
+            var result = _testObj.DeleteWorkflowDesigns(It.IsAny<string[]>());
+            Assert.NotNull(result);
+            Assert.True(result.Result.Status == ExecuteStatus.Successful);
         }
 
         [Fact]
-        public void GetIncident_Workflow_Error_NotFound()
+        public void GetAllActiveWorkflowDesigns_Test()
         {
-            var incidentId = Guid.NewGuid();
-            var incidentResponse = MockIncidentResponse(true, MockIncidentDtos(incidentId));
-            _mockIncidentMicroApi.Setup(x => x.GetDetails(It.IsAny<GetIncidentDetailsRequestDto>())).Returns(Task.FromResult(incidentResponse));
-            var workflowResponse = MockWorkflowResponse(false, new List<WorkflowDto>());
-            _mockWorkflowInstanceApi.Setup(x => x.GetWorkflowDetails(It.IsAny<WorkflowDetailsRequestDto>()))
-                .Returns(Task.FromResult(workflowResponse));
-            var response = _testObj.GetIncidentById(incidentId.ToString());
-            Assert.NotNull(response);
-            Assert.NotNull(response.Result);
-            Assert.True(response.Result.Status == ExecuteStatus.Error);
-        }
-
-        [Fact]
-        public void CreateIncident_Success()
-        {
-            //arrange
-            var workflowDesignReferenceId = Guid.NewGuid().ToString();
-            var priority = "HIGH";
-            var description = "description";
-
-            var request = new CreateIncidentRequestGto
+            var mockDesign = new WorkflowDesignSummaryGto
             {
-                WorkflowDesignReferenceId = workflowDesignReferenceId,
-                Priority = priority,
-                Description = description
+                Id = Guid.NewGuid()
+            };
+            var allworkflowDesigns = Task.FromResult(new[] { mockDesign });
+            _mockIncidentRepository.Setup(x => x.GetAllActiveWorkflowDesigns()).Returns(allworkflowDesigns);
+            var result = _testObj.GetAllActiveWorkflowDesigns();
+            Assert.NotNull(result);
+            Assert.True(result.Result.Length == 1);
+            Assert.True(result.Result[0].Id == mockDesign.Id);
+        }
+
+
+        [Fact]
+        public void GetWorkflowDesignSelectorsByName_Test()
+        {
+            var mockDesign = new WorkflowDesignSelectorGto
+            {
+                Id = Guid.NewGuid()
+            };
+            var workflowDesigns = Task.FromResult(new[] { mockDesign });
+            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignSelectorsByName(It.IsAny<string>()))
+                .Returns(workflowDesigns);
+            var result = _testObj.GetWorkflowDesignSelectorsByName(It.IsAny<string>());
+            Assert.NotNull(result);
+            Assert.True(result.Result.Length == 1);
+            Assert.True(result.Result[0].Id == mockDesign.Id);
+        }
+
+        [Fact]
+        public void GetWorkflowDesignById_Test()
+        {
+            var mockDesign = new WorkflowDesignGto
+            {
+                Id = Guid.NewGuid()
+            };
+            var workflowDesigns = Task.FromResult(mockDesign);
+            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignById(It.IsAny<string>()))
+                .Returns(workflowDesigns);
+            var result = _testObj.GetWorkflowDesignById(It.IsAny<string>());
+            Assert.NotNull(result);
+            Assert.True(result.Result.Id == mockDesign.Id);
+        }
+
+        [Fact]
+        public void DownloadWorkflowTemplate_Test()
+        {
+            var mockTemplate = new WorkflowTemplateGto
+            {
+                FileName = "TestSopTemplate"
+            };
+            var mockTemplateTask = Task.FromResult(mockTemplate);
+            _mockIncidentRepository.Setup(x => x.DownloadWorkflowTemplate())
+                .Returns(mockTemplateTask);
+            var result = _testObj.DownloadWorkflowTemplate();
+            Assert.NotNull(result);
+            Assert.True(result.Result.FileName == mockTemplate.FileName);
+        }
+
+        [Fact]
+        public void ExportWorkflowDesigns_Test()
+        {
+            var mockTemplate = new WorkflowTemplateGto
+            {
+                FileName = "TestSopTemplate"
+            };
+            var mockTemplateTask = Task.FromResult(mockTemplate);
+            _mockIncidentRepository.Setup(x => x.ExportWorkflowDesigns(It.IsAny<string[]>()))
+                .Returns(mockTemplateTask);
+            var result = _testObj.ExportWorkflowDesigns(It.IsAny<string[]>());
+            Assert.NotNull(result);
+            Assert.True(result.Result.FileName == mockTemplate.FileName);
+        }
+
+        [Fact]
+        public void GetIncidentById_Test()
+        {
+            var mockIncident = new IncidentGto
+            {
+                Description = "Test Incident Description"
+            };
+            var mockIncidentTask = Task.FromResult(mockIncident);
+            _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
+                .Returns(mockIncidentTask);
+            var result = _testObj.GetIncidentById(It.IsAny<string>());
+            Assert.NotNull(result);
+            Assert.True(result.Result.Description == mockIncident.Description);
+        }
+
+        [Fact]
+        public void CreateIncident_Test()
+        {
+
+            var id = Guid.NewGuid().ToString();
+            var mockResponse = Task.FromResult(id);
+            _mockIncidentRepository.Setup(x => x.CreateIncident(It.IsAny<CreateIncidentRequestGto>()))
+                .Returns(mockResponse);
+            var result = _testObj.CreateIncident(It.IsAny<CreateIncidentRequestGto>());
+            Assert.NotNull(result);
+            Assert.True(result.Result == id);
+        }
+
+        [Fact]
+        public void RespondIncident_Test()
+        {
+            _mockIncidentRepository.Setup(x => x.RespondIncident(It.IsAny<string>()))
+                .Returns(MockExecuteResult());
+            var result = _testObj.RespondIncident(It.IsAny<string>());
+            VerifyResult(result);
+        }
+        [Fact]
+        public void TakeoverIncident_Test()
+        {
+            _mockIncidentRepository.Setup(x => x.TakeoverIncident(It.IsAny<string>()))
+                .Returns(MockExecuteResult());
+            var result = _testObj.TakeoverIncident(It.IsAny<string>());
+            VerifyResult(result);
+        }
+
+        [Fact]
+        public void CloseIncident_Test()
+        {
+            _mockIncidentRepository.Setup(x => x.CloseIncident(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(MockExecuteResult());
+            var result = _testObj.CloseIncident(It.IsAny<string>(), It.IsAny<string>());
+            VerifyResult(result);
+        }
+
+        [Fact]
+        public void GetDevices_Test()
+        {
+            var deviceDisplayName = "Door 1";
+            var deviceId = "ProWatch Device Id";
+            var deviceType = "Door";
+            var deviceEntity = new DeviceEntity
+            {
+                Identifiers = new IdentifiersEntity { Description = "ProWatch Device", Id = deviceId, Name = deviceDisplayName },
+                Type = deviceType
             };
 
-            var createIncidentResponse = new CreateIncidentResponseDto
-            {
-                IsSuccess = true,
-                IncidentId = Guid.NewGuid()
-            };
+            var siteId = "Generaic Device";
+            var siteName = "Geili Site";
+            var relationEntity = new RelationEntity { EntityId = siteName, Id = siteId};
+            deviceEntity.Relation = new[] { relationEntity };
+            var mockDevice = new DevicesEntity { Config = new[] { deviceEntity } };
+            _mockDeviceRepository.Setup(x => x.GetDevices()).Returns(Task.FromResult(mockDevice));
+            var result = _testObj.GetDevices();
+            Assert.NotNull(result);
+            Assert.True(result.Result.Length == 1);
+            Assert.Equal(result.Result[0].DeviceDisplayName, deviceDisplayName);
+            Assert.Equal(result.Result[0].DeviceId, deviceId);
+            Assert.Equal(result.Result[0].DeviceType, deviceType);
+            Assert.Equal(result.Result[0].SiteId, siteId);
+            Assert.Equal(result.Result[0].SiteName, siteName);
 
-            _mockIncidentFacadeApi.Setup(api => api.CreateIncident(It.IsAny<CreateIncidentRequestDto>()))
-                .Returns(Task.FromResult(createIncidentResponse));
-
-            //act
-            var incidentId = _testObj.CreateIncident(request);
-
-            //assert
-            Assert.Equal(createIncidentResponse.IncidentId.ToString(), incidentId.Result);
-        }
-
-        [Fact]
-        public void RespondIncident_Success()
-        {
-            //arrange
-            var incidentId = Guid.NewGuid();
-            _mockIncidentMicroApi
-                .Setup(api =>
-                    api.Respond(It.Is<RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new RespondIncidentResponseDto {IsSuccess = true});
-
-            //act
-            var result = _testObj.RespondIncident(incidentId.ToString());
-
-            //assert
-            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
-        }
-
-        [Fact]
-        public void RespondIncident_InvalidIncidentId_ReturnError()
-        {
-            //arrange
-            var incidentId = "wrong incident id";
-           
-            //act
-            var result = _testObj.RespondIncident(incidentId);
-
-            //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
-        }
-
-        [Fact]
-        public void RespondIncident_CallMicroServiceFailed_ReturnError()
-        {
-            //arrange
-            var incidentId = Guid.NewGuid();
-            _mockIncidentMicroApi
-                .Setup(api =>
-                    api.Respond(It.Is<RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new RespondIncidentResponseDto { IsSuccess = false });
-
-
-            //act
-            var result = _testObj.RespondIncident(incidentId.ToString());
-
-            //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
-        }
-
-
-        [Fact]
-        public void TakeoverIncident_Success()
-        {
-            //arrange
-            var incidentId = Guid.NewGuid();
-            _mockIncidentMicroApi
-                .Setup(api =>
-                    api.Takeover(It.Is<TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new TakeoverIncidentResponseDto {IsSuccess = true});
-
-            //act
-            var result = _testObj.TakeoverIncident(incidentId.ToString());
-
-            //assert
-            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
-        }
-
-        [Fact]
-        public void TakeoverIncident_InvalidIncidentId_ReturnError()
-        {
-            //arrange
-            var incidentId = "wrong incident id";
-
-            //act
-            var result = _testObj.TakeoverIncident(incidentId);
-
-            //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
-        }
-
-        [Fact]
-        public void TakeoverIncident_CallMicroServiceFailed_ReturnError()
-        {
-            //arrange
-            var incidentId = Guid.NewGuid();
-            _mockIncidentMicroApi
-                .Setup(api =>
-                    api.Takeover(It.Is<TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new TakeoverIncidentResponseDto { IsSuccess = false });
-
-            //act
-            var result = _testObj.TakeoverIncident(incidentId.ToString());
-
-            //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
-        }
-
-
-        [Fact]
-        public void CloseIncident_Success()
-        {
-            //arrange
-            var incidentId = Guid.NewGuid();
-            var reason = "close reason";
-            _mockIncidentMicroApi
-                .Setup(api =>
-                    api.Close(It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new CloseIncidentResponseDto { IsSuccess = true });
-
-            //act
-            var result = _testObj.CloseIncident(incidentId.ToString(), reason);
-
-            //assert
-            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
-        }
-
-        [Fact]
-        public void CloseIncident_InvalidIncidentId_ReturnError()
-        {
-            //arrange
-            var incidentId = "wrong incident id";
-            var reason = "close reason";
-
-            //act
-            var result = _testObj.CloseIncident(incidentId, reason);
-
-            //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
-        }
-
-        [Fact]
-        public void CloseIncident_CallMicroServiceFailed_ReturnError()
-        {
-            //arrange
-            var incidentId = Guid.NewGuid();
-            var reason = "close reason";
-            _mockIncidentMicroApi
-                .Setup(api =>
-                    api.Close(It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new CloseIncidentResponseDto { IsSuccess = false });
-
-            //act
-            var result = _testObj.CloseIncident(incidentId.ToString(), reason);
-
-            //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
-        }
-
-
-        private List<WorkflowDto> MocksWorkflowDtos(List<WorkflowStepDto> workflowSteps)
-        {
-            var workflows = new List<WorkflowDto>
-            {
-                new WorkflowDto()
-                {
-                    Id = Guid.NewGuid(),
-                    Description = "Any Incident Desc",
-                    Name = "SOP1",
-                    Number = 1,
-                    Status = WorkflowStatus.Active,
-                    Version = 1,
-                    Owner = "Admin1",
-                    WorkflowSteps = workflowSteps.ToArray()
-                }
-            };
-            return workflows;
-        }
-
-        private List<WorkflowStepDto> MockWorkflowSteps()
-        {
-            var workflowSteps = new List<WorkflowStepDto>();
-            var workflowStep = new WorkflowStepDto
-            {
-                Id = Guid.NewGuid(),
-                HelpText = "Any Help Test",
-                Instruction = "Step Instruction",
-                IsComplete = false,
-                IsOptional = true
-            };
-            workflowSteps.Add(workflowStep);
-            return workflowSteps;
-        }
-
-        private List<IncidentDto> MockIncidentDtos(Guid incidentId)
-        {
-            var incidents = new List<IncidentDto>
-            {
-                new IncidentDto
-                {
-                    Id = incidentId,
-                    Description = "Any Incident Desc",
-                    Number = 1,
-                    CreateAtUtc = DateTime.Now,
-                    LastUpdateAtUtc = DateTime.Now,
-                    Owner = "Admin1",
-                    Priority = IncidentPriority.Low,
-                    State = IncidentState.Active,
-                    WorkflowId = Guid.NewGuid(),
-                    
-
-                }
-            };
-            return incidents;
-        }
-
-
-        private WorkflowDetailsResponseDto MockWorkflowResponse(bool isSuccess, List<WorkflowDto> details)
-        {
-            var response = new WorkflowDetailsResponseDto()
-            {
-                Details = details,
-                IsSuccess = isSuccess,
-                Message = "Any Valid Message"
-            };
-            return response;
-        }
-
-
-        private GetIncidentDetailsResponseDto MockIncidentResponse(bool isSuccess, List<IncidentDto> details)
-        {
-            var response = new GetIncidentDetailsResponseDto()
-            {
-                Details = details,
-                IsSuccess = isSuccess,
-                Message = "Any Valid Message"
-            };
-            return response;
         }
     }
 }

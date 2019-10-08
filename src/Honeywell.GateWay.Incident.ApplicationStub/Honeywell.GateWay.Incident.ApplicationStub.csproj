@@ -5,20 +5,26 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Incident\" />
-    <Folder Include="StubData\" />
-    <Folder Include="Workflow\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Honeywell.GateWay.Incident.Application\Honeywell.GateWay.Incident.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="StubData\GetIncidentDetailsResponseDto.json">
+    <None Update="StubData\WorkflowDesignGto.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="StubData\WorkflowDetailsResponseDto.json">
+    <None Update="StubData\DeviceGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StubData\IncidentGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StubData\WorkflowDesignSelectorGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StubData\WorkflowDesignSummaryGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StubData\WorkflowTemplateGto.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

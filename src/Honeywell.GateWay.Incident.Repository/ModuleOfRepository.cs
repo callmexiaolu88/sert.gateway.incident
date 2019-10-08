@@ -1,8 +1,11 @@
-﻿using Honeywell.GateWay.Incident.Repository.Data;
+﻿using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.GateWay.Incident.Repository.Device;
+using Honeywell.GateWay.Incident.Repository.Incident;
 using Honeywell.Infra.Client.WebApi;
 using Honeywell.Infra.Client.WebApi.Config;
 using Honeywell.Infra.Core.Modular;
+using Honeywell.Micro.Services.Incident.Api;
+using Honeywell.Micro.Services.Workflow.Api;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +19,7 @@ namespace Honeywell.GateWay.Incident.Repository
         public override void InitializeDependencyInject()
         {
             IocContainer.AddScoped<IDeviceRepository, DeviceRepository>();
-
+            IocContainer.AddScoped<IIncidentRepository, IncidentRepository>();
             var config = IocContainer.BuildServiceProvider().GetService<IConfiguration>();
             var assembly = typeof(IDeviceApi).Assembly;
             IocContainer.AddRemoteService(assembly,
@@ -25,6 +28,12 @@ namespace Honeywell.GateWay.Incident.Repository
                     var configuration = new RemoteServiceConfiguration(config["ProWatchAddress"]);
                     o.ConfigRemoteService(assembly, configuration);
                 });
+
+            IocContainer.AddRemoteService(typeof(IWorkflowDesignApi).Assembly);
+            IocContainer.AddRemoteService(typeof(IWorkflowInstanceApi).Assembly);
+            IocContainer.AddRemoteService(typeof(IIncidentMicroApi).Assembly);
+            IocContainer.AddRemoteService(typeof(IIncidentFacadeApi).Assembly);
+            IocContainer.AddHttpContextAccessor();
         }
     }
 }
