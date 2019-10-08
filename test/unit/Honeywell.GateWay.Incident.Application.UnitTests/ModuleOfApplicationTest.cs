@@ -1,5 +1,7 @@
 ﻿using Honeywell.GateWay.Incident.Application.Incident;
+using Honeywell.Infra.HoneyMapper.AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Honeywell.GateWay.Incident.Application.UnitTests
@@ -9,12 +11,12 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         [Fact]
         public void TestModuleOfApp()
         {
-            var serviceCollection = new ServiceCollection();
-            var moduleOfApplication = new ModuleOfApplication(serviceCollection);
+            var sc = new ServiceCollection();
+            sc.AddLogging();
+            var moduleOfApplication = new ModuleOfApplication(sc);
             moduleOfApplication.InitializeDependencyInject();
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            var incidentService = serviceProvider.GetService<IIncidentAppService>();
-            Assert.NotNull(incidentService);
+            Assert.Contains(sc, s => s.ServiceType == typeof(IIncidentAppService));
+            Assert.Contains(sc, s => s.ServiceType == typeof(IConfigureOptions<AutoMapperOptions>));
         }
     }
 }
