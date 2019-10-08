@@ -11,7 +11,7 @@
     <PackageReference Include="Moq" Version="4.13.0" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
-    <PackageReference Include="coverlet.collector" Version="1.0.1" />
+    <PackageReference Include="coverlet.msbuild" Version="2.6.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +25,10 @@
     <None Update="Testconfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="report\" />
   </ItemGroup>
 
 </Project>
