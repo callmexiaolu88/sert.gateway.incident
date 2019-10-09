@@ -222,20 +222,22 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return string.Empty;
         }
 
-        public async Task<DeviceGto[]> GetDevices()
+        public async Task<SiteDeviceGto[]> GetDevices()
         {
-            Logger.LogInformation("call Incident api GetProwatchDeviceList Start");
+            Logger.LogInformation("call Incident api GetDeviceList Start");
             var result = await _deviceRepository.GetDevices();
-            var devices = result.Config.Select(x => new DeviceGto
-            {
-                SiteId = x.Relation[0].Id,
-                SiteName = x.Relation[0].EntityId,
-                DeviceId = x.Identifiers.Id,
-                DeviceDisplayName =  x.Identifiers.Name,
-                DeviceType = x.Type
-            });
 
-            Logger.LogInformation("call Incident api GetProwatchDeviceList end");
+            var devices = result.Config.GroupBy(item => new {item.Relation[0].Id, item.Relation[0].EntityId})
+                .Select(group => new SiteDeviceGto
+                {
+                    SiteId = group.Key.Id,
+                    SiteDisplayName = group.Key.EntityId,
+                    Devices = group.Select(x => new DeviceGto
+                            {DeviceDisplayName = x.Identifiers.Name, DeviceId = x.Identifiers.Id, DeviceType = x.Type})
+                        .ToArray()
+                });
+
+            Logger.LogInformation("call Incident api GetDeviceList end");
             return devices.ToArray();
         }
 
