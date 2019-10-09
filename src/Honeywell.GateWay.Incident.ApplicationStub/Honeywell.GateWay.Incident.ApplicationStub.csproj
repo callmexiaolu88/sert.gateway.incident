@@ -5,10 +5,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Template\Workflows.docx" />
+    <None Remove="Template\WorkflowTemplate.en-us.dotx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Template\Workflows.docx" />
+    <EmbeddedResource Include="Template\WorkflowTemplate.en-us.dotx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Honeywell.GateWay.Incident.Application\Honeywell.GateWay.Incident.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="StubData\ActiveIncidentGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="StubData\WorkflowDesignGto.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -24,9 +37,10 @@
     <None Update="StubData\WorkflowDesignSummaryGto.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="StubData\WorkflowTemplateGto.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Workflow\" />
   </ItemGroup>
 
 </Project>
