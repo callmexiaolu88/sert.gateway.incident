@@ -13,7 +13,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.Workflow
     {
         public Task<CreateWorkflowInstanceResponseDto> Create(CreateWorkflowInstanceRequestDto request)
         {
-            return StubData<CreateWorkflowInstanceResponseDto>();
+            return StubDataTask<CreateWorkflowInstanceResponseDto>();
         }
 
         public ActivityStatus CompleteWorkflow(Guid workflowId)
@@ -68,7 +68,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub.Workflow
 
         public Task<WorkflowDetailsResponseDto> GetWorkflowDetails(WorkflowDetailsRequestDto request)
         {
-            return StubData<WorkflowDetailsResponseDto>();
+            return StubDataTask<WorkflowDetailsResponseDto>();
         }
 
         public WorkflowInstanceDto[] GetPermissions(WorkflowInstanceDto[] workflows)
