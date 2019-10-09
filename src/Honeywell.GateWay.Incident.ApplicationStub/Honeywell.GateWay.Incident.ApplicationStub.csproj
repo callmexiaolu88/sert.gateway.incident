@@ -5,9 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Incident\" />
-    <Folder Include="StubData\" />
-    <Folder Include="Workflow\" />
+    <None Remove="Template\Workflows.docx" />
+    <None Remove="Template\WorkflowTemplate.en-us.dotx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Template\Workflows.docx" />
+    <EmbeddedResource Include="Template\WorkflowTemplate.en-us.dotx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,12 +19,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="StubData\GetIncidentDetailsResponseDto.json">
+    <None Update="StubData\ActiveIncidentGto.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="StubData\WorkflowDetailsResponseDto.json">
+    <None Update="StubData\WorkflowDesignGto.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="StubData\DeviceGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StubData\IncidentGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StubData\WorkflowDesignSelectorGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StubData\WorkflowDesignSummaryGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Workflow\" />
   </ItemGroup>
 
 </Project>

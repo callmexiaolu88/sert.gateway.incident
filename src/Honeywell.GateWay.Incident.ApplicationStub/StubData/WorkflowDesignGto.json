@@ -1,0 +1,78 @@
+﻿[
+  {
+    "id": "17320F8C-52E5-4AAE-A2A2-B50A2F1F77D8",
+    "name": "Event Prep Master 1",
+    "description": "This procedure shall be completed 48hours before any events.",
+    "steps": [
+      {
+        "id": "ED6073E2-3961-4BB6-86C4-264CC4ED295D",
+        "isOptional": false,
+        "instruction": "Curzon Hall Lobby staircase pressurisation can be triggered from fire alarm.",
+        "helpText": "Must inform control room if triggering fire alarm."
+      },
+      {
+        "id": "F377A0DE-8029-4333-8E10-002E4558454E",
+        "isOptional": false,
+        "instruction": "Curzon Hall Lobby Court West external Gates can be unlocked remotely.",
+        "helpText": "3 gates labelled as: Door 2, 3, 4."
+      }
+    ]
+  },
+  {
+    "id": "17320F8C-52E5-4AAE-A2A2-B50A2F1F77D9",
+    "name": "Event Prep Master 2",
+    "description": "This procedure shall be completed 48hours before any events.",
+    "steps": [
+      {
+        "id": "ED6073E2-3961-4BB6-86C4-264CC4ED295D",
+        "isOptional": false,
+        "instruction": "Curzon Hall Lobby staircase pressurisation can be triggered from fire alarm.",
+        "helpText": "Must inform control room if triggering fire alarm."
+      },
+      {
+        "id": "F377A0DE-8029-4333-8E10-002E4558454E",
+        "isOptional": false,
+        "instruction": "Curzon Hall Lobby Court West external Gates can be unlocked remotely.",
+        "helpText": "3 gates labelled as: Door 2, 3, 4."
+      }
+    ]
+  },
+  {
+    "id": "17320F8C-52E5-4AAE-A2A2-B50A2F1F77D0",
+    "name": "Event Prep Master 3",
+    "description": "This procedure shall be completed 48hours before any events.",
+    "steps": [
+      {
+        "id": "ED6073E2-3961-4BB6-86C4-264CC4ED295D",
+        "isOptional": false,
+        "instruction": "Curzon Hall Lobby staircase pressurisation can be triggered from fire alarm.",
+        "helpText": "Must inform control room if triggering fire alarm."
+      },
+      {
+        "id": "F377A0DE-8029-4333-8E10-002E4558454E",
+        "isOptional": false,
+        "instruction": "Curzon Hall Lobby Court West external Gates can be unlocked remotely.",
+        "helpText": "3 gates labelled as: Door 2, 3, 4."
+      }
+    ]
+  },
+  {
+    "id": "17320F8C-52E5-4AAE-A2A2-B50A2F1F77D3",
+    "name": "Event Prep Master 4",
+    "description": "This procedure shall be completed 48hours before any events.",
+    "steps": [
+      {
+        "id": "ED6073E2-3961-4BB6-86C4-264CC4ED295D",
+        "isOptional": false,
+        "instruction": "Curzon Hall Lobby staircase pressurisation can be triggered from fire alarm.",
+        "helpText": "Must inform control room if triggering fire alarm."
+      },
+      {
+        "id": "F377A0DE-8029-4333-8E10-002E4558454E",
+        "isOptional": false,
+        "instruction": "Curzon Hall Lobby Court West external Gates can be unlocked remotely.",
+        "helpText": "3 gates labelled as: Door 2, 3, 4."
+      }
+    ]
+  }
+]

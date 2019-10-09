@@ -1,11 +1,10 @@
 ﻿using System.IO;
-using Honeywell.Infra.Core;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 
-namespace Honeywell.Gateway.Incident.Api
+namespace Honeywell.GateWay.Incident.Repository
 {
-    public interface IIncidentApi : IRemoteService
+    public interface IIncidentRepository
     {
         Task<ExecuteResult> ImportWorkflowDesigns(Stream stream);
 
@@ -27,15 +26,12 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);
 
-        Task<ActiveIncidentListGto> GetActiveIncidentList();
-
-        Task<SiteDeviceGto[]> GetDevices();
-
         Task<ExecuteResult> RespondIncident(string incidentId);
 
         Task<ExecuteResult> TakeoverIncident(string incidentId);
 
         Task<ExecuteResult> CloseIncident(string incidentId, string reason);
 
+        Task<ActiveIncidentListGto> GetActiveIncidentList();
     }
 }
