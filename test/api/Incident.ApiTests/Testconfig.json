@@ -1,0 +1,9 @@
+{
+  "Config": [
+    {
+      "Include": "Incident.ApiTests",
+      "Exclude": ""
+    }
+  ]
+}
+
