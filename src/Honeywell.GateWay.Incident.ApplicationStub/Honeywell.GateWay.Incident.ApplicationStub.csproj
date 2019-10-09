@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Workflow\StubWorkflowApiService.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Honeywell.GateWay.Incident.Application\Honeywell.GateWay.Incident.Application.csproj" />
   </ItemGroup>
 
@@ -31,10 +27,6 @@
     <None Update="StubData\WorkflowTemplateGto.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Workflow\" />
   </ItemGroup>
 
 </Project>
