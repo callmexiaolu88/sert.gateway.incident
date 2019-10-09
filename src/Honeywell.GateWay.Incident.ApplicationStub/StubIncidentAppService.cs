@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 
@@ -82,6 +83,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         public Task<ExecuteResult> CloseIncident(string incidentId, string reason)
         {
             return ResponseRequest();
+        }
+
+        public Task<ActiveIncidentListGto> GetActiveIncidentList()
+        {
+            return StubData<ActiveIncidentListGto>();
         }
     }
 }

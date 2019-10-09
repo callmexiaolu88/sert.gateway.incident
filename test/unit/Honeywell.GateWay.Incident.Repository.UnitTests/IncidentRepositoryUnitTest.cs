@@ -11,11 +11,13 @@ using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Close;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
 using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.DownloadTemplate;
@@ -511,6 +513,94 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.Equal(ExecuteStatus.Error, result.Result.Status);
         }
 
+
+        [Fact]
+        public void GetActiveIncidentList_Successful()
+        {
+            //assign
+            var workflowId = Guid.NewGuid();
+            var mockIncidentListItemDto = new IncidentListItemDto
+            {
+                Id = Guid.NewGuid(),
+                WorkflowId = workflowId,
+                CreateAtUtc = DateTime.Now,
+                Owner = "Admin1",
+                State = IncidentState.Active,
+                Number = 10,
+                Priority = IncidentPriority.High
+            };
+
+            var mockIncidentResponse = new GetIncidentListResponseDto()
+            {
+                List = new List<IncidentListItemDto> { mockIncidentListItemDto },
+                IsSuccess = true,
+                Message = "Any Valid Message"
+            };
+
+            _mockIncidentMicroApi.Setup(x => x.GetActiveList()).Returns(Task.FromResult(mockIncidentResponse));
+
+            var mockWorkflowSummary = new WorkflowSummaryDto
+            {
+                WorkflowId = workflowId,
+                Number = 1,
+                Owner = "Admin1",
+                WorkflowDesignName = "Any Valid WorkflowDesignName",
+                Status = WorkflowStatus.Active,
+                TotalSteps = 6,
+                CompletedSteps = 3
+            };
+
+            var mockWorkflowSummaryResponse = new WorkflowSummaryResponseDto()
+            {
+                Summaries = new List<WorkflowSummaryDto> { mockWorkflowSummary },
+                IsSuccess = true,
+                Message = "Any Valid Message"
+            };
+            _mockWorkflowInstanceApi.Setup(x =>
+                    x.GetWorkflowSummaries(
+                        It.Is<WorkflowSummaryRequestDto>(request => request.WorkflowIds.Contains(workflowId))))
+                .ReturnsAsync(mockWorkflowSummaryResponse);
+
+            //action
+            var response = _incidentRepository.GetActiveIncidentList();
+
+            //assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.Result);
+            Assert.True(1 == response.Result.List.Count);
+            var activeIncidentGto = response.Result.List[0];
+            Assert.Equal(workflowId, activeIncidentGto.WorkflowId);
+            Assert.Equal(mockWorkflowSummary.WorkflowDesignName, activeIncidentGto.WorkflowDesignName);
+            Assert.Equal(mockWorkflowSummary.TotalSteps, activeIncidentGto.TotalSteps);
+            Assert.Equal(mockWorkflowSummary.CompletedSteps, activeIncidentGto.CompletedSteps);
+            Assert.Equal(mockIncidentListItemDto.CreateAtUtc, activeIncidentGto.CreateAtUtc);
+            Assert.Equal(mockIncidentListItemDto.Owner, activeIncidentGto.Owner);
+            Assert.Equal(mockIncidentListItemDto.Number, activeIncidentGto.Number);
+            Assert.Equal(mockIncidentListItemDto.Priority, activeIncidentGto.Priority);
+        }
+
+
+        [Fact]
+        public void GetActiveIncidentList_CallGetActiveList_Failed()
+        {
+            //assign
+            var mockIncidentListResponse = new GetIncidentListResponseDto()
+            {
+                List = new List<IncidentListItemDto>(),
+                IsSuccess = false,
+                Message = "Any Valid Message"
+            };
+            _mockIncidentMicroApi.Setup(x => x.GetActiveList()).ReturnsAsync(mockIncidentListResponse);
+
+            //action
+            var response = _incidentRepository.GetActiveIncidentList();
+
+            //assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.Result);
+            Assert.True(response.Result.Status == ExecuteStatus.Error);
+            Assert.True(0 == response.Result.List.Count);
+        }
 
 
 

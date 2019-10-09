@@ -1,11 +1,21 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Data;
 using Honeywell.GateWay.Incident.Repository.Device;
+using Honeywell.Micro.Services.Incident.Api;
+using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Incident.Api.Incident.List;
+using Honeywell.Micro.Services.Incident.Domain.Shared;
+using Honeywell.Micro.Services.Workflow.Api;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
+using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using Moq;
 using Xunit;
 
@@ -210,7 +220,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             var siteId = "Generaic Device";
             var siteName = "Geili Site";
-            var relationEntity = new RelationEntity { EntityId = siteName, Id = siteId};
+            var relationEntity = new RelationEntity { EntityId = siteName, Id = siteId };
             deviceEntity.Relation = new[] { relationEntity };
             var mockDevice = new DevicesEntity { Config = new[] { deviceEntity } };
             _mockDeviceRepository.Setup(x => x.GetDevices()).Returns(Task.FromResult(mockDevice));
@@ -222,7 +232,28 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.Equal(result.Result[0].DeviceType, deviceType);
             Assert.Equal(result.Result[0].SiteId, siteId);
             Assert.Equal(result.Result[0].SiteName, siteName);
-
         }
+
+        [Fact]
+        public void GetActiveIncidentList_Test()
+        {
+
+            var mockActiveIncidentGto = new ActiveIncidentGto
+            {
+                WorkflowId = Guid.NewGuid(),
+                WorkflowDesignName = "test"
+            };
+            var mockActiveIncidentListGto = new ActiveIncidentListGto();
+            mockActiveIncidentListGto.List.Add(mockActiveIncidentGto);
+
+            _mockIncidentRepository.Setup(x => x.GetActiveIncidentList())
+                .Returns(Task.FromResult(mockActiveIncidentListGto));
+            var result = _testObj.GetActiveIncidentList();
+            Assert.NotNull(result);
+            Assert.True(result.Result.List.Count == 1);
+            Assert.True(result.Result.List[0].WorkflowId == mockActiveIncidentGto.WorkflowId);
+            Assert.True(result.Result.List[0].WorkflowDesignName == mockActiveIncidentGto.WorkflowDesignName);
+        }
+
     }
 }

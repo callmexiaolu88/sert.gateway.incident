@@ -27,6 +27,8 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);
 
+        Task<ActiveIncidentListGto> GetActiveIncidentList();
+
         Task<DeviceGto[]> GetDevices();
 
         Task<ExecuteResult> RespondIncident(string incidentId);
@@ -34,5 +36,6 @@ namespace Honeywell.Gateway.Incident.Api
         Task<ExecuteResult> TakeoverIncident(string incidentId);
 
         Task<ExecuteResult> CloseIncident(string incidentId, string reason);
+
     }
 }

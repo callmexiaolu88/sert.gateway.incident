@@ -5,6 +5,8 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Core.Ddd.Application;
+using Honeywell.Micro.Services.Incident.Api.Incident.List;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Microsoft.Extensions.Logging;
 
 namespace Honeywell.GateWay.Incident.Application.Incident
@@ -103,6 +105,11 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         public async Task<ExecuteResult> CloseIncident(string incidentId, string reason)
         {
             return await _incidentRepository.CloseIncident(incidentId, reason);
+        }
+
+        public async Task<ActiveIncidentListGto> GetActiveIncidentList()
+        {
+            return await _incidentRepository.GetActiveIncidentList();
         }
     }
 }

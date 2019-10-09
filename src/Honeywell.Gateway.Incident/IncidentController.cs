@@ -100,6 +100,12 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
+        public async Task<ActiveIncidentListGto> GetActiveIncidentList()
+        {
+            var activeIncidents = await _incidentAppService.GetActiveIncidentList();
+            return activeIncidents;
+        }
+
         public async Task<DeviceGto[]> GetDevices()
         {
             var devices = await _incidentAppService.GetDevices();

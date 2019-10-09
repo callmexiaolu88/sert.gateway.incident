@@ -31,5 +31,7 @@ namespace Honeywell.GateWay.Incident.Repository
         Task<ExecuteResult> TakeoverIncident(string incidentId);
 
         Task<ExecuteResult> CloseIncident(string incidentId, string reason);
+
+        Task<ActiveIncidentListGto> GetActiveIncidentList();
     }
 }
