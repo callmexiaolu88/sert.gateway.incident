@@ -227,11 +227,11 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var result = _testObj.GetDevices();
             Assert.NotNull(result);
             Assert.True(result.Result.Length == 1);
-            Assert.Equal(result.Result[0].DeviceDisplayName, deviceDisplayName);
-            Assert.Equal(result.Result[0].DeviceId, deviceId);
-            Assert.Equal(result.Result[0].DeviceType, deviceType);
+            Assert.Equal(result.Result[0].Devices[0].DeviceDisplayName, deviceDisplayName);
+            Assert.Equal(result.Result[0].Devices[0].DeviceId, deviceId);
+            Assert.Equal(result.Result[0].Devices[0].DeviceType, deviceType);
             Assert.Equal(result.Result[0].SiteId, siteId);
-            Assert.Equal(result.Result[0].SiteName, siteName);
+            Assert.Equal(result.Result[0].SiteDisplayName, siteName);
         }
 
         [Fact]

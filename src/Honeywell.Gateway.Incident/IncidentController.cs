@@ -106,7 +106,6 @@ namespace Honeywell.Gateway.Incident
             return activeIncidents;
         }
 
-        public async Task<DeviceGto[]> GetDevices()
         public async Task<SiteDeviceGto[]> GetDevices()
         {
             var devices = await _incidentAppService.GetDevices();

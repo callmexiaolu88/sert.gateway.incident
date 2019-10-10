@@ -1,23 +1,35 @@
 ﻿[
   {
-    "deviceId": "0D575425-7E2F-43C0-9932-C26184F22336",
-    "deviceDisplayName": "Door 1",
     "siteId": "1C04B4A9-5978-47E7-8383-613AE7ED5445",
-    "siteName": "ProWatchSite",
-    "deviceType": "Door"
+    "SiteDisplayName": "ProWatchSite",
+    "Devices": [
+      {
+        "deviceId": "0D575425-7E2F-43C0-9932-C26184F22336",
+        "deviceDisplayName": "Door 1",
+        "deviceType": "Door"
+      }
+    ]
   },
   {
-    "deviceId": "ACA3B395-E65C-424B-B9C6-58CC77C6C7AB",
-    "deviceDisplayName": "Door 2",
     "siteId": "1C04B4A9-5978-47E7-8383-613AE7ED5445",
-    "siteName": "ProWatchSite",
-    "deviceType": "Door"
+    "SiteDisplayName": "ProWatchSite",
+    "Devices": [
+      {
+        "deviceId": "ACA3B395-E65C-424B-B9C6-58CC77C6C7AB",
+        "deviceDisplayName": "Door 2",
+        "deviceType": "Door"
+      }
+    ]
   },
   {
-    "deviceId": "ACAAD6DC-F366-4CC3-83DE-1D9E821ECF51",
-    "deviceDisplayName": "Door 3",
     "siteId": "1C04B4A9-5978-47E7-8383-613AE7ED5445",
-    "siteName": "ProWatchSite",
-    "deviceType": "Door"
+    "SiteDisplayName": "ProWatchSite",
+    "Devices": [
+      {
+        "deviceId": "ACAAD6DC-F366-4CC3-83DE-1D9E821ECF51",
+        "deviceDisplayName": "Door 3",
+        "deviceType": "Door"
+      }
+    ]
   }
 ]
