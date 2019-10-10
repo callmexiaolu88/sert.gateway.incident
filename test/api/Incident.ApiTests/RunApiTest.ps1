@@ -10,14 +10,14 @@ param(
 )
 
 $resultContent =  dotnet vstest Incident.ApiTests.dll
-Set-Content -Path .\TestResult.txt -Value $resultContent
+Set-Content -Path $AttachmentFile -Value $resultContent
 #send mail
 if($resultContent -like "*Failed*"){
-    ..\..\assets\SendEmail.ps1 -MailtoAddress "$MailtoAddress" -MailSubject "Incident Gateway API test failed on $URL" -MailPriority "High" -AttachmentFile ".\TestResult.txt"
+    ..\..\assets\SendEmail.ps1 -MailtoAddress "$MailtoAddress" -MailSubject "Incident Gateway API test failed on $URL" -MailPriority "High" -AttachmentFile "$AttachmentFile"
     exit 0
 }
 else{
-    ..\..\assets\SendEmail.ps1 -MailtoAddress "$MailtoAddress" -MailSubject "Incident Gateway API test passed on $URL" -MailPriority "Normal" -AttachmentFile ".\TestResult.txt"
+    ..\..\assets\SendEmail.ps1 -MailtoAddress "$MailtoAddress" -MailSubject "Incident Gateway API test passed on $URL" -MailPriority "Normal" -AttachmentFile "$AttachmentFile"
     exit 1
 }
 
