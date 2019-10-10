@@ -114,6 +114,13 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
+        public async Task<DeviceGto> GetDeviceById(string deviceId, string deviceType)
+        {
+            var devices = await _incidentAppService.GetDeviceById(deviceId, deviceType);
+            return devices;
+        }
+
+        [HttpPost]
         public async Task<ExecuteResult> RespondIncident(string incidentId)
         {
             var result = await _incidentAppService.RespondIncident(incidentId);

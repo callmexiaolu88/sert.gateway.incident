@@ -31,6 +31,8 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<SiteDeviceGto[]> GetDevices();
 
+        Task<DeviceGto> GetDeviceById(string deviceId, string deviceType);
+
         Task<ExecuteResult> RespondIncident(string incidentId);
 
         Task<ExecuteResult> TakeoverIncident(string incidentId);

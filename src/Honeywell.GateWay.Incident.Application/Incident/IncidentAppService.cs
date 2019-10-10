@@ -80,18 +80,42 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             Logger.LogInformation("call Incident api GetDeviceList Start");
             var result = await _deviceRepository.GetDevices();
 
-            var devices = result.Config.GroupBy(item => new {item.Relation[0].Id, item.Relation[0].EntityId})
+            var devices = result.Config.GroupBy(item => new { item.Relation[0].Id, item.Relation[0].EntityId })
                 .Select(group => new SiteDeviceGto
                 {
                     SiteId = group.Key.Id,
                     SiteDisplayName = group.Key.EntityId,
                     Devices = group.Select(x => new DeviceGto
-                            {DeviceDisplayName = x.Identifiers.Name, DeviceId = x.Identifiers.Id, DeviceType = x.Type})
+                    {
+                        DeviceDisplayName = x.Identifiers.Name,
+                        DeviceId = x.Identifiers.Id,
+                        DeviceType = x.Type,
+                        DeviceLocation = x.Identifiers.Tag[0]
+                    })
                         .ToArray()
                 });
 
             Logger.LogInformation("call Incident api GetDeviceList end");
             return devices.ToArray();
+        }
+
+
+        public async Task<DeviceGto> GetDeviceById(string deviceId, string deviceType)
+        {
+            Logger.LogInformation("call Incident api GetDeviceById Start");
+            var result = await _deviceRepository.GetDeviceById(deviceId);
+
+            var devices = result.Config.Select(x =>
+                new DeviceGto
+                {
+                    DeviceDisplayName = x.Identifiers.Name,
+                    DeviceId = x.Identifiers.Id,
+                    DeviceType = x.Type,
+                    DeviceLocation = x.Identifiers.Tag[0]
+                }).FirstOrDefault();
+
+            Logger.LogInformation("call Incident api GetDeviceById end");
+            return devices;
         }
 
         public async Task<ExecuteResult> RespondIncident(string incidentId)
