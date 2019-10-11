@@ -353,7 +353,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var createIncidentResponse = new CreateIncidentResponseDto
             {
                 IsSuccess = true,
-                IncidentId = Guid.NewGuid()
+                IncidentIds = new List<Guid>()
+                {
+                    Guid.NewGuid()
+                }
             };
 
             _mockIncidentFacadeApi.Setup(api => api.CreateIncident(It.IsAny<CreateIncidentRequestDto>()))
@@ -363,7 +366,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var incidentId = _incidentRepository.CreateIncident(request);
 
             //assert
-            Assert.Equal(createIncidentResponse.IncidentId.ToString(), incidentId.Result);
+            Assert.Equal(createIncidentResponse.IncidentIds.First().ToString(), incidentId.Result);
         }
 
         [Fact]
