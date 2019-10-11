@@ -33,7 +33,8 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 
         public Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName)
         {
-            return StubDataTask<WorkflowDesignSelectorGto[]>();
+            var workflows = StubData<WorkflowDesignSelectorGto[]>().Where(m => m.Name.Contains(workflowName));
+            return Task.FromResult(workflows.ToArray());
         }
 
         public Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)

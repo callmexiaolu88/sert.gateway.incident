@@ -26,7 +26,7 @@ using Microsoft.Extensions.Logging;
 namespace Honeywell.GateWay.Incident.Repository.Incident
 {
 
-    public class IncidentRepository: ApplicationService, IIncidentRepository
+    public class IncidentRepository : ApplicationService, IIncidentRepository
     {
         private readonly IWorkflowDesignApi _workflowDesignApi;
         private readonly IIncidentMicroApi _incidentMicroApi;
@@ -203,16 +203,22 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var facadeRequest = new CreateIncidentRequestDto
             {
-                WorkflowDesignReferenceId = workflowDesignReferenceId,
-                Priority = priority,
-                Description = request.Description
+                CreateIncidentDatas = new[]
+                {
+                    new CreateIncidentDataDto
+                    {
+                        WorkflowDesignReferenceId = workflowDesignReferenceId,
+                        Priority = priority,
+                        Description = request.Description
+                    }
+                }
             };
 
             var response = await _incidentFacadeApi.CreateIncident(facadeRequest);
 
             if (response.IsSuccess)
             {
-                return response.IncidentId.ToString();
+                return response.IncidentIds.First().ToString();
             }
 
             Logger.LogError("Failed to create incident!");
