@@ -5,7 +5,7 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 {
     public class ActiveIncidentGto
     {
-        public  Guid Id { get; set; }
+        public Guid Id { get; set; }
 
         public Guid WorkflowId { get; set; }
 
