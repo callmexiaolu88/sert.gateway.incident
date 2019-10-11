@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
 
 namespace Honeywell.Gateway.Incident.Api.Gtos
 {
     public class ActiveIncidentGto
     {
+        public  Guid Id { get; set; }
+
         public Guid WorkflowId { get; set; }
 
         public string WorkflowDesignName { get; set; }
