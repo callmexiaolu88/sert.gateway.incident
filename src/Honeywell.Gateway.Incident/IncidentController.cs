@@ -107,9 +107,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<SiteDeviceGto[]> GetDevices()
+        public async Task<SiteDeviceGto[]> GetSiteDevices()
         {
-            var devices = await _incidentAppService.GetDevices();
+            var devices = await _incidentAppService.GetSiteDevices();
             return devices;
         }
 

@@ -75,7 +75,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.CreateIncident(request);
         }
 
-        public async Task<SiteDeviceGto[]> GetDevices()
+        public async Task<SiteDeviceGto[]> GetSiteDevices()
         {
             Logger.LogInformation("call Incident api GetDeviceList Start");
             var result = await _deviceRepository.GetDevices();

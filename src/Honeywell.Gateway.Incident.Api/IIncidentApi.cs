@@ -29,7 +29,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ActiveIncidentListGto> GetActiveIncidentList();
 
-        Task<SiteDeviceGto[]> GetDevices();
+        Task<SiteDeviceGto[]> GetSiteDevices();
 
         Task<DeviceGto> GetDeviceById(string deviceId, string deviceType);
 

@@ -86,7 +86,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             throw new Exception("cannot found the incident");
         }
 
-        public Task<SiteDeviceGto[]> GetDevices()
+        public Task<SiteDeviceGto[]> GetSiteDevices()
         {
             return StubDataTask<SiteDeviceGto[]>();
         }
