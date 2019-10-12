@@ -17,5 +17,11 @@ namespace Honeywell.GateWay.Incident.Repository.Device
             var devices = await _deviceApi.GetDevices();
             return devices;
         }
+
+        public async Task<DevicesEntity> GetDeviceById(string deviceId)
+        {
+            var device = await _deviceApi.GetDeviceById(deviceId);
+            return device;
+        }
     }
 }

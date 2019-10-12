@@ -214,7 +214,13 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var deviceType = "Door";
             var deviceEntity = new DeviceEntity
             {
-                Identifiers = new IdentifiersEntity { Description = "ProWatch Device", Id = deviceId, Name = deviceDisplayName },
+                Identifiers = new IdentifiersEntity
+                {
+                    Description = "ProWatch Device",
+                    Id = deviceId,
+                    Name = deviceDisplayName,
+                    Tag = new[] { "location1" }
+                },
                 Type = deviceType
             };
 
@@ -224,14 +230,14 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             deviceEntity.Relation = new[] { relationEntity };
             var mockDevice = new DevicesEntity { Config = new[] { deviceEntity } };
             _mockDeviceRepository.Setup(x => x.GetDevices()).Returns(Task.FromResult(mockDevice));
-            var result = _testObj.GetDevices();
+            var result = _testObj.GetSiteDevices();
             Assert.NotNull(result);
             Assert.True(result.Result.Length == 1);
-            Assert.Equal(result.Result[0].DeviceDisplayName, deviceDisplayName);
-            Assert.Equal(result.Result[0].DeviceId, deviceId);
-            Assert.Equal(result.Result[0].DeviceType, deviceType);
+            Assert.Equal(result.Result[0].Devices[0].DeviceDisplayName, deviceDisplayName);
+            Assert.Equal(result.Result[0].Devices[0].DeviceId, deviceId);
+            Assert.Equal(result.Result[0].Devices[0].DeviceType, deviceType);
             Assert.Equal(result.Result[0].SiteId, siteId);
-            Assert.Equal(result.Result[0].SiteName, siteName);
+            Assert.Equal(result.Result[0].SiteDisplayName, siteName);
         }
 
         [Fact]

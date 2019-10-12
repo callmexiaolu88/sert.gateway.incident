@@ -209,7 +209,9 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                     {
                         WorkflowDesignReferenceId = workflowDesignReferenceId,
                         Priority = priority,
-                        Description = request.Description
+                        Description = request.Description,
+                        DeviceId = request.DeviceId,
+                        DeviceType = request.DeviceType
                     }
                 }
             };

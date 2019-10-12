@@ -11,5 +11,9 @@ namespace Honeywell.GateWay.Incident.Repository
         [HttpGet]
         [Route("/PWWebAPI/ISOM/DeviceMgmt/Devices/config")]
         Task<DevicesEntity> GetDevices();
+
+        [HttpGet]
+        [Route("/PWWebAPI/ISOM/DeviceMgmt/Devices/config?q=(identifier.id=list({deviceId}))")]
+        Task<DevicesEntity> GetDeviceById(string deviceId);
     }
 }
