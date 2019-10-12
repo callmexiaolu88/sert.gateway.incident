@@ -162,7 +162,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetIncidentById(It.IsAny<string>());
+            var result = _testObj.GetIncidentById(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>());
             Assert.NotNull(result);
             Assert.True(result.Result.Description == mockIncident.Description);
         }

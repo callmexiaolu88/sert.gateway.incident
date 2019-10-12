@@ -23,15 +23,13 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds);
 
-        Task<IncidentGto> GetIncidentById(string incidentId);
+        Task<IncidentGto> GetIncidentById(string incidentId, string deviceId, string deviceType);
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);
 
         Task<ActiveIncidentListGto> GetActiveIncidentList();
 
         Task<SiteDeviceGto[]> GetSiteDevices();
-
-        Task<DeviceGto> GetDeviceById(string deviceId, string deviceType);
 
         Task<ExecuteResult> RespondIncident(string incidentId);
 
