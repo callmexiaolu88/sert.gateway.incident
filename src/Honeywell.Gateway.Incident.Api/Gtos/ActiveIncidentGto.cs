@@ -23,5 +23,8 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 
         public long Number { get; set; }
 
+        public string DeviceId { get; set; }
+
+        public string DeviceType { get; set; }
     }
 }

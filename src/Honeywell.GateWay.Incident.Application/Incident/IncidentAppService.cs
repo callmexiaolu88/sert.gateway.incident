@@ -65,9 +65,32 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.ExportWorkflowDesigns(workflowIds);
         }
 
-        public async Task<IncidentGto> GetIncidentById(string incidentId)
+        public async Task<IncidentGto> GetIncidentById(string incidentId, string deviceId, string deviceType)
         {
-            return await _incidentRepository.GetIncidentById(incidentId);
+            var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
+            if (incidentInfo.Status != ExecuteStatus.Successful)
+            {
+                return incidentInfo;
+            }
+
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                return incidentInfo;
+            }
+
+            var deviceInfo = await _deviceRepository.GetDeviceById(deviceId);
+            var device = deviceInfo.Config.Select(x =>
+                new DeviceGto
+                {
+                    DeviceDisplayName = x.Identifiers.Name,
+                    DeviceId = x.Identifiers.Id,
+                    DeviceType = x.Type,
+                    DeviceLocation = x.Identifiers.Tag[0]
+                }).First();
+
+            incidentInfo.DeviceDisplayName = device.DeviceDisplayName;
+            incidentInfo.DeviceLocation = device.DeviceLocation;
+            return incidentInfo;
         }
 
         public async Task<string> CreateIncident(CreateIncidentRequestGto request)
@@ -97,25 +120,6 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
             Logger.LogInformation("call Incident api GetDeviceList end");
             return devices.ToArray();
-        }
-
-
-        public async Task<DeviceGto> GetDeviceById(string deviceId, string deviceType)
-        {
-            Logger.LogInformation("call Incident api GetDeviceById Start");
-            var result = await _deviceRepository.GetDeviceById(deviceId);
-
-            var devices = result.Config.Select(x =>
-                new DeviceGto
-                {
-                    DeviceDisplayName = x.Identifiers.Name,
-                    DeviceId = x.Identifiers.Id,
-                    DeviceType = x.Type,
-                    DeviceLocation = x.Identifiers.Tag[0]
-                }).FirstOrDefault();
-
-            Logger.LogInformation("call Incident api GetDeviceById end");
-            return devices;
         }
 
         public async Task<ExecuteResult> RespondIncident(string incidentId)

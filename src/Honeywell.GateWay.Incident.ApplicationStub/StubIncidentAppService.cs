@@ -72,9 +72,18 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         }
 
 
-        public Task<IncidentGto> GetIncidentById(string incidentId)
+        public Task<IncidentGto> GetIncidentById(string incidentId, string deviceId, string deviceType)
         {
-            return Task.FromResult(StubData<IncidentGto[]>().FirstOrDefault(m => m.Id == Guid.Parse(incidentId)));
+            var incidentInfo = StubData<IncidentGto[]>().First(m => m.Id == Guid.Parse(incidentId));
+            var devices = StubData<SiteDeviceGto[]>();
+            var result = (from site in devices
+                select site.Devices.FirstOrDefault(x => x.DeviceId == deviceId)
+                into item
+                where item != null
+                select item).First();
+            incidentInfo.DeviceDisplayName = result.DeviceDisplayName;
+            incidentInfo.DeviceLocation = result.DeviceLocation;
+            return Task.FromResult(incidentInfo);
         }
 
         public Task<string> CreateIncident(CreateIncidentRequestGto request)
@@ -100,9 +109,8 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                 select site.Devices.FirstOrDefault(x => x.DeviceId == deviceId)
                 into item
                 where item != null
-                select item).ToList();
-            if (result.Any()) return Task.FromResult(result.FirstOrDefault());
-            return Task.FromResult(new DeviceGto());
+                select item).First();
+            return Task.FromResult(result);
         }
 
         public Task<ExecuteResult> RespondIncident(string incidentId)

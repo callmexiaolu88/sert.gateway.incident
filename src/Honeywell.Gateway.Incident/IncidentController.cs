@@ -86,9 +86,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<IncidentGto> GetIncidentById(string incidentId)
+        public async Task<IncidentGto> GetIncidentById(string incidentId, string deviceId, string deviceType)
         {
-           var incident = await _incidentAppService.GetIncidentById(incidentId);
+            var incident = await _incidentAppService.GetIncidentById(incidentId, deviceId, deviceType);
            return incident;
         }
 
@@ -110,13 +110,6 @@ namespace Honeywell.Gateway.Incident
         public async Task<SiteDeviceGto[]> GetSiteDevices()
         {
             var devices = await _incidentAppService.GetSiteDevices();
-            return devices;
-        }
-
-        [HttpPost]
-        public async Task<DeviceGto> GetDeviceById(string deviceId, string deviceType)
-        {
-            var devices = await _incidentAppService.GetDeviceById(deviceId, deviceType);
             return devices;
         }
 
