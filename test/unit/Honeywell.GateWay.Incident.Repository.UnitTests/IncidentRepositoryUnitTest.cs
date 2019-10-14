@@ -9,6 +9,7 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Repository.Incident;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api;
+using Honeywell.Micro.Services.Incident.Api.Incident;
 using Honeywell.Micro.Services.Incident.Api.Incident.Close;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
@@ -377,7 +378,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockIncidentMicroApi
                 .Setup(api =>
                     api.Respond(It.Is<RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new RespondIncidentResponseDto { IsSuccess = true });
+                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = true });
 
             //act
             var result = _incidentRepository.RespondIncident(incidentId.ToString());
@@ -407,7 +408,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockIncidentMicroApi
                 .Setup(api =>
                     api.Respond(It.Is<RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new RespondIncidentResponseDto { IsSuccess = false });
+                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = false });
 
 
             //act
@@ -426,7 +427,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockIncidentMicroApi
                 .Setup(api =>
                     api.Takeover(It.Is<TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new TakeoverIncidentResponseDto { IsSuccess = true });
+                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = true });
 
             //act
             var result = _incidentRepository.TakeoverIncident(incidentId.ToString());
@@ -456,7 +457,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockIncidentMicroApi
                 .Setup(api =>
                     api.Takeover(It.Is<TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new TakeoverIncidentResponseDto { IsSuccess = false });
+                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = false });
 
             //act
             var result = _incidentRepository.TakeoverIncident(incidentId.ToString());
@@ -475,7 +476,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockIncidentMicroApi
                 .Setup(api =>
                     api.Close(It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new CloseIncidentResponseDto { IsSuccess = true });
+                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = true });
 
             //act
             var result = _incidentRepository.CloseIncident(incidentId.ToString(), reason);
@@ -507,7 +508,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockIncidentMicroApi
                 .Setup(api =>
                     api.Close(It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new CloseIncidentResponseDto { IsSuccess = false });
+                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = false });
 
             //act
             var result = _incidentRepository.CloseIncident(incidentId.ToString(), reason);
