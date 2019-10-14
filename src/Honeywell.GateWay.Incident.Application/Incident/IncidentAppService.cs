@@ -136,6 +136,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             return await _incidentRepository.CloseIncident(incidentId, reason);
         }
+
         public async Task<ExecuteResult> CompleteIncident(string incidentId)
         {
             return await _incidentRepository.CompleteIncident(incidentId);
