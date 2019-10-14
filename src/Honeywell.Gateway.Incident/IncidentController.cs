@@ -86,9 +86,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<IncidentGto> GetIncidentById(string incidentId, string deviceId, string deviceType)
+        public async Task<IncidentGto> GetIncidentById(QueryIncidentDetailsRequestGto request)
         {
-            var incident = await _incidentAppService.GetIncidentById(incidentId, deviceId, deviceType);
+            var incident = await _incidentAppService.GetIncidentById(request);
            return incident;
         }
 
