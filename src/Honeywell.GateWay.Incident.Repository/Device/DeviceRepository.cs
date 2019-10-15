@@ -17,7 +17,7 @@ namespace Honeywell.GateWay.Incident.Repository.Device
             var devices = await _deviceApi.GetDevices();
             foreach (var config in devices.Config)
             {
-                config.Type = DeviceType.GetSystemDeviceType(config.Type);
+                config.Type = DeviceTypeHelper.GetSystemDeviceType(config.Type);
             }
             return devices;
         }

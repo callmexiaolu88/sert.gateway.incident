@@ -1,6 +1,6 @@
 ﻿namespace Honeywell.GateWay.Incident.Repository
 {
-    public class DeviceType
+    public class DeviceTypeHelper
     {
         private const string SystemName = "Prowatch";
         private const string UnderScore = "_";
