@@ -24,9 +24,57 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         public async Task DeviceRepository_GetDevices_Success()
         {
             // arrange
+            var mockResult = MockDevicesEntity();
+            _mockDeviceApi.Setup(x => x.GetDevices())
+                .Returns(Task.FromResult(mockResult));
+
+            // action
+            var result = await _deviceRepository.GetDevices();
+
+            // assert
+            Assert.NotNull(result);
+            Assert.Equal(result.Config.Length, mockResult.Config.Length);
+            Assert.Equal(result.Config[0].Identifiers.Id, mockResult.Config[0].Identifiers.Id);
+            Assert.Equal(result.Config[0].Identifiers.Description, mockResult.Config[0].Identifiers.Description);
+            Assert.Equal(result.Config[0].Identifiers.Name, mockResult.Config[0].Identifiers.Name);
+            Assert.Equal(result.Config[0].Identifiers.Tag.Length, mockResult.Config[0].Identifiers.Tag.Length);
+            Assert.Equal(result.Config[0].Identifiers.Tag[0], mockResult.Config[0].Identifiers.Tag[0]);
+            Assert.Equal(result.Config[0].Relation.Length, mockResult.Config[0].Relation.Length);
+            Assert.Equal(result.Config[0].Relation[0].Id, mockResult.Config[0].Relation[0].Id);
+            Assert.Equal(result.Config[0].Relation[0].EntityId, mockResult.Config[0].Relation[0].EntityId);
+            Assert.Equal(result.Config[0].Type, mockResult.Config[0].Type);
+        }
+
+        [Fact]
+        public async Task DeviceRepository_GetDeviceById_Success()
+        {
+            // arrange
+            var mockResult = MockDevicesEntity();
+            _mockDeviceApi.Setup(x => x.GetDeviceById(It.IsAny<string>()))
+                .Returns(Task.FromResult(mockResult));
+
+            // action
+            var result = await _deviceRepository.GetDeviceById(It.IsAny<string>());
+
+            // assert
+            Assert.NotNull(result);
+            Assert.Equal(result.Config.Length, mockResult.Config.Length);
+            Assert.Equal(result.Config[0].Identifiers.Id, mockResult.Config[0].Identifiers.Id);
+            Assert.Equal(result.Config[0].Identifiers.Description, mockResult.Config[0].Identifiers.Description);
+            Assert.Equal(result.Config[0].Identifiers.Name, mockResult.Config[0].Identifiers.Name);
+            Assert.Equal(result.Config[0].Identifiers.Tag.Length, mockResult.Config[0].Identifiers.Tag.Length);
+            Assert.Equal(result.Config[0].Identifiers.Tag[0], mockResult.Config[0].Identifiers.Tag[0]);
+            Assert.Equal(result.Config[0].Relation.Length, mockResult.Config[0].Relation.Length);
+            Assert.Equal(result.Config[0].Relation[0].Id, mockResult.Config[0].Relation[0].Id);
+            Assert.Equal(result.Config[0].Relation[0].EntityId, mockResult.Config[0].Relation[0].EntityId);
+            Assert.Equal(result.Config[0].Type, mockResult.Config[0].Type);
+        }
+
+        private DevicesEntity MockDevicesEntity()
+        {
             var mockResult = new DevicesEntity
             {
-                Config = new []
+                Config = new[]
                 {
                     new DeviceEntity
                     {
@@ -50,24 +98,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                     }
                 }
             };
-            _mockDeviceApi.Setup(x => x.GetDevices())
-                .Returns(Task.FromResult(mockResult));
-
-            // action
-            var result = await _deviceRepository.GetDevices();
-
-            // assert
-            Assert.NotNull(result);
-            Assert.Equal(result.Config.Length, mockResult.Config.Length);
-            Assert.Equal(result.Config[0].Identifiers.Id, mockResult.Config[0].Identifiers.Id);
-            Assert.Equal(result.Config[0].Identifiers.Description, mockResult.Config[0].Identifiers.Description);
-            Assert.Equal(result.Config[0].Identifiers.Name, mockResult.Config[0].Identifiers.Name);
-            Assert.Equal(result.Config[0].Identifiers.Tag.Length, mockResult.Config[0].Identifiers.Tag.Length);
-            Assert.Equal(result.Config[0].Identifiers.Tag[0], mockResult.Config[0].Identifiers.Tag[0]);
-            Assert.Equal(result.Config[0].Relation.Length, mockResult.Config[0].Relation.Length);
-            Assert.Equal(result.Config[0].Relation[0].Id, mockResult.Config[0].Relation[0].Id);
-            Assert.Equal(result.Config[0].Relation[0].EntityId, mockResult.Config[0].Relation[0].EntityId);
-            Assert.Equal(result.Config[0].Type, mockResult.Config[0].Type);
+            return mockResult;
         }
     }
 }
