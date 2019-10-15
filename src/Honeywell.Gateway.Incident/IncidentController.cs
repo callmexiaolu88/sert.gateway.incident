@@ -89,7 +89,7 @@ namespace Honeywell.Gateway.Incident
         public async Task<IncidentGto> GetIncidentById(GetIncidentDetailsRequestGto request)
         {
             var incident = await _incidentAppService.GetIncidentById(request);
-           return incident;
+            return incident;
         }
 
         [HttpPost]
@@ -131,6 +131,13 @@ namespace Honeywell.Gateway.Incident
         public async Task<ExecuteResult> CloseIncident(string incidentId, string reason)
         {
             var result = await _incidentAppService.CloseIncident(incidentId, reason);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ExecuteResult> CompleteIncident(string incidentId)
+        {
+            var result = await _incidentAppService.CompleteIncident(incidentId);
             return result;
         }
     }

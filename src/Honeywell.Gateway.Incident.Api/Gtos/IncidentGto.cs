@@ -36,6 +36,8 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 
         public List<IncidentStepGto> IncidentSteps { get; set; }
 
+        public List<ActivityGto> IncidentActivities { get; set; }
+
         public string DeviceDisplayName { get; set; }
 
         public string DeviceLocation { get; set; }

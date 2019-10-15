@@ -134,6 +134,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return ResponseRequest();
         }
 
+        public Task<ExecuteResult> CompleteIncident(string incidentId)
+        {
+            return ResponseRequest();
+        }
+
         public Task<ActiveIncidentListGto> GetActiveIncidentList()
         {
             var result = StubData<List<ActiveIncidentGto>>();
