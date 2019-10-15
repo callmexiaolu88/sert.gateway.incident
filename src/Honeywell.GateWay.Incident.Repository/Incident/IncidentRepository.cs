@@ -169,13 +169,12 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             if (!response.IsSuccess)
             {
                 result.ErrorList.Add(response.Message);
-                return await Task.FromResult(result);
+                return result;
             }
 
             HoneyMapper.Map(response.Details[0], result);
             result.Status = ExecuteStatus.Successful;
-            return await Task.FromResult(result);
-
+            return  result;
         }
 
         public async Task<string> CreateIncident(CreateIncidentRequestGto request)
