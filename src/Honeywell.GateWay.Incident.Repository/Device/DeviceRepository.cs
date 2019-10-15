@@ -15,6 +15,10 @@ namespace Honeywell.GateWay.Incident.Repository.Device
         public async Task<DevicesEntity> GetDevices()
         {
             var devices = await _deviceApi.GetDevices();
+            foreach (var config in devices.Config)
+            {
+                config.Type = DeviceTypeHelper.GetSystemDeviceType(config.Type);
+            }
             return devices;
         }
 

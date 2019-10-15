@@ -153,20 +153,58 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
-        public void GetIncidentById_Test()
+        public void GetIncidentById_EmptyDevice_Succeed()
         {
             var mockIncident = new IncidentGto
             {
-                Description = "Test Incident Description"
+                Description = "Test Incident Description",
+                Status = ExecuteStatus.Successful
             };
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetIncidentById(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>());
+            var result = _testObj.GetIncidentById(new GetIncidentDetailsRequestGto());
             Assert.NotNull(result);
+            Assert.True(result.Result.Status == ExecuteStatus.Successful);
             Assert.True(result.Result.Description == mockIncident.Description);
         }
 
+        [Fact]
+        public void GetIncidentById_EmptyDevice_Failed()
+        {
+            var mockIncident = new IncidentGto
+            {
+                Status = ExecuteStatus.Error
+            };
+            var mockIncidentTask = Task.FromResult(mockIncident);
+            _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
+                .Returns(mockIncidentTask);
+            var result = _testObj.GetIncidentById(new GetIncidentDetailsRequestGto());
+            Assert.NotNull(result);
+            Assert.True(result.Result.Status == ExecuteStatus.Error);
+        }
+
+        [Fact]
+        public void GetIncidentById_ValidDevice_Succeed()
+        {
+            var mockIncident = new IncidentGto
+            {
+                Description = "Test Incident Description",
+                Status = ExecuteStatus.Successful
+            };
+            var mockIncidentTask = Task.FromResult(mockIncident);
+            _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
+                .Returns(mockIncidentTask);
+            var mockDeviceResult = MockDeviceEntities();
+            _mockDeviceRepository.Setup(x => x.GetDeviceById(It.IsAny<string>())).Returns(Task.FromResult(mockDeviceResult));
+            var result = _testObj.GetIncidentById(new GetIncidentDetailsRequestGto
+                {DeviceId = mockDeviceResult.Config[0].Identifiers.Id, DeviceType = "prowatch"});
+            Assert.NotNull(result);
+            Assert.True(result.Result.Description == mockIncident.Description);
+            Assert.True(result.Result.DeviceDisplayName == mockDeviceResult.Config[0].Identifiers.Name);
+            Assert.True(result.Result.DeviceLocation == mockDeviceResult.Config[0].Identifiers.Tag[0]);
+        }
+        
         [Fact]
         public void CreateIncident_Test()
         {
@@ -209,35 +247,17 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         [Fact]
         public void GetDevices_Test()
         {
-            var deviceDisplayName = "Door 1";
-            var deviceId = "ProWatch Device Id";
-            var deviceType = "Door";
-            var deviceEntity = new DeviceEntity
-            {
-                Identifiers = new IdentifiersEntity
-                {
-                    Description = "ProWatch Device",
-                    Id = deviceId,
-                    Name = deviceDisplayName,
-                    Tag = new[] { "location1" }
-                },
-                Type = deviceType
-            };
-
-            var siteId = "Generaic Device";
-            var siteName = "Geili Site";
-            var relationEntity = new RelationEntity { EntityId = siteName, Id = siteId };
-            deviceEntity.Relation = new[] { relationEntity };
-            var mockDevice = new DevicesEntity { Config = new[] { deviceEntity } };
+            var mockDevice = MockDeviceEntities();
             _mockDeviceRepository.Setup(x => x.GetDevices()).Returns(Task.FromResult(mockDevice));
             var result = _testObj.GetSiteDevices();
             Assert.NotNull(result);
             Assert.True(result.Result.Length == 1);
-            Assert.Equal(result.Result[0].Devices[0].DeviceDisplayName, deviceDisplayName);
-            Assert.Equal(result.Result[0].Devices[0].DeviceId, deviceId);
-            Assert.Equal(result.Result[0].Devices[0].DeviceType, deviceType);
-            Assert.Equal(result.Result[0].SiteId, siteId);
-            Assert.Equal(result.Result[0].SiteDisplayName, siteName);
+            Assert.Equal(result.Result[0].Devices[0].DeviceDisplayName, mockDevice.Config[0].Identifiers.Name);
+            Assert.Equal(result.Result[0].Devices[0].DeviceId, mockDevice.Config[0].Identifiers.Id);
+            Assert.Equal(result.Result[0].Devices[0].DeviceType, mockDevice.Config[0].Type);
+            Assert.Equal(result.Result[0].Devices[0].DeviceLocation, mockDevice.Config[0].Identifiers.Tag[0]);
+            Assert.Equal(result.Result[0].SiteId, mockDevice.Config[0].Relation[0].Id);
+            Assert.Equal(result.Result[0].SiteDisplayName, mockDevice.Config[0].Relation[0].EntityId);
         }
 
         [Fact]
@@ -260,6 +280,27 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.True(result.Result.List[0].WorkflowId == mockActiveIncidentGto.WorkflowId);
             Assert.True(result.Result.List[0].WorkflowDesignName == mockActiveIncidentGto.WorkflowDesignName);
         }
+
+        private DevicesEntity MockDeviceEntities()
+        {
+            var deviceDisplayName = "Door 1";
+            var deviceId = "ProWatch Device Id";
+            var deviceType = "Door";
+            var deviceEntity = new DeviceEntity
+            {
+                Identifiers = new IdentifiersEntity
+                {
+                    Description = "ProWatch Device",
+                    Id = deviceId,
+                    Name = deviceDisplayName,
+                    Tag = new[] { "location1" }
+                },
+                Relation = new[] { new RelationEntity { EntityId = "Geili Site", Id = "Generaic Device" } },
+                Type = deviceType
+            };
+            return new DevicesEntity { Config = new[] { deviceEntity } };
+        }
+
 
     }
 }
