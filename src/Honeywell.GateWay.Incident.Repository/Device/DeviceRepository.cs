@@ -6,8 +6,6 @@ namespace Honeywell.GateWay.Incident.Repository.Device
     public class DeviceRepository: IDeviceRepository
     {
         private readonly IDeviceApi _deviceApi;
-        private const string SystemName = "Prowatch";
-        private const string UnderScore = "_";
 
         public DeviceRepository(IDeviceApi prowatchApi)
         {
@@ -19,7 +17,7 @@ namespace Honeywell.GateWay.Incident.Repository.Device
             var devices = await _deviceApi.GetDevices();
             foreach (var config in devices.Config)
             {
-                config.Type = $"{SystemName}{UnderScore}{config.Type}";
+                config.Type = DeviceType.GetSystemDeviceType(config.Type);
             }
             return devices;
         }
