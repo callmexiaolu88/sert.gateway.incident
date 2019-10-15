@@ -1,15 +1,11 @@
 using Honeywell.Facade.Services.Incident.Api;
-using Honeywell.Facade.Services.Incident.Api.CreateIncident;
-using Honeywell.Facade.Services.Incident.Api.GetDetails;
+using Honeywell.Facade.Services.Incident.Api.Incident.Create;
+using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Repository.Incident;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api;
-using Honeywell.Micro.Services.Incident.Api.Incident;
-using Honeywell.Micro.Services.Incident.Api.Incident.Close;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
-using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
-using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
@@ -28,6 +24,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 using IncidentPriority = Honeywell.Micro.Services.Incident.Domain.Shared.IncidentPriority;
 
 namespace Honeywell.GateWay.Incident.Repository.UnitTests
@@ -334,10 +331,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var incidentId = Guid.NewGuid();
-            _mockIncidentMicroApi
+            _mockIncidentFacadeApi
                 .Setup(api =>
-                    api.Respond(It.Is<RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = true });
+                    api.RespondIncident(It.Is<FacadeApi.Respond.RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new FacadeApi.IncidentActionResponseDto { IsSuccess = true });
 
             //act
             var result = _incidentRepository.RespondIncident(incidentId.ToString());
@@ -364,10 +361,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var incidentId = Guid.NewGuid();
-            _mockIncidentMicroApi
+            _mockIncidentFacadeApi
                 .Setup(api =>
-                    api.Respond(It.Is<RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = false });
+                    api.RespondIncident(It.Is<FacadeApi.Respond.RespondIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new FacadeApi.IncidentActionResponseDto { IsSuccess = false });
 
 
             //act
@@ -382,10 +379,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var incidentId = Guid.NewGuid();
-            _mockIncidentMicroApi
+            _mockIncidentFacadeApi
                 .Setup(api =>
-                    api.Takeover(It.Is<TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = true });
+                    api.TakeoverIncident(It.Is<FacadeApi.Takeover.TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new FacadeApi.IncidentActionResponseDto { IsSuccess = true });
 
             //act
             var result = _incidentRepository.TakeoverIncident(incidentId.ToString());
@@ -412,10 +409,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var incidentId = Guid.NewGuid();
-            _mockIncidentMicroApi
+            _mockIncidentFacadeApi
                 .Setup(api =>
-                    api.Takeover(It.Is<TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = false });
+                    api.TakeoverIncident(It.Is<FacadeApi.Takeover.TakeoverIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new FacadeApi.IncidentActionResponseDto() { IsSuccess = false });
 
             //act
             var result = _incidentRepository.TakeoverIncident(incidentId.ToString());
@@ -430,10 +427,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var incidentId = Guid.NewGuid();
             var reason = "close reason";
-            _mockIncidentMicroApi
+            _mockIncidentFacadeApi
                 .Setup(api =>
-                    api.Close(It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = true });
+                    api.CloseIncident(It.Is<FacadeApi.Close.CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new FacadeApi.IncidentActionResponseDto { IsSuccess = true });
 
             //act
             var result = _incidentRepository.CloseIncident(incidentId.ToString(), reason);
@@ -462,10 +459,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var incidentId = Guid.NewGuid();
             var reason = "close reason";
-            _mockIncidentMicroApi
+            _mockIncidentFacadeApi
                 .Setup(api =>
-                    api.Close(It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
-                .ReturnsAsync(new IncidentActionResponseDto { IsSuccess = false });
+                    api.CloseIncident(It.Is<FacadeApi.Close.CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                .ReturnsAsync(new FacadeApi.IncidentActionResponseDto { IsSuccess = false });
 
             //act
             var result = _incidentRepository.CloseIncident(incidentId.ToString(), reason);
@@ -581,7 +578,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                     WorkflowDescription = "WorkflowDescription",
                     WorkflowName = "WorkflowName",
                     WorkflowOwner = "WorkflowOwner",
-                    WorkflowSteps = new List<Facade.Services.Incident.Api.GetDetails.WorkflowStepDto>{ new Facade.Services.Incident.Api.GetDetails.WorkflowStepDto{ HelpText = "HelpText" } },
+                    WorkflowSteps = new List<WorkflowStepDto>{ new WorkflowStepDto{ HelpText = "HelpText" } },
                     IncidentActivities = new List<ActivityDto>{new ActivityDto{Operator = "Operator" } },
                 }
             };

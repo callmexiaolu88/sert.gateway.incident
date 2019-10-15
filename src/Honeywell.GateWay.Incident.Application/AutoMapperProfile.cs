@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Honeywell.Facade.Services.Incident.Api.GetDetails;
+using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
@@ -37,7 +37,7 @@ namespace Honeywell.GateWay.Incident.Application
             CreateMap<WorkflowStepDto, IncidentStepGto>();
 
             CreateMap<ActivityDto, ActivityGto>();
-            CreateMap<Facade.Services.Incident.Api.GetDetails.WorkflowStepDto, IncidentStepGto>();
+            CreateMap<Facade.Services.Incident.Api.Incident.Details.WorkflowStepDto, IncidentStepGto>();
             CreateMap<IncidentDetailDto, IncidentGto>()
                 .ForMember(dest => dest.IncidentSteps, opt => opt.MapFrom(src => src.WorkflowSteps)); ;
         }
