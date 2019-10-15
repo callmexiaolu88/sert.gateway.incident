@@ -65,7 +65,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.ExportWorkflowDesigns(workflowIds);
         }
 
-        public async Task<IncidentGto> GetIncidentById(QueryIncidentDetailsRequestGto request)
+        public async Task<IncidentGto> GetIncidentById(GetIncidentDetailsRequestGto request)
         {
             var incidentInfo = await _incidentRepository.GetIncidentById(request.IncidentId);
             if (incidentInfo.Status != ExecuteStatus.Successful)

@@ -23,7 +23,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds);
 
-        Task<IncidentGto> GetIncidentById(QueryIncidentDetailsRequestGto request);
+        Task<IncidentGto> GetIncidentById(GetIncidentDetailsRequestGto request);
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);
 

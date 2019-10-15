@@ -72,7 +72,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         }
 
 
-        public Task<IncidentGto> GetIncidentById(QueryIncidentDetailsRequestGto request)
+        public Task<IncidentGto> GetIncidentById(GetIncidentDetailsRequestGto request)
         {
             var incidentInfo = StubData<IncidentGto[]>().First(m => m.Id == Guid.Parse(request.IncidentId));
             var devices = StubData<SiteDeviceGto[]>();

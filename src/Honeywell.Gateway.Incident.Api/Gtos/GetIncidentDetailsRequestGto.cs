@@ -1,6 +1,6 @@
 ﻿namespace Honeywell.Gateway.Incident.Api.Gtos
 {
-    public class QueryIncidentDetailsRequestGto
+    public class GetIncidentDetailsRequestGto
     {
         public string IncidentId { get; set; }
         public string DeviceId { get; set; }

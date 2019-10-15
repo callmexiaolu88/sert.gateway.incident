@@ -78,7 +78,7 @@ namespace Incident.ApiTests
             {
                 var deviceId = devices[0].Devices[0].DeviceId;
                 var deviceType = devices[0].Devices[0].DeviceType;
-                var queryIncidentDetailsRequestGto = new QueryIncidentDetailsRequestGto
+                var queryIncidentDetailsRequestGto = new GetIncidentDetailsRequestGto
                     { IncidentId = incidentId, DeviceId = deviceId, DeviceType = deviceType };
                 var incidentDetails = await _incidentGateWayApi.GetIncidentById(queryIncidentDetailsRequestGto);
                 Assert.True(incidentDetails.Status == ExecuteStatus.Successful);
