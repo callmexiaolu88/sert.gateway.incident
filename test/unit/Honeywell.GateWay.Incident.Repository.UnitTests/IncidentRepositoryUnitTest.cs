@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Facade.Services.Incident.Api.GetDetails;
@@ -12,13 +7,11 @@ using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident;
 using Honeywell.Micro.Services.Incident.Api.Incident.Close;
-using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
 using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
 using Honeywell.Micro.Services.Workflow.Api;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
@@ -29,9 +22,13 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 using IncidentPriority = Honeywell.Micro.Services.Incident.Domain.Shared.IncidentPriority;
-using WorkflowStepDto = Honeywell.Micro.Services.Workflow.Api.Workflow.Details.WorkflowStepDto;
 
 namespace Honeywell.GateWay.Incident.Repository.UnitTests
 {
@@ -70,8 +67,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             // assert
             Assert.Equal(ExecuteStatus.Successful, result.Status);
         }
-
-
 
         [Fact]
         public async Task WorkflowDesign_DeleteWorkflowDesigns_Failed()
@@ -197,7 +192,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.Null(result);
         }
 
-
         [Fact]
         public async Task ImportWorkFlowDesign_SuccessfulAsync()
         {
@@ -289,6 +283,16 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.NotNull(response);
             Assert.NotNull(response.Result);
             Assert.True(response.Result.Status == ExecuteStatus.Error);
+        }
+
+        [Fact]
+        public void GetIncident_IncidentIdInvalid_ThrowArgumentException()
+        {
+            _mockIncidentFacadeApi.Setup(x => x.GetDetails(It.IsAny<GetDetailRequestDto>()))
+                .ReturnsAsync(It.IsAny<GetDetailsResponseDto>());
+
+            var throwsAsync = Assert.ThrowsAsync<ArgumentException>(()=> _incidentRepository.GetIncidentById(null));
+            Assert.Equal("incidentId", throwsAsync.Result.ParamName);
         }
 
         [Fact]

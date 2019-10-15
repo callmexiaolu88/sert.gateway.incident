@@ -164,9 +164,13 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         public async Task<IncidentGto> GetIncidentById(string incidentId)
         {
             Logger.LogInformation("call Incident api GetIncidentById Start");
+            if (!Guid.TryParse(incidentId, out var guid))
+            {
+                throw new ArgumentException("incidentId is invalid", nameof(incidentId));
+            }
             var result = new IncidentGto();
-            var requestId = new[] { Guid.Parse(incidentId) };
-            var response = await _incidentFacadeApi.GetDetails(new GetDetailRequestDto{IncidentIds = requestId});
+            var requestId = new[] { guid };
+            var response = await _incidentFacadeApi.GetDetails(new GetDetailRequestDto { IncidentIds = requestId });
             if (!response.IsSuccess)
             {
                 result.ErrorList.Add(response.Message);
@@ -176,6 +180,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             HoneyMapper.Map(response.Details[0], result);
             result.Status = ExecuteStatus.Successful;
             return await Task.FromResult(result);
+
         }
 
         public async Task<string> CreateIncident(CreateIncidentRequestGto request)
