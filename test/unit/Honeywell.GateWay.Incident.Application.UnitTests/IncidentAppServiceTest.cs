@@ -163,7 +163,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetIncidentById(new QueryIncidentDetailsRequestGto());
+            var result = _testObj.GetIncidentById(new GetIncidentDetailsRequestGto());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Successful);
             Assert.True(result.Result.Description == mockIncident.Description);
@@ -179,7 +179,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetIncidentById(new QueryIncidentDetailsRequestGto());
+            var result = _testObj.GetIncidentById(new GetIncidentDetailsRequestGto());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Error);
         }
@@ -197,8 +197,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockIncidentTask);
             var mockDeviceResult = MockDeviceEntities();
             _mockDeviceRepository.Setup(x => x.GetDeviceById(It.IsAny<string>())).Returns(Task.FromResult(mockDeviceResult));
-            var result = _testObj.GetIncidentById(new QueryIncidentDetailsRequestGto
-                {DeviceId = mockDeviceResult.Config[0].Identifiers.Id});
+            var result = _testObj.GetIncidentById(new GetIncidentDetailsRequestGto
+                {DeviceId = mockDeviceResult.Config[0].Identifiers.Id, DeviceType = "prowatch"});
             Assert.NotNull(result);
             Assert.True(result.Result.Description == mockIncident.Description);
             Assert.True(result.Result.DeviceDisplayName == mockDeviceResult.Config[0].Identifiers.Name);
