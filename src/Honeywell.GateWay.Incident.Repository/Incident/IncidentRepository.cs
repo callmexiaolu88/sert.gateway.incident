@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Honeywell.Facade.Services.Incident.Api;
+﻿using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Incident.Api;
-using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Workflow.Api;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
@@ -18,6 +11,12 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 
 namespace Honeywell.GateWay.Incident.Repository.Incident
@@ -159,28 +158,23 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
         public async Task<IncidentGto> GetIncidentById(string incidentId)
         {
-
             Logger.LogInformation("call Incident api GetIncidentById Start");
+            if (!Guid.TryParse(incidentId, out var guid))
+            {
+                throw new ArgumentException("incidentId is invalid", nameof(incidentId));
+            }
             var result = new IncidentGto();
-            var requestId = new[] { Guid.Parse(incidentId) };
-            var incidentResponse = await _incidentMicroApi.GetDetails(new GetIncidentDetailsRequestDto { Ids = requestId });
-            if (!incidentResponse.IsSuccess)
+            var requestId = new[] { guid };
+            var response = await _incidentFacadeApi.GetDetails(new GetDetailRequestDto { IncidentIds = requestId });
+            if (!response.IsSuccess)
             {
-                result.ErrorList.Add(incidentResponse.Message);
-                return await Task.FromResult(result);
+                result.ErrorList.Add(response.Message);
+                return result;
             }
-            var incidentGto = HoneyMapper.Map<IncidentDto, IncidentGto>(incidentResponse.Details[0]);
 
-            var workflowResponse = await _workflowInstanceApi.GetWorkflowDetails(new WorkflowDetailsRequestDto { Ids = incidentResponse.Details.Select(m => m.WorkflowId).ToArray() });
-            if (!workflowResponse.IsSuccess)
-            {
-                result.ErrorList.Add(workflowResponse.Message);
-                return await Task.FromResult(result);
-            }
-            HoneyMapper.Map(workflowResponse.Details[0], incidentGto);
-            HoneyMapper.Map(workflowResponse.Details[0].WorkflowSteps, incidentGto.IncidentSteps);
+            HoneyMapper.Map(response.Details[0], result);
             result.Status = ExecuteStatus.Successful;
-            return await Task.FromResult(incidentGto);
+            return  result;
         }
 
         public async Task<string> CreateIncident(CreateIncidentRequestGto request)
