@@ -4,15 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api;
-using Honeywell.Facade.Services.Incident.Api.CreateIncident;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Incident.Api;
-using Honeywell.Micro.Services.Incident.Api.Incident.Close;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
-using Honeywell.Micro.Services.Incident.Api.Incident.Respond;
-using Honeywell.Micro.Services.Incident.Api.Incident.Takeover;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
@@ -22,6 +18,7 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.Extensions.Logging;
+using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 
 namespace Honeywell.GateWay.Incident.Repository.Incident
 {
@@ -195,17 +192,17 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 return string.Empty;
             }
 
-            if (!Enum.TryParse<IncidentPriority>(request.Priority, true, out var priority))
+            if (!Enum.TryParse<FacadeApi.Create.IncidentPriority>(request.Priority, true, out var priority))
             {
                 Logger.LogError($"wrong priority value: {request.Priority}");
                 return string.Empty;
             }
 
-            var facadeRequest = new CreateIncidentRequestDto
+            var facadeRequest = new FacadeApi.Create.CreateIncidentRequestDto
             {
                 CreateIncidentDatas = new[]
                 {
-                    new CreateIncidentDataDto
+                    new FacadeApi.Create.CreateIncidentDataDto
                     {
                         WorkflowDesignReferenceId = workflowDesignReferenceId,
                         Priority = priority,
@@ -235,10 +232,10 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 Logger.LogError($"wrong incident id: {incidentId}");
                 return ExecuteResult.Error;
             }
+            
+            var request = new FacadeApi.Respond.RespondIncidentRequestDto() { IncidentId = incidentGuid };
 
-            var request = new RespondIncidentRequestDto { IncidentId = incidentGuid };
-
-            var response = await _incidentMicroApi.Respond(request);
+            var response = await _incidentFacadeApi.RespondIncident(request);
             if (response.IsSuccess)
             {
                 return ExecuteResult.Success;
@@ -257,8 +254,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 return ExecuteResult.Error;
             }
 
-            var request = new TakeoverIncidentRequestDto { IncidentId = incidentGuid };
-            var response = await _incidentMicroApi.Takeover(request);
+            var request = new FacadeApi.Takeover.TakeoverIncidentRequestDto() { IncidentId = incidentGuid };
+            var response = await _incidentFacadeApi.TakeoverIncident(request);
             if (response.IsSuccess)
             {
                 return ExecuteResult.Success;
@@ -277,14 +274,34 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 return ExecuteResult.Error;
             }
 
-            var request = new CloseIncidentRequestDto { IncidentId = incidentGuid, Reason = reason };
-            var response = await _incidentMicroApi.Close(request);
+            var request = new FacadeApi.Close.CloseIncidentRequestDto { IncidentId = incidentGuid, Reason = reason };
+            var response = await _incidentFacadeApi.CloseIncident(request);
             if (response.IsSuccess)
             {
                 return ExecuteResult.Success;
             }
 
             Logger.LogError("Failed to close incident!");
+            return ExecuteResult.Error;
+        }
+
+        public async Task<ExecuteResult> CompleteIncident(string incidentId)
+        {
+            Logger.LogInformation("call Incident api CompleteIncident Start");
+            if (!Guid.TryParse(incidentId, out var incidentGuid))
+            {
+                Logger.LogError($"wrong incident id: {incidentId}");
+                return ExecuteResult.Error;
+            }
+
+            var request = new FacadeApi.Complete.CompleteIncidentRequestDto() { IncidentId = incidentGuid };
+            var response = await _incidentFacadeApi.CompleteIncident(request);
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to complete incident!");
             return ExecuteResult.Error;
         }
 
