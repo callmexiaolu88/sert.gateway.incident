@@ -33,6 +33,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 
         public Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName)
         {
+            if (string.IsNullOrEmpty(workflowName))
+            {
+                workflowName = string.Empty;
+            }
             var workflows = StubData<WorkflowDesignSelectorGto[]>().Where(m => m.Name.Contains(workflowName));
             return Task.FromResult(workflows.ToArray());
         }
@@ -75,14 +79,20 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         public Task<IncidentGto> GetIncidentById(GetIncidentDetailsRequestGto request)
         {
             var incidentInfo = StubData<IncidentGto[]>().First(m => m.Id == Guid.Parse(request.IncidentId));
+            if (string.IsNullOrEmpty(request.DeviceId))
+            {
+                return Task.FromResult(incidentInfo);
+            }
+
             var devices = StubData<SiteDeviceGto[]>();
-            var result = (from site in devices
+            var deviceList = (from site in devices
                 select site.Devices.FirstOrDefault(x => x.DeviceId == request.DeviceId)
                 into item
                 where item != null
-                select item).First();
-            incidentInfo.DeviceDisplayName = result.DeviceDisplayName;
-            incidentInfo.DeviceLocation = result.DeviceLocation;
+                select item).ToList();
+            var device = deviceList.First();
+            incidentInfo.DeviceDisplayName = device.DeviceDisplayName;
+            incidentInfo.DeviceLocation = device.DeviceLocation;
             return Task.FromResult(incidentInfo);
         }
 
