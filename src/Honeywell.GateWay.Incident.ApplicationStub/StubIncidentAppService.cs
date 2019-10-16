@@ -101,18 +101,6 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return StubDataTask<SiteDeviceGto[]>();
         }
 
-        public Task<DeviceGto> GetDeviceById(string deviceId, string deviceType)
-        {
-            var devices = StubData<SiteDeviceGto[]>();
-
-            var result = (from site in devices
-                select site.Devices.FirstOrDefault(x => x.DeviceId == deviceId)
-                into item
-                where item != null
-                select item).First();
-            return Task.FromResult(result);
-        }
-
         public Task<ExecuteResult> RespondIncident(string incidentId)
         {
             return ResponseRequest();
