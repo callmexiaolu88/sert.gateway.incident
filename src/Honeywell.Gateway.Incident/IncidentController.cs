@@ -86,6 +86,13 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
+        public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
+        {
+            var result = await _incidentAppService.UpdateWorkflowStepStatus(workflowStepId, isHandled);
+            return result;
+        }
+
+        [HttpPost]
         public async Task<IncidentGto> GetIncidentById(GetIncidentDetailsRequestGto request)
         {
             var incident = await _incidentAppService.GetIncidentById(request);

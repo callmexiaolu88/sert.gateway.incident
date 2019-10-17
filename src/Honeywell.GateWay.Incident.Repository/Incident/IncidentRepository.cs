@@ -17,6 +17,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Action;
+using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
 using Honeywell.Micro.Services.Workflow.Domain.Shared;
@@ -158,6 +160,25 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return new WorkflowTemplateGto() { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
 
+        public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
+        {
+            Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
+            var workflowStepGuid = Guid.Parse(workflowStepId);
+
+            var request = new UpdateWorkflowStepStatusRequestDto() { WorkflowStepId = workflowStepGuid, IsHandled = isHandled };
+
+            var response = await _workflowInstanceApi.UpdateWorkflowStepStatus(request);
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to update workflow stepStatus!");
+            var result = ExecuteResult.Error;
+            result.ErrorList.Add(response.Message);
+            return result;
+        }
+
         public async Task<IncidentGto> GetIncidentById(string incidentId)
         {
             Logger.LogInformation("call Incident api GetIncidentById Start");
@@ -176,7 +197,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             HoneyMapper.Map(response.Details[0], result);
             result.Status = ExecuteStatus.Successful;
-            return  result;
+            return result;
         }
 
         public async Task<string> CreateIncident(CreateIncidentRequestGto request)
@@ -228,7 +249,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 Logger.LogError($"wrong incident id: {incidentId}");
                 return ExecuteResult.Error;
             }
-            
+
             var request = new FacadeApi.Respond.RespondIncidentRequestDto() { IncidentId = incidentGuid };
 
             var response = await _incidentFacadeApi.RespondIncident(request);
