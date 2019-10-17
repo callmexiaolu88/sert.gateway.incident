@@ -28,6 +28,8 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 
         public IncidentState State { get; set; }
 
+        public string WorkflowId { get; set; }
+
         public string WorkflowName { get; set; }
 
         public string WorkflowDescription { get; set; }
@@ -37,6 +39,8 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
         public List<IncidentStepGto> IncidentSteps { get; set; }
 
         public List<ActivityGto> IncidentActivities { get; set; }
+
+        public List<WorkflowActivitiesGto> WorkflowActivities { get; set; }
 
         public string DeviceDisplayName { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
@@ -89,6 +90,15 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 }).First();
             incidentInfo.DeviceDisplayName = device.DeviceDisplayName;
             incidentInfo.DeviceLocation = device.DeviceLocation;
+            foreach (var step in incidentInfo.IncidentSteps)
+            {
+                var stepActivities= incidentInfo.WorkflowActivities.Where(x => x.WorkflowStepId==step.Id );
+                foreach (var stepActivitie in stepActivities)
+                {
+                    step.Comments.Add(stepActivitie.Description);
+                }
+            }
+
             return incidentInfo;
         }
 
@@ -144,6 +154,11 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         public async Task<ActiveIncidentListGto> GetActiveIncidentList()
         {
             return await _incidentRepository.GetActiveIncidentList();
+        }
+
+        public async Task<ExecuteResult> AddStepComment(string workflowId, string workflowStepId, string comment)
+        {
+            return await _incidentRepository.AddStepComment(workflowId, workflowStepId, comment);
         }
     }
 }

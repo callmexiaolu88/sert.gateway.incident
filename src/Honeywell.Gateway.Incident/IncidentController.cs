@@ -140,5 +140,12 @@ namespace Honeywell.Gateway.Incident
             var result = await _incidentAppService.CompleteIncident(incidentId);
             return result;
         }
+
+        [HttpPost]
+        public async Task<ExecuteResult> AddStepComment(string workflowId, string workflowStepId, string comment)
+        {
+            var result = await _incidentAppService.AddStepComment(workflowId, workflowStepId, comment);
+            return result;
+        }
     }
 }

@@ -281,6 +281,15 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.True(result.Result.List[0].WorkflowDesignName == mockActiveIncidentGto.WorkflowDesignName);
         }
 
+        [Fact]
+        public void AddStepComment_Successful()
+        {
+            _mockIncidentRepository.Setup(x => x.AddStepComment(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>()))
+                .Returns(MockExecuteResult());
+            var result = _testObj.AddStepComment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>());
+            VerifyResult(result);
+        }
+
         private DevicesEntity MockDeviceEntities()
         {
             var deviceDisplayName = "Door 1";
