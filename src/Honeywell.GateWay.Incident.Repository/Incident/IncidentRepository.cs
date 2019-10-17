@@ -173,7 +173,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             Logger.LogError("Failed to update workflow stepStatus!");
             var result = ExecuteResult.Error;
-            result.ErrorList.Add("Failed to update workflow stepStatus!");
+            result.ErrorList.Add(response.Message);
             return result;
         }
 
