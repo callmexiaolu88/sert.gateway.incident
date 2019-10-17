@@ -60,6 +60,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return ExportTemplate(resourceName, fileName);
         }
 
+        public Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
+        {
+            return ResponseRequest();
+        }
+
         private Task<WorkflowTemplateGto> ExportTemplate(string resourceName, string fileName)
         {
             var template = new WorkflowTemplateGto();
