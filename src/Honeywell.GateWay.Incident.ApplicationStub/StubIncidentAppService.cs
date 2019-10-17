@@ -121,8 +121,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return ResponseRequest();
         }
 
-        private static Task<ExecuteResult> 
-            ResponseRequest()
+        private static Task<ExecuteResult> ResponseRequest()
         {
             var result = new ExecuteResult { Status = ExecuteStatus.Successful };
             return Task.FromResult(result);
