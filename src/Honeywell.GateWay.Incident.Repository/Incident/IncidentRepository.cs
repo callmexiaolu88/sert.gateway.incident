@@ -161,11 +161,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
         {
             Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
-            if (!Guid.TryParse(workflowStepId, out var workflowStepGuid))
-            {
-                Logger.LogError($"wrong incident id: {workflowStepId}");
-                return ExecuteResult.Error;
-            }
+            var workflowStepGuid = Guid.Parse(workflowStepId);
 
             var request = new UpdateWorkflowStepStatusRequestDto() { WorkflowStepId = workflowStepGuid, IsHandled = isHandled };
 
@@ -176,7 +172,9 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             }
 
             Logger.LogError("Failed to update workflow stepStatus!");
-            return ExecuteResult.Error;
+            var result = ExecuteResult.Error;
+            result.ErrorList.Add("Failed to update workflow stepStatus!");
+            return result;
         }
 
         public async Task<IncidentGto> GetIncidentById(string incidentId)
