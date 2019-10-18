@@ -22,6 +22,8 @@ namespace Honeywell.GateWay.Incident.Repository
 
         Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds);
 
+        Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
+
         Task<IncidentGto> GetIncidentById(string incidentId);
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -46,6 +47,29 @@ namespace Incident.ApiTests
             Assert.NotNull(workflowDesignGto.Description);
             Assert.NotNull(workflowDesignGto.Steps);
             Assert.True(workflowDesignGto.Steps.Length > 0);
+            await DeleteWorkflowDesign();
+        }
+
+        [Fact]
+        public async void UpdateWorkflowStepStatus_Success()
+        {
+            await ImportWorkflowDesign();
+            var incidentId = CreateIncident().Result;
+
+            var devices = await _incidentGateWayApi.GetSiteDevices();
+            if (devices.Length > 0)
+            {
+                var deviceId = devices[0].Devices[0].DeviceId;
+                var deviceType = devices[0].Devices[0].DeviceType;
+                var queryIncidentDetailsRequestGto = new GetIncidentDetailsRequestGto
+                { IncidentId = incidentId, DeviceId = deviceId, DeviceType = deviceType };
+                var incidentDetails = await _incidentGateWayApi.GetIncidentById(queryIncidentDetailsRequestGto);
+                var workflowStepId = incidentDetails.IncidentSteps[0].Id;
+                var result = await _incidentGateWayApi.UpdateWorkflowStepStatus(workflowStepId.ToString(), true);
+                Assert.True(result.Status == ExecuteStatus.Successful);
+            }
+
+            await DeleteIncident(incidentId);
             await DeleteWorkflowDesign();
         }
 
@@ -135,7 +159,7 @@ namespace Incident.ApiTests
         {
             var workflowDesignId = GetFirstWorkflowDesignId();
             var incident = new CreateIncidentRequestGto
-                { Description = "incident 1", Priority = "0", WorkflowDesignReferenceId = workflowDesignId };
+            { Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignId };
             var result = await _incidentGateWayApi.CreateIncident(incident);
             Assert.NotNull(result);
             return result;
