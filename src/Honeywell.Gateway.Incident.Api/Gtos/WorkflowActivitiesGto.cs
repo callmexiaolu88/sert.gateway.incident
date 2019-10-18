@@ -6,7 +6,6 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 {
     public class WorkflowActivitiesGto
     {
-        public Guid WorkflowId { get; set; }
         public Guid? WorkflowStepId { get; set; }
         public int Type { get; set; }
         public DateTime AtUtc { get; set; }

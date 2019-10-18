@@ -10,7 +10,6 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
         {
             Status = ExecuteStatus.Error;
             IncidentSteps = new List<IncidentStepGto>();
-            WorkflowActivities = new List<WorkflowActivitiesGto>();
         }
 
         public Guid Id { get; set; }
@@ -40,8 +39,6 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
         public List<IncidentStepGto> IncidentSteps { get; set; }
 
         public List<ActivityGto> IncidentActivities { get; set; }
-
-        public List<WorkflowActivitiesGto> WorkflowActivities { get; set; }
 
         public string DeviceDisplayName { get; set; }
 
