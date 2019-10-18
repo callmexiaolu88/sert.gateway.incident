@@ -196,6 +196,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             }
 
             HoneyMapper.Map(response.Details[0], result);
+            InitStepComment(ref result);
             result.Status = ExecuteStatus.Successful;
             return result;
         }
@@ -389,5 +390,18 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return ExecuteResult.Error;
         }
 
+
+        #region private
+
+        private void InitStepComment(ref IncidentGto incidentGto)
+        {
+            foreach (var step in incidentGto.IncidentSteps)
+            {
+                var stepActivities = incidentGto.WorkflowActivities.Where(x => x.WorkflowStepId == step.Id);
+                step.StepActivities = stepActivities.ToList();
+            }
+        }
+
+        #endregion
     }
 }

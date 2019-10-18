@@ -95,14 +95,6 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 }).First();
             incidentInfo.DeviceDisplayName = device.DeviceDisplayName;
             incidentInfo.DeviceLocation = device.DeviceLocation;
-            foreach (var step in incidentInfo.IncidentSteps)
-            {
-                var stepActivities= incidentInfo.WorkflowActivities.Where(x => x.WorkflowStepId==step.Id );
-                foreach (var stepActivitie in stepActivities)
-                {
-                    step.Comments.Add(stepActivitie.Description);
-                }
-            }
 
             return incidentInfo;
         }
