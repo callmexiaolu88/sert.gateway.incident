@@ -74,18 +74,17 @@ namespace Incident.ApiTests
             var incidentId = CreateIncident().Result;
 
             var devices = await _incidentGateWayApi.GetSiteDevices();
-            if (devices.Length > 0)
-            {
-                var deviceId = devices[0].Devices[0].DeviceId;
-                var deviceType = devices[0].Devices[0].DeviceType;
-                var queryIncidentDetailsRequestGto = new GetIncidentDetailsRequestGto
-                    { IncidentId = incidentId, DeviceId = deviceId, DeviceType = deviceType };
-                var incidentDetails = await _incidentGateWayApi.GetIncidentById(queryIncidentDetailsRequestGto);
-                Assert.True(incidentDetails.Status == ExecuteStatus.Successful);
-                Assert.Equal(incidentDetails.Id.ToString(), incidentId);
-                Assert.Equal(incidentDetails.DeviceDisplayName, devices[0].Devices[0].DeviceDisplayName);
-                Assert.Equal(incidentDetails.DeviceLocation, devices[0].Devices[0].DeviceLocation);
-            }
+            Assert.True(devices.Length > 0);
+
+            var deviceId = devices[0].Devices[0].DeviceId;
+            var deviceType = devices[0].Devices[0].DeviceType;
+            var queryIncidentDetailsRequestGto = new GetIncidentDetailsRequestGto
+                { IncidentId = incidentId, DeviceId = deviceId, DeviceType = deviceType };
+            var incidentDetails = await _incidentGateWayApi.GetIncidentById(queryIncidentDetailsRequestGto);
+            Assert.True(incidentDetails.Status == ExecuteStatus.Successful);
+            Assert.Equal(incidentDetails.Id.ToString(), incidentId);
+            Assert.Equal(incidentDetails.DeviceDisplayName, devices[0].Devices[0].DeviceDisplayName);
+            Assert.Equal(incidentDetails.DeviceLocation, devices[0].Devices[0].DeviceLocation);
 
             await DeleteIncident(incidentId);
             await DeleteWorkflowDesign();
