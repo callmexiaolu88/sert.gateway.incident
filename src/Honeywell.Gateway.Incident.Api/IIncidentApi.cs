@@ -25,7 +25,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
 
-        Task<IncidentGto> GetIncidentById(GetIncidentDetailsRequestGto request);
+        Task<IncidentGto> GetIncidentById(string incidentId);
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);
 

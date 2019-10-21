@@ -70,30 +70,22 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId, isHandled);
         }
 
-        public async Task<IncidentGto> GetIncidentById(GetIncidentDetailsRequestGto request)
+        public async Task<IncidentGto> GetIncidentById(string incidentId)
         {
-            var incidentInfo = await _incidentRepository.GetIncidentById(request.IncidentId);
+            var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
             if (incidentInfo.Status != ExecuteStatus.Successful)
             {
                 return incidentInfo;
             }
 
-            if (string.IsNullOrEmpty(request.DeviceId))
+            if (string.IsNullOrEmpty(incidentInfo.Device.DeviceId))
             {
                 return incidentInfo;
             }
 
-            var deviceInfo = await _deviceRepository.GetDeviceById(request.DeviceId);
-            var device = deviceInfo.Config.Select(x =>
-                new DeviceGto
-                {
-                    DeviceDisplayName = x.Identifiers.Name,
-                    DeviceId = x.Identifiers.Id,
-                    DeviceType = x.Type,
-                    DeviceLocation = x.Identifiers.Tag[0]
-                }).First();
-            incidentInfo.DeviceDisplayName = device.DeviceDisplayName;
-            incidentInfo.DeviceLocation = device.DeviceLocation;
+            var deviceInfo = await _deviceRepository.GetDeviceById(incidentInfo.Device.DeviceId);
+            incidentInfo.Device.DeviceDisplayName = deviceInfo.Config[0].Identifiers.Name;
+            incidentInfo.Device.DeviceLocation = deviceInfo.Config[0].Identifiers.Tag[0];
             return incidentInfo;
         }
 

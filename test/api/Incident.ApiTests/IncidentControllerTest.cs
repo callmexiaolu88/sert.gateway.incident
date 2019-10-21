@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -59,11 +58,7 @@ namespace Incident.ApiTests
             var devices = await _incidentGateWayApi.GetSiteDevices();
             if (devices.Length > 0)
             {
-                var deviceId = devices[0].Devices[0].DeviceId;
-                var deviceType = devices[0].Devices[0].DeviceType;
-                var queryIncidentDetailsRequestGto = new GetIncidentDetailsRequestGto
-                { IncidentId = incidentId, DeviceId = deviceId, DeviceType = deviceType };
-                var incidentDetails = await _incidentGateWayApi.GetIncidentById(queryIncidentDetailsRequestGto);
+                var incidentDetails = await _incidentGateWayApi.GetIncidentById(incidentId);
                 var workflowStepId = incidentDetails.IncidentSteps[0].Id;
                 var result = await _incidentGateWayApi.UpdateWorkflowStepStatus(workflowStepId.ToString(), true);
                 Assert.True(result.Status == ExecuteStatus.Successful);
@@ -76,8 +71,7 @@ namespace Incident.ApiTests
         [Fact]
         public async void GetSiteDevices_Success()
         {
-            var result = await _incidentGateWayApi.GetSiteDevices();
-            Assert.NotNull(result);
+            await GetDevice();
         }
 
         [Fact]
@@ -85,7 +79,7 @@ namespace Incident.ApiTests
         {
             await ImportWorkflowDesign();
 
-            var incidentId = CreateIncident().Result;
+            var incidentId = await CreateIncident();
 
             await DeleteIncident(incidentId);
             await DeleteWorkflowDesign();
@@ -95,20 +89,14 @@ namespace Incident.ApiTests
         public async void GetIncidentById_WithDevice_Success()
         {
             await ImportWorkflowDesign();
-            var incidentId = CreateIncident().Result;
+            var incidentId = await CreateIncident();
+            var device = await GetDevice();
 
-            var devices = await _incidentGateWayApi.GetSiteDevices();
-            Assert.True(devices.Length > 0);
-
-            var deviceId = devices[0].Devices[0].DeviceId;
-            var deviceType = devices[0].Devices[0].DeviceType;
-            var queryIncidentDetailsRequestGto = new GetIncidentDetailsRequestGto
-                { IncidentId = incidentId, DeviceId = deviceId, DeviceType = deviceType };
-            var incidentDetails = await _incidentGateWayApi.GetIncidentById(queryIncidentDetailsRequestGto);
+            var incidentDetails = await _incidentGateWayApi.GetIncidentById(incidentId);
             Assert.True(incidentDetails.Status == ExecuteStatus.Successful);
             Assert.Equal(incidentDetails.Id.ToString(), incidentId);
-            Assert.Equal(incidentDetails.DeviceDisplayName, devices[0].Devices[0].DeviceDisplayName);
-            Assert.Equal(incidentDetails.DeviceLocation, devices[0].Devices[0].DeviceLocation);
+            Assert.Equal(incidentDetails.Device.DeviceDisplayName, device.DeviceDisplayName);
+            Assert.Equal(incidentDetails.Device.DeviceLocation, device.DeviceLocation);
 
             await DeleteIncident(incidentId);
             await DeleteWorkflowDesign();
@@ -158,11 +146,26 @@ namespace Incident.ApiTests
         private async Task<string> CreateIncident()
         {
             var workflowDesignId = GetFirstWorkflowDesignId();
+            var device = await GetDevice();
+
             var incident = new CreateIncidentRequestGto
-            { Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignId };
+            {
+                Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignId,
+                DeviceId = device.DeviceId,
+                DeviceType = device.DeviceType
+            };
             var result = await _incidentGateWayApi.CreateIncident(incident);
             Assert.NotNull(result);
             return result;
+        }
+
+        private async Task<DeviceGto> GetDevice()
+        {
+            var devices = await _incidentGateWayApi.GetSiteDevices();
+            Assert.NotNull(devices);
+            Assert.True(devices.Length > 0);
+
+            return devices[0].Devices[0];
         }
 
         #endregion
