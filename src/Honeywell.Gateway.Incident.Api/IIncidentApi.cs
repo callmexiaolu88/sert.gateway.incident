@@ -41,6 +41,6 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ExecuteResult> CompleteIncident(string incidentId);
 
-        Task<ExecuteResult> AddStepComment(string workflowId, string workflowStepId, string comment);
+        Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
     }
 }

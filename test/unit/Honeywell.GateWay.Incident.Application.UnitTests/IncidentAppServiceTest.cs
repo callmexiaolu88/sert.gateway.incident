@@ -284,9 +284,12 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         [Fact]
         public void AddStepComment_Successful()
         {
-            _mockIncidentRepository.Setup(x => x.AddStepComment(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>()))
+            _mockIncidentRepository
+                .Setup(x => x.AddStepComment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(MockExecuteResult());
-            var result = _testObj.AddStepComment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>());
+            AddStepCommentGto addStepComment = new AddStepCommentGto()
+                {WorkflowId = It.IsAny<string>(), WorkflowStepId = It.IsAny<string>(), Comment = It.IsAny<string>()};
+            var result = _testObj.AddStepComment(addStepComment);
             VerifyResult(result);
         }
 

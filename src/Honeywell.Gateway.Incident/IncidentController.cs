@@ -149,9 +149,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> AddStepComment(string workflowId, string workflowStepId, string comment)
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepComment)
         {
-            var result = await _incidentAppService.AddStepComment(workflowId, workflowStepId, comment);
+            var result = await _incidentAppService.AddStepComment(addStepComment);
             return result;
         }
     }

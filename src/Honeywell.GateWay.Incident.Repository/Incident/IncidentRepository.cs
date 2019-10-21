@@ -366,18 +366,15 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             };
         }
 
-        public async Task<ExecuteResult> AddStepComment(string workflowId, string workflowStepId, string comment)
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
         {
-            Logger.LogInformation("call Incident api AddStepComment Start");
-
-            var guidWorkflowId = Guid.Parse(workflowId);
-            var guidWorkflowStepId = Guid.Parse(workflowStepId);
-
+            Logger.LogInformation($"call Incident api AddStepComment StartworkflowId:{addStepCommentGto.WorkflowId},workflowStepId:{addStepCommentGto.WorkflowStepId}");
+            
             AddStepCommentRequestDto requestDto = new AddStepCommentRequestDto()
             {
-                WorkflowId = guidWorkflowId,
-                WorkflowStepId = guidWorkflowStepId,
-                Comment = comment
+                WorkflowId = Guid.Parse(addStepCommentGto.WorkflowId),
+                WorkflowStepId = Guid.Parse(addStepCommentGto.WorkflowStepId),
+                Comment = addStepCommentGto.Comment
             };
             var response = await _workflowInstanceApi.AddStepComment(requestDto);
 

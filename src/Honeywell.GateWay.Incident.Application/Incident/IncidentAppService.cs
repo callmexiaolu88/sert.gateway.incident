@@ -153,9 +153,9 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.GetActiveIncidentList();
         }
 
-        public async Task<ExecuteResult> AddStepComment(string workflowId, string workflowStepId, string comment)
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
         {
-            return await _incidentRepository.AddStepComment(workflowId, workflowStepId, comment);
+            return await _incidentRepository.AddStepComment(addStepCommentGto);
         }
     }
 }
