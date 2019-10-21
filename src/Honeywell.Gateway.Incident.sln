@@ -29,7 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Honeywell.GateWay.Incident.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Honeywell.GateWay.Incident.Repository.UnitTests", "..\test\unit\Honeywell.GateWay.Incident.Repository.UnitTests\Honeywell.GateWay.Incident.Repository.UnitTests.csproj", "{91260EAD-92CB-4E0E-BBB7-CDA976D335E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeywell.GateWay.Incident.Application.UnitTests", "..\test\unit\Honeywell.GateWay.Incident.Application.UnitTests\Honeywell.GateWay.Incident.Application.UnitTests.csproj", "{105735D8-196E-4266-B833-04D8FF2B126F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Honeywell.GateWay.Incident.Application.UnitTests", "..\test\unit\Honeywell.GateWay.Incident.Application.UnitTests\Honeywell.GateWay.Incident.Application.UnitTests.csproj", "{105735D8-196E-4266-B833-04D8FF2B126F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Honeywell.Infra.Services.WebApiHost", "..\..\sert.infra.services.webapihost\src\Honeywell.Infra.Services.WebApiHost\Honeywell.Infra.Services.WebApiHost.csproj", "{79E3E51B-4A4A-45E4-8884-A0CB4D80D2D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +75,10 @@ Global
 		{105735D8-196E-4266-B833-04D8FF2B126F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{105735D8-196E-4266-B833-04D8FF2B126F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{105735D8-196E-4266-B833-04D8FF2B126F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79E3E51B-4A4A-45E4-8884-A0CB4D80D2D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79E3E51B-4A4A-45E4-8884-A0CB4D80D2D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79E3E51B-4A4A-45E4-8884-A0CB4D80D2D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79E3E51B-4A4A-45E4-8884-A0CB4D80D2D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
