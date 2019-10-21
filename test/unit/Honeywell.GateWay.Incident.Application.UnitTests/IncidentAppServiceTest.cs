@@ -190,7 +190,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncident = new IncidentGto
             {
                 Description = "Test Incident Description",
-                Status = ExecuteStatus.Successful
+                Status = ExecuteStatus.Successful,
+                Device = MockDeviceGto()
             };
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
@@ -300,6 +301,15 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             return new DevicesEntity { Config = new[] { deviceEntity } };
         }
 
-
+        private DeviceGto MockDeviceGto()
+        {
+            return new DeviceGto
+            {
+                DeviceDisplayName = "Door 1",
+                DeviceId = "ProWatch Device Id",
+                DeviceType = "Door",
+                DeviceLocation = "location1"
+            };
+        }
     }
 }

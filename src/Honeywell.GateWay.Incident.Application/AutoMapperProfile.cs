@@ -25,12 +25,7 @@ namespace Honeywell.GateWay.Incident.Application
 
             CreateMap<IncidentListItemDto, ActiveIncidentGto>();
 
-            CreateMap<IncidentDto, IncidentGto>()
-                .ForMember(dest => dest.Device, opt => opt.MapFrom(src => new DeviceGto
-                {
-                    DeviceId = src.DeviceId,
-                    DeviceType = src.DeviceType
-                }));
+            CreateMap<IncidentDto, IncidentGto>();
             CreateMap<WorkflowDto, IncidentGto>()
                 .ForMember(dest => dest.WorkflowName, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.WorkflowDescription, opt => opt.MapFrom(src => src.Description))
@@ -44,7 +39,12 @@ namespace Honeywell.GateWay.Incident.Application
             CreateMap<ActivityDto, ActivityGto>();
             CreateMap<Facade.Services.Incident.Api.Incident.Details.WorkflowStepDto, IncidentStepGto>();
             CreateMap<IncidentDetailDto, IncidentGto>()
-                .ForMember(dest => dest.IncidentSteps, opt => opt.MapFrom(src => src.WorkflowSteps)); ;
+                .ForMember(dest => dest.IncidentSteps, opt => opt.MapFrom(src => src.WorkflowSteps))
+                .ForMember(dest => dest.Device, opt => opt.MapFrom(src => new DeviceGto
+                {
+                    DeviceId = src.DeviceId,
+                    DeviceType = src.DeviceType
+                }));
         }
     }
 }

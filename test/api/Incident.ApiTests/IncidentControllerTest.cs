@@ -55,19 +55,7 @@ namespace Incident.ApiTests
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
 
-            var devices = await _incidentGateWayApi.GetSiteDevices();
-            Assert.True(devices.Length > 0);
-            var deviceId = devices[0].Devices[0].DeviceId;
-            var deviceType = devices[0].Devices[0].DeviceType;
-
-            var queryIncidentDetailsRequestGto = new GetIncidentDetailsRequestGto
-            {
-                IncidentId = incidentId, 
-                DeviceId = deviceId, 
-                DeviceType = deviceType
-            };
-
-            var incidentDetails = await _incidentGateWayApi.GetIncidentById(queryIncidentDetailsRequestGto);
+            var incidentDetails = await _incidentGateWayApi.GetIncidentById(incidentId);
             var workflowStepId = incidentDetails.IncidentSteps[0].Id;
             var result = await _incidentGateWayApi.UpdateWorkflowStepStatus(workflowStepId.ToString(), true);
             Assert.True(result.Status == ExecuteStatus.Successful);
