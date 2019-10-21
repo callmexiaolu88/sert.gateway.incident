@@ -27,6 +27,15 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.NotNull(workflowDesign);
             return workflowDesign.Id.ToString();
         }
+        protected string GetFirstWorkflowDesignName()
+        {
+            var workflowDesigns = GetAllWorkflowDesigns();
+            Assert.NotNull(workflowDesigns);
+            Assert.NotNull(workflowDesigns.Result);
+            var workflowDesign = workflowDesigns.Result.FirstOrDefault();
+            Assert.NotNull(workflowDesign);
+            return workflowDesign.Id.ToString();
+        }
 
         protected async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
         {
