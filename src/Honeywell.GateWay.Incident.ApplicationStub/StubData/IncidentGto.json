@@ -30,7 +30,9 @@
     "status": 0,
     "device": {
       "deviceId": "0D575425-7E2F-43C0-9932-C26184F22336",
-      "deviceType": "Door"
+      "deviceDisplayName": "Door 1",
+      "deviceType": "Door",
+      "DeviceLocation": "location 1"
     }
   },
   {
