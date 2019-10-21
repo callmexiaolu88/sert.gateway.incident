@@ -96,6 +96,48 @@ namespace Incident.ApiTests
         }
 
         [Fact]
+        public async void GetWorkflowDesignSelectorsByName()
+        {
+            //assign
+            await ImportWorkflowDesign();
+
+            //action
+            var workflowDesigns = await _incidentGateWayApi.GetWorkflowDesignSelectorsByName(string.Empty);
+
+            //assert
+            Assert.NotNull(workflowDesigns[0].Name);
+            Assert.NotNull(workflowDesigns[0].Id.ToString());
+            Assert.NotNull(workflowDesigns[0].ReferenceId.ToString());
+            Assert.True(workflowDesigns.Length > 0);
+
+            //clear
+            await DeleteWorkflowDesign();
+        }
+
+        [Fact]
+        public async void GetActiveIncidentList()
+        {
+            //assign
+            await ImportWorkflowDesign();
+            var incidentId = CreateIncident().Result;
+            var workflowDesignName = GetFirstWorkflowDesignName();
+
+            //action
+            var activeIncidentList = await _incidentGateWayApi.GetActiveIncidentList();
+
+            //assert
+            Assert.True(activeIncidentList.List[0].Id.ToString()==incidentId);
+            Assert.True(activeIncidentList.List[0].WorkflowDesignName== workflowDesignName);
+            Assert.True(activeIncidentList.List.Count>0);
+
+            //clear
+            await DeleteIncident(incidentId);
+            await DeleteWorkflowDesign();
+        }
+
+
+
+        [Fact]
         public async void GetIncidentById_WithDevice_Success()
         {
             await ImportWorkflowDesign();
@@ -128,6 +170,16 @@ namespace Incident.ApiTests
             var workflowDesign = workflowDesigns.Result.FirstOrDefault();
             Assert.NotNull(workflowDesign);
             return workflowDesign.Id.ToString();
+        }
+
+        private string GetFirstWorkflowDesignName()
+        {
+            var workflowDesigns = GetAllWorkflowDesigns();
+            Assert.NotNull(workflowDesigns);
+            Assert.NotNull(workflowDesigns.Result);
+            var workflowDesign = workflowDesigns.Result.FirstOrDefault();
+            Assert.NotNull(workflowDesign);
+            return workflowDesign.Name.ToString();
         }
 
         private async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
