@@ -84,20 +84,20 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         public Task<IncidentGto> GetIncidentById(string incidentId)
         {
             var incidentInfo = StubData<IncidentGto[]>().First(m => m.Id == Guid.Parse(incidentId));
-            if (string.IsNullOrEmpty(incidentInfo.Device.DeviceId))
+            if (string.IsNullOrEmpty(incidentInfo.DeviceId))
             {
                 return Task.FromResult(incidentInfo);
             }
 
             var devices = StubData<SiteDeviceGto[]>();
             var deviceList = (from site in devices
-                select site.Devices.FirstOrDefault(x => x.DeviceId == incidentInfo.Device.DeviceId)
+                select site.Devices.FirstOrDefault(x => x.DeviceId == incidentInfo.DeviceId)
                 into item
                 where item != null
                 select item).ToList();
             var device = deviceList.First();
-            incidentInfo.Device.DeviceDisplayName = device.DeviceDisplayName;
-            incidentInfo.Device.DeviceLocation = device.DeviceLocation;
+            incidentInfo.DeviceDisplayName = device.DeviceDisplayName;
+            incidentInfo.DeviceLocation = device.DeviceLocation;
             return Task.FromResult(incidentInfo);
         }
 

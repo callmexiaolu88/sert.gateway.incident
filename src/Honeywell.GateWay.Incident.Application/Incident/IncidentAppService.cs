@@ -78,14 +78,14 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 return incidentInfo;
             }
 
-            if (string.IsNullOrEmpty(incidentInfo.Device.DeviceId))
+            if (string.IsNullOrEmpty(incidentInfo.DeviceId))
             {
                 return incidentInfo;
             }
 
-            var deviceInfo = await _deviceRepository.GetDeviceById(incidentInfo.Device.DeviceId);
-            incidentInfo.Device.DeviceDisplayName = deviceInfo.Config[0].Identifiers.Name;
-            incidentInfo.Device.DeviceLocation = deviceInfo.Config[0].Identifiers.Tag[0];
+            var deviceInfo = await _deviceRepository.GetDeviceById(incidentInfo.DeviceId);
+            incidentInfo.DeviceDisplayName = deviceInfo.Config[0].Identifiers.Name;
+            incidentInfo.DeviceLocation = deviceInfo.Config[0].Identifiers.Tag[0];
             return incidentInfo;
         }
 

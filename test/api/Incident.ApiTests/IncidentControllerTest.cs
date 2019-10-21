@@ -91,8 +91,8 @@ namespace Incident.ApiTests
             var incidentDetails = await _incidentGateWayApi.GetIncidentById(incidentId);
             Assert.True(incidentDetails.Status == ExecuteStatus.Successful);
             Assert.Equal(incidentDetails.Id.ToString(), incidentId);
-            Assert.Equal(incidentDetails.Device.DeviceDisplayName, device.DeviceDisplayName);
-            Assert.Equal(incidentDetails.Device.DeviceLocation, device.DeviceLocation);
+            Assert.Equal(incidentDetails.DeviceDisplayName, device.DeviceDisplayName);
+            Assert.Equal(incidentDetails.DeviceLocation, device.DeviceLocation);
 
             await DeleteIncident(incidentId);
             await DeleteWorkflowDesign();
