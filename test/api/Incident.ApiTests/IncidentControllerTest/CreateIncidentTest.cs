@@ -14,7 +14,7 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
             await ImportWorkflowDesign();
 
-            var incidentId = CreateIncident().Result;
+            var incidentId = await CreateIncident();
 
             await DeleteIncident(incidentId);
             await DeleteWorkflowDesign();
