@@ -57,11 +57,14 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.True(closeResult.Status == ExecuteStatus.Successful);
         }
 
-        protected async Task<string> CreateIncident()
+        protected async Task<string> CreateIncident(string deviceId = null, string deviceType = null)
         {
             var workflowDesignId = GetFirstWorkflowDesignId();
             var incident = new CreateIncidentRequestGto
-            { Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignId };
+            {
+                Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignId,
+                DeviceId = deviceId, DeviceType = deviceType
+            };
             var result = await IncidentGateWayApi.CreateIncident(incident);
             Assert.NotNull(result);
             return result;

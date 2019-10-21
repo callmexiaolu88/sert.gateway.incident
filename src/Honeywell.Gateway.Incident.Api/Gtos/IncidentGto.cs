@@ -42,5 +42,7 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 
         public string DeviceLocation { get; set; }
 
+        public string DeviceId { get; set; }
+
     }
 }

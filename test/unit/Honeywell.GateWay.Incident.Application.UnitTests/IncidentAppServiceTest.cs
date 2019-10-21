@@ -163,7 +163,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetIncidentById(new GetIncidentDetailsRequestGto());
+            var result = _testObj.GetIncidentById(It.IsAny<string>());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Successful);
             Assert.True(result.Result.Description == mockIncident.Description);
@@ -179,7 +179,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetIncidentById(new GetIncidentDetailsRequestGto());
+            var result = _testObj.GetIncidentById(It.IsAny<string>());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Error);
         }
@@ -187,18 +187,23 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         [Fact]
         public void GetIncidentById_ValidDevice_Succeed()
         {
+            var mockDeviceResult = MockDeviceEntities();
+            var device = mockDeviceResult.Config[0];
             var mockIncident = new IncidentGto
             {
                 Description = "Test Incident Description",
-                Status = ExecuteStatus.Successful
+                Status = ExecuteStatus.Successful,
+                DeviceId = device.Identifiers.Id,
+                DeviceLocation = device.Identifiers.Tag[0],
+                DeviceDisplayName = device.Identifiers.Name
             };
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var mockDeviceResult = MockDeviceEntities();
             _mockDeviceRepository.Setup(x => x.GetDeviceById(It.IsAny<string>())).Returns(Task.FromResult(mockDeviceResult));
-            var result = _testObj.GetIncidentById(new GetIncidentDetailsRequestGto
-                {DeviceId = mockDeviceResult.Config[0].Identifiers.Id, DeviceType = "prowatch"});
+
+            var result = _testObj.GetIncidentById(It.IsAny<string>());
+
             Assert.NotNull(result);
             Assert.True(result.Result.Description == mockIncident.Description);
             Assert.True(result.Result.DeviceDisplayName == mockDeviceResult.Config[0].Identifiers.Name);
@@ -300,7 +305,5 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             };
             return new DevicesEntity { Config = new[] { deviceEntity } };
         }
-
-
     }
 }
