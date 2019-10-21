@@ -158,7 +158,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncident = new IncidentGto
             {
                 Description = "Test Incident Description",
-                Status = ExecuteStatus.Successful
+                Status = ExecuteStatus.Successful,
+                Device = new DeviceGto()
             };
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))

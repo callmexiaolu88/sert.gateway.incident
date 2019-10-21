@@ -78,7 +78,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 return incidentInfo;
             }
 
-            if (incidentInfo.Device == null || string.IsNullOrEmpty(incidentInfo.Device.DeviceId))
+            if (string.IsNullOrEmpty(incidentInfo.Device.DeviceId))
             {
                 return incidentInfo;
             }
