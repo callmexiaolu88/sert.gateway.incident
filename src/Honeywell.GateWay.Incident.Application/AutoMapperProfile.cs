@@ -41,7 +41,7 @@ namespace Honeywell.GateWay.Incident.Application
 
             CreateMap<IncidentDetailDto, IncidentGto>()
                 .ForMember(dest => dest.IncidentSteps, opt => opt.MapFrom(src => src.WorkflowSteps));
-            CreateMap<StepCommentsDto, StepCommentGto>();
+            CreateMap<StepCommentDto, StepCommentGto>();
             
         }
     }
