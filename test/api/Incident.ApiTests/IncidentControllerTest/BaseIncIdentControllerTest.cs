@@ -50,6 +50,9 @@ namespace Incident.ApiTests.IncidentControllerTest
 
         protected async Task DeleteIncident(string incidentId)
         {
+            var respondResult = await IncidentGateWayApi.RespondIncident(incidentId);
+            Assert.True(respondResult.Status == ExecuteStatus.Successful);
+
             var closeResult = await IncidentGateWayApi.CloseIncident(incidentId, "test delete");
             Assert.True(closeResult.Status == ExecuteStatus.Successful);
         }
