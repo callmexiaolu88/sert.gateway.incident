@@ -46,9 +46,9 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.GetAllActiveWorkflowDesigns();
         }
 
-        public async Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName)
+        public async Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
         {
-            return await _incidentRepository.GetWorkflowDesignSelectorsByName(workflowName);
+            return await _incidentRepository.GetWorkflowDesignSelectors();
         }
 
         public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
@@ -71,30 +71,22 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId, isHandled);
         }
 
-        public async Task<IncidentGto> GetIncidentById(GetIncidentDetailsRequestGto request)
+        public async Task<IncidentGto> GetIncidentById(string incidentId)
         {
-            var incidentInfo = await _incidentRepository.GetIncidentById(request.IncidentId);
+            var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
             if (incidentInfo.Status != ExecuteStatus.Successful)
             {
                 return incidentInfo;
             }
 
-            if (string.IsNullOrEmpty(request.DeviceId))
+            if (string.IsNullOrEmpty(incidentInfo.DeviceId))
             {
                 return incidentInfo;
             }
 
-            var deviceInfo = await _deviceRepository.GetDeviceById(request.DeviceId);
-            var device = deviceInfo.Config.Select(x =>
-                new DeviceGto
-                {
-                    DeviceDisplayName = x.Identifiers.Name,
-                    DeviceId = x.Identifiers.Id,
-                    DeviceType = x.Type,
-                    DeviceLocation = x.Identifiers.Tag[0]
-                }).First();
-            incidentInfo.DeviceDisplayName = device.DeviceDisplayName;
-            incidentInfo.DeviceLocation = device.DeviceLocation;
+            var deviceInfo = await _deviceRepository.GetDeviceById(incidentInfo.DeviceId);
+            incidentInfo.DeviceDisplayName = deviceInfo.Config[0].Identifiers.Name;
+            incidentInfo.DeviceLocation = deviceInfo.Config[0].Identifiers.Tag[0];
 
             return incidentInfo;
         }

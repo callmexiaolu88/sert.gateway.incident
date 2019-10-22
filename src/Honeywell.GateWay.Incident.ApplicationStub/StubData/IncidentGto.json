@@ -27,7 +27,11 @@
         "helpText": "3 gates labelled as: Door 2, 3, 4."
       }
     ],
-    "status": 0
+    "status": 0,
+    "device": {
+      "deviceId": "0D575425-7E2F-43C0-9932-C26184F22336",
+      "deviceType": "Door"
+    }
   },
   {
     "id": "73FCBDFD-1CAC-453D-9CBF-17DD65CCFC79",
