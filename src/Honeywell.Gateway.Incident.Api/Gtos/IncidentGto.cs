@@ -28,8 +28,6 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 
         public IncidentState State { get; set; }
 
-        public string WorkflowId { get; set; }
-
         public string WorkflowName { get; set; }
 
         public string WorkflowDescription { get; set; }

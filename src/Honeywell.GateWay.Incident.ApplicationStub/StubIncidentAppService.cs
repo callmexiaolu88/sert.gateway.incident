@@ -144,9 +144,9 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return Task.FromResult(new ActiveIncidentListGto { List = result, Status = ExecuteStatus.Successful });
         }
 
-        public Task<ExecuteResult> AddStepComment(string workflowId, string workflowStepId, string comment)
+        public Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
         {
-             return ResponseRequest();
+            return ResponseRequest();
         }
     }
 }

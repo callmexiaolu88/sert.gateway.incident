@@ -364,17 +364,17 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
         public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
         {
-            Logger.LogInformation($"call Incident api AddStepComment StartworkflowId:{addStepCommentGto.WorkflowId},workflowStepId:{addStepCommentGto.WorkflowStepId}");
-            
+            Logger.LogInformation(
+                $"call Incident api AddStepComment Start,workflowStepId:{addStepCommentGto.WorkflowStepId},comment:{addStepCommentGto.Comment}");
+
             AddStepCommentRequestDto requestDto = new AddStepCommentRequestDto()
             {
-                WorkflowId = Guid.Parse(addStepCommentGto.WorkflowId),
                 WorkflowStepId = Guid.Parse(addStepCommentGto.WorkflowStepId),
                 Comment = addStepCommentGto.Comment
             };
             var response = await _workflowInstanceApi.AddStepComment(requestDto);
 
-            if (response == ActivityStatus.Successful)
+            if (response.IsSuccess)
             {
                 return ExecuteResult.Success;
             }

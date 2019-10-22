@@ -592,19 +592,22 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         public void AddStepComment_Success()
         {
             //arrange
-            var incidentId = Guid.NewGuid();
-            AddStepCommentRequestDto requestDto = new AddStepCommentRequestDto()
-                {WorkflowId = Guid.NewGuid(), WorkflowStepId = Guid.NewGuid(), Comment = "this is comment"};
-            _mockWorkflowInstanceApi
-                .Setup(api =>
-                    api.AddStepComment(requestDto))
-                .ReturnsAsync(ActivityStatus.Successful);
+            var response = new WorkflowActionResponseDto();
+            response.MakeSuccess();
+
+            _mockWorkflowInstanceApi.Setup(api => api.AddStepComment(It.IsAny<AddStepCommentRequestDto>()))
+                .Returns(Task.FromResult(response));
 
             //act
-            var result = _incidentRepository.AddStepComment(requestDto.WorkflowId.ToString(), requestDto.WorkflowStepId.ToString(), requestDto.Comment);
+            var addStepCommentGto = new AddStepCommentGto()
+            {
+                WorkflowStepId = Guid.NewGuid().ToString(),
+                Comment = "this is comment"
+            };
+            var result = _incidentRepository.AddStepComment(addStepCommentGto);
 
             //assert
-            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
+            Assert.True(result.Result.Status == ExecuteStatus.Successful);
         }
 
         #region private methods
