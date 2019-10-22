@@ -7,24 +7,21 @@ using Xunit;
 namespace Incident.ApiTests.IncidentControllerTest
 {
     [Collection(Colections.DICollection)]
-    public class IncidentActionTest : BaseIncIdentControllerTest
+    public class TakeoverIncidentTest : BaseIncIdentControllerTest
     {
-        public IncidentActionTest(DIFixture dIFixture) : base(dIFixture)
+        public TakeoverIncidentTest(DIFixture dIFixture) : base(dIFixture)
         {
 
         }
 
         [Fact]
-        public async void IncidentAction_Success()
+        public async void TakeoverIncident_Success()
         {
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
 
             var takeoverResult = await IncidentGateWayApi.TakeoverIncident(incidentId);
             Assert.True(takeoverResult.Status == ExecuteStatus.Successful);
-
-            var completeResult = await IncidentGateWayApi.CompleteIncident(incidentId);
-            Assert.True(completeResult.Status == ExecuteStatus.Successful);
 
             await DeleteIncident(incidentId);
             await DeleteWorkflowDesign();
