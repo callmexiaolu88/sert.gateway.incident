@@ -11,6 +11,6 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
         public string Instruction { get; set; }
         public string HelpText { get; set; }
 
-        public IList<WorkflowActivitiesGto> StepActivities { get; set; } = new List<WorkflowActivitiesGto>();
+        public IList<StepCommentGto> StepActivities { get; set; } = new List<StepCommentGto>();
     }
 }
