@@ -18,10 +18,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Action;
-using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
-using Honeywell.Micro.Services.Workflow.Domain.Shared;
 
 namespace Honeywell.GateWay.Incident.Repository.Incident
 {
