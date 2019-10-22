@@ -31,14 +31,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return StubDataTask<WorkflowDesignSummaryGto[]>();
         }
 
-        public Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName)
+        public Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
         {
-            if (string.IsNullOrEmpty(workflowName))
-            {
-                workflowName = string.Empty;
-            }
-            var workflows = StubData<WorkflowDesignSelectorGto[]>().Where(m => m.Name.Contains(workflowName));
-            return Task.FromResult(workflows.ToArray());
+            var result = StubData<List<WorkflowDesignSelectorGto>>();
+            return Task.FromResult(new WorkflowDesignSelectorListGto { List = result, Status = ExecuteStatus.Successful });
         }
 
         public Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)

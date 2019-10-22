@@ -45,9 +45,9 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.GetAllActiveWorkflowDesigns();
         }
 
-        public async Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName)
+        public async Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
         {
-            return await _incidentRepository.GetWorkflowDesignSelectorsByName(workflowName);
+            return await _incidentRepository.GetWorkflowDesignSelectors();
         }
 
         public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)

@@ -92,19 +92,25 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
 
         [Fact]
-        public void GetWorkflowDesignSelectorsByName_Test()
+        public void GetWorkflowDesignSelectors_Test()
         {
+            // arrange
             var mockDesign = new WorkflowDesignSelectorGto
             {
                 Id = Guid.NewGuid()
             };
-            var workflowDesigns = Task.FromResult(new[] { mockDesign });
-            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignSelectorsByName(It.IsAny<string>()))
-                .Returns(workflowDesigns);
-            var result = _testObj.GetWorkflowDesignSelectorsByName(It.IsAny<string>());
+            var mockWorkflowDesignSelectorListGto = new WorkflowDesignSelectorListGto();
+            mockWorkflowDesignSelectorListGto.List.Add(mockDesign);
+            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignSelectors())
+                .Returns((Task.FromResult(mockWorkflowDesignSelectorListGto)));
+
+            // action
+            var result = _testObj.GetWorkflowDesignSelectors();
+
+            // assert
             Assert.NotNull(result);
-            Assert.True(result.Result.Length == 1);
-            Assert.True(result.Result[0].Id == mockDesign.Id);
+            Assert.True(result.Result.List.Count == 1);
+            Assert.True(result.Result.List[0].Id == mockDesign.Id);
         }
 
         [Fact]
