@@ -112,7 +112,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             // arrange
             var selectorResponseDto = MockWorkflowDesignSelectorResponseDto();
-     
             _workflowDesignApiMock.Setup(x => x.GetSelector()).Returns(Task.FromResult(selectorResponseDto));
 
             // action
@@ -120,7 +119,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
             // assert
             Assert.True(1 == result.List.Count);
-
             foreach (var item in result.List)
             {
                 var expectedItem = selectorResponseDto.Selectors.FirstOrDefault(x => x.Id == item.Id);
