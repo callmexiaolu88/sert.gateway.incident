@@ -91,24 +91,21 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return new WorkflowDesignSummaryGto[] { };
         }
 
-        public async Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName)
+        public async Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
         {
-            var workflowDesignSelectorRequestDto = new WorkflowDesignSelectorRequestDto();
-
-            if (string.IsNullOrEmpty(workflowName))
+            var result = await _workflowDesignApi.GetSelector();
+            if (!result.IsSuccess)
             {
-                workflowName = "";
-            }
-            workflowDesignSelectorRequestDto.WorkflowName = workflowName;
-            var result = await _workflowDesignApi.GetSelector(workflowDesignSelectorRequestDto);
-            if (result.IsSuccess)
-            {
-                return HoneyMapper.Map<WorkflowDesignSelectorDto[],
-                    WorkflowDesignSelectorGto[]>(result.Selectors.ToArray());
+                Logger.LogError($"call workflow design api GetSelector error:{result.Message}");
+                return new WorkflowDesignSelectorListGto() { Status = ExecuteStatus.Error };
             }
 
-            Logger.LogError($"call workflow design api GetSelectors error:{result.Message}");
-            return new WorkflowDesignSelectorGto[] { };
+            return new WorkflowDesignSelectorListGto()
+            {
+                Status = ExecuteStatus.Successful,
+                List = HoneyMapper.Map<WorkflowDesignSelectorDto[],
+                    WorkflowDesignSelectorGto[]>(result.Selectors.ToArray()).ToList()
+            };
         }
 
         public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)

@@ -1,4 +1,7 @@
-﻿using Xunit;
+﻿using System;
+using System.Linq;
+using Honeywell.Gateway.Incident.Api.Gtos;
+using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
 {
@@ -10,20 +13,18 @@ namespace Incident.ApiTests.IncidentControllerTest
 
         }
         [Fact]
-        public async void GetActiveIncidentList()
+        public async void GetActiveIncidentList_GetData_Success()
         {
             //assign
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
-            var workflowDesignName = GetFirstWorkflowDesignName();
 
             //action
             var activeIncidentList = await IncidentGateWayApi.GetActiveIncidentList();
 
             //assert
-            Assert.True(activeIncidentList.List[0].Id.ToString() == incidentId);
-            Assert.True(activeIncidentList.List[0].WorkflowDesignName == workflowDesignName);
-            Assert.True(activeIncidentList.List.Count > 0);
+            Assert.True(activeIncidentList.Status == ExecuteStatus.Successful);
+            Assert.NotNull(activeIncidentList.List.FirstOrDefault(x => x.Id == Guid.Parse(incidentId)));
 
             //clear
             await DeleteIncident(incidentId);
