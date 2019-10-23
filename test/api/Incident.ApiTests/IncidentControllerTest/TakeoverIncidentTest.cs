@@ -23,7 +23,6 @@ namespace Incident.ApiTests.IncidentControllerTest
             var takeoverResult = await IncidentGateWayApi.TakeoverIncident(incidentId);
             Assert.True(takeoverResult.Status == ExecuteStatus.Successful);
 
-            await DeleteIncident(incidentId);
             await DeleteWorkflowDesign();
         }
     }

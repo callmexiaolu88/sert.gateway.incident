@@ -26,7 +26,6 @@ namespace Incident.ApiTests.IncidentControllerTest
             var completeResult = await IncidentGateWayApi.CompleteIncident(incidentId);
             Assert.True(completeResult.Status == ExecuteStatus.Successful);
 
-            await DeleteIncident(incidentId);
             await DeleteWorkflowDesign();
         }
     }
