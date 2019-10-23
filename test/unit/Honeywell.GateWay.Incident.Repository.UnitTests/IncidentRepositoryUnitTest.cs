@@ -1,7 +1,7 @@
 using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
-using Honeywell.Gateway.Incident.Api.Gtos;
+using GTO=Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Repository.Incident;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api;
@@ -22,12 +22,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Honeywell.Micro.Services.Workflow.Api.Workflow;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Action;
 using Xunit;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 using IncidentPriority = Honeywell.Micro.Services.Incident.Domain.Shared.IncidentPriority;
+
+#pragma warning disable CS0612 // Type or member is obsolete
 
 namespace Honeywell.GateWay.Incident.Repository.UnitTests
 {
@@ -64,7 +67,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = await _incidentRepository.DeleteWorkflowDesigns(new[] { It.IsAny<Guid>().ToString() });
 
             // assert
-            Assert.Equal(ExecuteStatus.Successful, result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Successful, result.Status);
         }
 
         [Fact]
@@ -79,7 +82,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = await _incidentRepository.DeleteWorkflowDesigns(new[] { It.IsAny<Guid>().ToString() });
 
             // assert
-            Assert.Equal(ExecuteStatus.Error, result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Error, result.Status);
             Assert.True(1 == result.ErrorList.Count);
             Assert.Equal(mockResult.Message, result.ErrorList[0]);
         }
@@ -209,7 +212,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _workflowDesignApiMock.Setup(x => x.DownloadTemplate()).Returns(Task.FromResult(responseDto));
             var result = await _incidentRepository.DownloadWorkflowTemplate();
             // assert
-            Assert.True(result.Status == ExecuteStatus.Successful);
+            Assert.True(result.Status == GTO.ExecuteStatus.Successful);
         }
 
         [Fact]
@@ -223,7 +226,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = await _incidentRepository.ExportWorkflowDesigns(strIds);
 
             // assert
-            Assert.True(result.Status == ExecuteStatus.Successful);
+            Assert.True(result.Status == GTO.ExecuteStatus.Successful);
             Assert.True(result.FileBytes != null && result.FileBytes.Length > 0);
         }
 
@@ -240,7 +243,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = _incidentRepository.UpdateWorkflowStepStatus(workflowStepId.ToString(), true);
 
             //assert
-            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Successful, result.Result.Status);
         }
 
         [Fact]
@@ -256,7 +259,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = _incidentRepository.UpdateWorkflowStepStatus(workflowStepId.ToString(), true);
 
             //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Error, result.Result.Status);
         }
 
         [Fact]
@@ -275,7 +278,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.NotNull(response);
             Assert.NotNull(response.Result);
             var incidentGto = response.Result;
-            Assert.True(incidentGto.Status == ExecuteStatus.Successful);
+            Assert.True(incidentGto.Status == GTO.ExecuteStatus.Successful);
             Assert.Equal((int)incidentGto.State, incidentDto[0].State);
             Assert.Equal(incidentGto.LastUpdateAtUtc, incidentDto[0].LastUpdateAtUtc);
             Assert.Equal(incidentGto.Description, incidentDto[0].Description);
@@ -308,7 +311,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
             Assert.NotNull(response);
             Assert.NotNull(response.Result);
-            Assert.True(response.Result.Status == ExecuteStatus.Error);
+            Assert.True(response.Result.Status == GTO.ExecuteStatus.Error);
         }
 
         [Fact]
@@ -329,7 +332,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var priority = "HIGH";
             var description = "description";
 
-            var request = new CreateIncidentRequestGto
+            var request = new GTO.CreateIncidentRequestGto
             {
                 WorkflowDesignReferenceId = workflowDesignReferenceId,
                 Priority = priority,
@@ -369,7 +372,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = _incidentRepository.RespondIncident(incidentId.ToString());
 
             //assert
-            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Successful, result.Result.Status);
         }
 
         [Fact]
@@ -382,7 +385,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = _incidentRepository.RespondIncident(incidentId);
 
             //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Error, result.Result.Status);
         }
 
         [Fact]
@@ -400,7 +403,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = _incidentRepository.RespondIncident(incidentId.ToString());
 
             //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Error, result.Result.Status);
         }
 
         [Fact]
@@ -417,7 +420,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = _incidentRepository.TakeoverIncident(incidentId.ToString());
 
             //assert
-            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Successful, result.Result.Status);
         }
 
         [Fact]
@@ -430,7 +433,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = _incidentRepository.TakeoverIncident(incidentId);
 
             //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Error, result.Result.Status);
         }
 
         [Fact]
@@ -447,7 +450,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = _incidentRepository.TakeoverIncident(incidentId.ToString());
 
             //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Error, result.Result.Status);
         }
 
         [Fact]
@@ -465,7 +468,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = _incidentRepository.CloseIncident(incidentId.ToString(), reason);
 
             //assert
-            Assert.Equal(ExecuteStatus.Successful, result.Result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Successful, result.Result.Status);
         }
 
         [Fact]
@@ -479,7 +482,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = _incidentRepository.CloseIncident(incidentId, reason);
 
             //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Error, result.Result.Status);
         }
 
         [Fact]
@@ -497,7 +500,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = _incidentRepository.CloseIncident(incidentId.ToString(), reason);
 
             //assert
-            Assert.Equal(ExecuteStatus.Error, result.Result.Status);
+            Assert.Equal(GTO.ExecuteStatus.Error, result.Result.Status);
         }
 
         [Fact]
@@ -562,7 +565,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.Equal(mockIncidentListItemDto.CreateAtUtc, activeIncidentGto.CreateAtUtc);
             Assert.Equal(mockIncidentListItemDto.Owner, activeIncidentGto.Owner);
             Assert.Equal(mockIncidentListItemDto.Number, activeIncidentGto.Number);
-            Assert.Equal(mockIncidentListItemDto.Priority, activeIncidentGto.Priority);
+            Assert.Equal(mockIncidentListItemDto.Priority.ToString(), activeIncidentGto.Priority.ToString());
         }
 
         [Fact]
@@ -583,8 +586,55 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //assert
             Assert.NotNull(response);
             Assert.NotNull(response.Result);
-            Assert.True(response.Result.Status == ExecuteStatus.Error);
+            Assert.True(response.Result.Status == GTO.ExecuteStatus.Error);
             Assert.True(0 == response.Result.List.Count);
+        }
+
+        [Fact]
+        public void CreateIncidentByAlarm_Success()
+        {
+            //arrange
+            var workflowDesignReferenceId = Guid.NewGuid();
+
+            var request = new GTO.CreateIncidentByAlarmRequestGto
+            {
+                CreateIncidentDatas = new[]
+                {
+                    new GTO.CreateIncidentByAlarmGto
+                    {
+                        WorkflowDesignReferenceId = workflowDesignReferenceId,
+                        Priority = GTO.IncidentPriority.High,
+                        Description = "incident description",
+                        DeviceId = Guid.NewGuid().ToString(),
+                        DeviceType = "Door",
+                        AlarmId = Guid.NewGuid().ToString(),
+                        AlarmData = new GTO.AlarmData
+                        {
+                            AlarmType = "AlarmType",
+                            Description = "alarm description"
+                        }
+                    }
+                }
+            };
+
+            var createIncidentResponse = new CreateIncidentResponseDto
+            {
+                IsSuccess = true,
+                IncidentIds = new List<Guid>()
+                {
+                    Guid.NewGuid()
+                }
+            };
+
+            _mockIncidentFacadeApi.Setup(api => api.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestDto>()))
+                .Returns(Task.FromResult(createIncidentResponse));
+
+            //act
+            var incidentIds = _incidentRepository.CreateIncidentByAlarm(request);
+
+            //assert
+            Assert.True(createIncidentResponse.IsSuccess);
+            Assert.Equal(createIncidentResponse.IncidentIds.First(), incidentIds.Result.IncidentIds.First());
         }
 
         #region private methods

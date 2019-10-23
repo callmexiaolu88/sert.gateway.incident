@@ -37,5 +37,13 @@ namespace Honeywell.GateWay.Incident.Repository
         Task<ExecuteResult> CompleteIncident(string incidentId);
 
         Task<ActiveIncidentListGto> GetActiveIncidentList();
+
+        Task<CreateIncidentResponseGto> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request);
+
+        Task<GetWorkflowDesignIdentifiersResponseGto> GetWorkflowDesignIds();
+
+        Task<GetWorkflowDesignsResponseGto> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request);
+
+        Task<GetIncidentStatusResponseGto> GetIncidentStatusWithAlarmId(GetIncidentStatusRequestGto request);
     }
 }

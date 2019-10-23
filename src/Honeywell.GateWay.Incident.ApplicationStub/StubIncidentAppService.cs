@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
+using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.GateWay.Incident.ApplicationStub
 {
@@ -142,6 +143,106 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         {
             var result = StubData<List<ActiveIncidentGto>>();
             return Task.FromResult(new ActiveIncidentListGto { List = result, Status = ExecuteStatus.Successful });
+        }
+
+        public Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(
+            CreateIncidentByAlarmRequestGto request)
+        {
+            try
+            {
+                var response = new CreateIncidentResponseGto();
+                foreach (var incidentData in request.CreateIncidentDatas)
+                {
+                    var workflowName = StubData<WorkflowDesignGto[]>()
+                        .FirstOrDefault(m => m.Id == incidentData.WorkflowDesignReferenceId)?.Name;
+
+                    var incident = StubData<IncidentGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
+                    if (incident != null) response.IncidentIds.Add(incident.Id);
+                    throw new Exception("cannot found the incident");
+                }
+
+                return Task.FromResult(ApiResponse.CreateSuccess().To(response));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To(new CreateIncidentResponseGto()));
+            }
+        }
+
+        public Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds()
+        {
+            try
+            {
+                var response = new GetWorkflowDesignIdentifiersResponseGto();
+                var workflowDesigns = StubData<WorkflowDesignGto[]>().Select(w => new WorkflowDesignIdentifierGto
+                {
+                    WorkflowDesignReferenceId = w.Id,
+                    Name = w.Name
+                }).ToList();
+
+                if (workflowDesigns.Any())
+                {
+                    response.Identifiers = workflowDesigns;
+                    return Task.FromResult(ApiResponse.CreateSuccess().To(response));
+                }
+
+                throw new Exception("cannot found any workflow design");
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignIdentifiersResponseGto()));
+            }
+        }
+
+        public Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request)
+        {
+            try
+            {
+                var response = new GetWorkflowDesignsResponseGto();
+                foreach (var id in request.Ids)
+                {
+                    var workflowDesigns = StubData<WorkflowDesignGto[]>().FirstOrDefault(m => m.Id == id);
+                    if (workflowDesigns != null) {response.WorkflowDesigns.Add(workflowDesigns);}
+
+                    throw new Exception($"cannot found the workflow design by id:{id}");
+                }
+
+                return Task.FromResult(ApiResponse.CreateSuccess().To(response));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignsResponseGto()));
+            }
+        }
+
+        public Task<ApiResponse<GetIncidentStatusResponseGto>> GetIncidentStatusWithAlarmId(
+            GetIncidentStatusRequestGto request)
+        {
+            try
+            {
+                var response = new GetIncidentStatusResponseGto();
+                foreach (var id in request.AlarmIds)
+                {
+                    var incident = StubData<IncidentGto[]>().FirstOrDefault((m => m.DeviceId == id));
+                    if (incident == null)
+                    {
+                        throw new Exception($"cannot found the incident associates with alarm id {id}");
+                    }
+                    var statusInfoGto = new IncidentStatusInfoGto
+                    {
+                        AlarmId = id,
+                        IncidentId = incident.Id,
+                        Status = incident.State
+                    };
+                    response.IncidentStatusInfos.Add(statusInfoGto);
+                }
+
+                return Task.FromResult(ApiResponse.CreateSuccess().To(response));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To(new GetIncidentStatusResponseGto()));
+            }
         }
     }
 }

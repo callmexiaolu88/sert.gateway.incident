@@ -1,12 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
+using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
-using Honeywell.Micro.Services.Incident.Api.Incident.List;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Microsoft.Extensions.Logging;
 
 namespace Honeywell.GateWay.Incident.Application.Incident
@@ -141,6 +141,58 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         public async Task<ActiveIncidentListGto> GetActiveIncidentList()
         {
             return await _incidentRepository.GetActiveIncidentList();
+        }
+
+        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request)
+        {
+            try
+            {
+                return await _incidentRepository.CreateIncidentByAlarm(request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To(new CreateIncidentResponseGto());
+            }
+        }
+
+        public async Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds()
+        {
+            try
+            {
+                return await _incidentRepository.GetWorkflowDesignIds();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignIdentifiersResponseGto());
+            }
+        }
+
+        public async Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request)
+        {
+            try
+            {
+                return await _incidentRepository.GetWorkflowDesigns(request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignsResponseGto());
+            }
+        }
+
+        public async Task<ApiResponse<GetIncidentStatusResponseGto>> GetIncidentStatusWithAlarmId(GetIncidentStatusRequestGto request)
+        {
+            try
+            {
+                return await _incidentRepository.GetIncidentStatusWithAlarmId(request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To(new GetIncidentStatusResponseGto());
+            }
         }
     }
 }

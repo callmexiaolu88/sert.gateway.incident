@@ -2,6 +2,7 @@
 using Honeywell.Infra.Core;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.Gateway.Incident.Api
 {
@@ -40,5 +41,13 @@ namespace Honeywell.Gateway.Incident.Api
         Task<ExecuteResult> CloseIncident(string incidentId, string reason);
 
         Task<ExecuteResult> CompleteIncident(string incidentId);
+
+        Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request);
+
+        Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds();
+
+        Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request);
+
+        Task<ApiResponse<GetIncidentStatusResponseGto>> GetIncidentStatusWithAlarmId(GetIncidentStatusRequestGto request);
     }
 }

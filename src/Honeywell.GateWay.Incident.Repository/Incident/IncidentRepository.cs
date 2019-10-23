@@ -17,9 +17,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Action;
-using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
+using MicroWorkflowDesignApi = Honeywell.Micro.Services.Workflow.Api.WorkflowDesign;
+
+
+#pragma warning disable CS0612 // Type or member is obsolete
 
 namespace Honeywell.GateWay.Incident.Repository.Incident
 {
@@ -358,6 +362,52 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 Status = ExecuteStatus.Successful,
                 List = activeIncidentsGto.ToList()
             };
+        }
+
+        public async Task<CreateIncidentResponseGto> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request)
+        {
+            Logger.LogInformation($"call Incident api {nameof(CreateIncidentByAlarm)} Start");
+
+            var facadeRequest =
+                HoneyMapper.Map<CreateIncidentByAlarmRequestGto, FacadeApi.Create.CreateIncidentByAlarmRequestDto>(
+                    request);
+
+            var response = await _incidentFacadeApi.CreateIncidentByAlarm(facadeRequest);
+            return HoneyMapper
+                .Map<FacadeApi.Create.CreateIncidentResponseDto, CreateIncidentResponseGto>(response);
+        }
+
+        public async Task<GetWorkflowDesignIdentifiersResponseGto> GetWorkflowDesignIds()
+        {
+            Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignIds)} Start");
+
+            var response = await _workflowDesignApi.GetSummaries();
+            return HoneyMapper
+                .Map<WorkflowDesignSummaryResponseDto, GetWorkflowDesignIdentifiersResponseGto>(response);
+        }
+
+        public async Task<GetWorkflowDesignsResponseGto> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request)
+        {
+            Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesigns)} Start");
+
+            var workflowDesignRequest =
+                HoneyMapper.Map<GetWorkflowDesignsRequestGto, WorkflowDesignDetailsRequestDto>(request);
+
+            var response = await _workflowDesignApi.GetDetails(workflowDesignRequest);
+            return HoneyMapper.Map<WorkflowDesignResponseDto, GetWorkflowDesignsResponseGto>(response);
+        }
+
+        public async Task<GetIncidentStatusResponseGto> GetIncidentStatusWithAlarmId(
+            GetIncidentStatusRequestGto request)
+        {
+            Logger.LogInformation($"call Incident api {nameof(GetIncidentStatusWithAlarmId)} Start");
+
+            var incidentRequest =
+                HoneyMapper.Map<GetIncidentStatusRequestGto, GetIncidentStatusRequestDto>(request);
+
+            var response = await _incidentMicroApi.GetIncidentStatusByTrigger(incidentRequest);
+
+            return HoneyMapper.Map<GetIncidentStatusResponseDto, GetIncidentStatusResponseGto>(response);
         }
     }
 }

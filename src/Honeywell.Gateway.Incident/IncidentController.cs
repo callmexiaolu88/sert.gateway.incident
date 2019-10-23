@@ -5,6 +5,7 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
+using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.Gateway.Incident
 {
@@ -145,6 +146,34 @@ namespace Honeywell.Gateway.Incident
         public async Task<ExecuteResult> CompleteIncident(string incidentId)
         {
             var result = await _incidentAppService.CompleteIncident(incidentId);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request)
+        {
+            var result = await _incidentAppService.CreateIncidentByAlarm(request);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds()
+        {
+            var result = await _incidentAppService.GetWorkflowDesignIds();
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request)
+        {
+            var result = await _incidentAppService.GetWorkflowDesigns(request);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ApiResponse<GetIncidentStatusResponseGto>> GetIncidentStatusWithAlarmId(GetIncidentStatusRequestGto request)
+        {
+            var result = await _incidentAppService.GetIncidentStatusWithAlarmId(request);
             return result;
         }
     }

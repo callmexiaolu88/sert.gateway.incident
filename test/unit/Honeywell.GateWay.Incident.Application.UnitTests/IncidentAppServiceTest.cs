@@ -1,21 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Data;
 using Honeywell.GateWay.Incident.Repository.Device;
-using Honeywell.Micro.Services.Incident.Api;
-using Honeywell.Micro.Services.Incident.Api.Incident.Details;
-using Honeywell.Micro.Services.Incident.Api.Incident.List;
-using Honeywell.Micro.Services.Incident.Domain.Shared;
-using Honeywell.Micro.Services.Workflow.Api;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
-using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using Moq;
 using Xunit;
 
@@ -40,6 +32,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             return Task.FromResult(new ExecuteResult { Status = ExecuteStatus.Successful });
         }
 
+        // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
         private void VerifyResult(Task<ExecuteResult> result)
         {
             Assert.NotNull(result);
@@ -310,6 +303,193 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 Type = deviceType
             };
             return new DevicesEntity { Config = new[] { deviceEntity } };
+        }
+
+        [Fact]
+        public void CreateIncidentByAlarm_Successful()
+        {
+            //Arrange
+            var id = Guid.NewGuid();
+            var mockResponse = Task.FromResult(new CreateIncidentResponseGto
+            {
+                IncidentIds = new List<Guid>() {id}
+            });
+            _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto>()))
+                .Returns(mockResponse);
+
+            //Act
+            var result = _testObj.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto>());
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Result.Value);
+            Assert.True(result.Result.IsSuccess);
+            Assert.True(result.Result.Value.IncidentIds.Any());
+            Assert.True(result.Result.Value.IncidentIds.First() == id);
+        }
+
+        [Fact]
+        public void CreateIncidentByAlarm_ThrowException()
+        {
+            //Arrange
+            _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto>()))
+                .Throws(new Exception());
+
+            //Act
+            var result = _testObj.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto>());
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Result.Value);
+            Assert.False(result.Result.IsSuccess);
+            Assert.False(result.Result.Value.IncidentIds.Any());
+        }
+
+        [Fact]
+        public void GetWorkflowDesignIds_Successful()
+        {
+            //Arrange
+            var id = Guid.NewGuid();
+            var name = "name";
+
+            var mockResponse = Task.FromResult(new GetWorkflowDesignIdentifiersResponseGto
+            {
+                Identifiers = new List<WorkflowDesignIdentifierGto>
+                {
+                    new WorkflowDesignIdentifierGto
+                    {
+                        Name = name,
+                        WorkflowDesignReferenceId = id,
+                    }
+                }
+            });
+            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignIds())
+                .Returns(mockResponse);
+
+            //Act
+            var result = _testObj.GetWorkflowDesignIds();
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Result.Value);
+            Assert.True(result.Result.IsSuccess);
+            Assert.True(result.Result.Value.Identifiers.Any());
+            Assert.True(result.Result.Value.Identifiers.First().WorkflowDesignReferenceId == id);
+            Assert.True(result.Result.Value.Identifiers.First().Name == name);
+        }
+
+        [Fact]
+        public void GetWorkflowDesignIds_ThrowException()
+        {
+            //Arrange
+            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignIds())
+                .Throws(new Exception());
+
+            //Act
+            var result = _testObj.GetWorkflowDesignIds();
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Result.Value);
+            Assert.False(result.Result.IsSuccess);
+            Assert.False(result.Result.Value.Identifiers.Any());
+        }
+
+        [Fact]
+        public void GetWorkflowDesigns_Successful()
+        {
+            //Arrange
+            var id = Guid.NewGuid();
+            var mockResponse = Task.FromResult(new GetWorkflowDesignsResponseGto
+            {
+                WorkflowDesigns = new List<WorkflowDesignGto>
+                {
+                    new WorkflowDesignGto
+                    {
+                        Id = id
+                    }
+                }
+            });
+            _mockIncidentRepository.Setup(x => x.GetWorkflowDesigns(It.IsAny<GetWorkflowDesignsRequestGto>()))
+                .Returns(mockResponse);
+
+            //Act
+            var result = _testObj.GetWorkflowDesigns(It.IsAny<GetWorkflowDesignsRequestGto>());
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Result.Value);
+            Assert.True(result.Result.IsSuccess);
+            Assert.True(result.Result.Value.WorkflowDesigns.Any());
+            Assert.True(result.Result.Value.WorkflowDesigns.First().Id == id);
+        }
+
+        [Fact]
+        public void GetWorkflowDesigns_ThrowException()
+        {
+            //Arrange
+            _mockIncidentRepository.Setup(x => x.GetWorkflowDesigns(It.IsAny<GetWorkflowDesignsRequestGto>()))
+                .Throws(new Exception());
+
+            //Act
+            var result = _testObj.GetWorkflowDesigns(It.IsAny<GetWorkflowDesignsRequestGto>());
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Result.Value);
+            Assert.False(result.Result.IsSuccess);
+            Assert.False(result.Result.Value.WorkflowDesigns.Any());
+        }
+
+        [Fact]
+        public void GetIncidentStatusWithAlarmId_Successful()
+        {
+            //Arrange
+            var incidentId = Guid.NewGuid();
+            var alarmId = Guid.NewGuid().ToString();
+            var mockResponse = Task.FromResult(new GetIncidentStatusResponseGto
+            {
+                IncidentStatusInfos = new List<IncidentStatusInfoGto>
+                {
+                    new IncidentStatusInfoGto
+                    {
+                        IncidentId = incidentId,
+                        AlarmId = alarmId,
+                        Status = IncidentStatus.Active
+                    }
+                }
+            });
+            _mockIncidentRepository.Setup(x => x.GetIncidentStatusWithAlarmId(It.IsAny<GetIncidentStatusRequestGto>()))
+                .Returns(mockResponse);
+
+            //Act
+            var result = _testObj.GetIncidentStatusWithAlarmId(It.IsAny<GetIncidentStatusRequestGto>());
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Result.Value);
+            Assert.True(result.Result.IsSuccess);
+            Assert.True(result.Result.Value.IncidentStatusInfos.Any());
+            Assert.True(result.Result.Value.IncidentStatusInfos.First().IncidentId == incidentId);
+            Assert.True(result.Result.Value.IncidentStatusInfos.First().AlarmId == alarmId);
+            Assert.True(result.Result.Value.IncidentStatusInfos.First().Status == IncidentStatus.Active);
+        }
+
+        [Fact]
+        public void GetIncidentStatusWithAlarmId_ThrowException()
+        {
+            //Arrange
+            _mockIncidentRepository.Setup(x => x.GetIncidentStatusWithAlarmId(It.IsAny<GetIncidentStatusRequestGto>()))
+                .Throws(new Exception());
+
+            //Act
+            var result = _testObj.GetIncidentStatusWithAlarmId(It.IsAny<GetIncidentStatusRequestGto>());
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Result.Value);
+            Assert.False(result.Result.IsSuccess);
+            Assert.False(result.Result.Value.IncidentStatusInfos.Any());
         }
     }
 }

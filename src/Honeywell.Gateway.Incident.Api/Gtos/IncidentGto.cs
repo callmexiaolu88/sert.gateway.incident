@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Honeywell.Micro.Services.Incident.Domain.Shared;
 
 namespace Honeywell.Gateway.Incident.Api.Gtos
 {
@@ -26,7 +25,7 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 
         public IncidentPriority Priority { get; set; }
 
-        public IncidentState State { get; set; }
+        public IncidentStatus State { get; set; }
 
         public string WorkflowName { get; set; }
 
