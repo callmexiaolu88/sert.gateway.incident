@@ -18,8 +18,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Action;
-using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
 
 namespace Honeywell.GateWay.Incident.Repository.Incident
 {
@@ -359,5 +359,27 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 List = activeIncidentsGto.ToList()
             };
         }
+
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        {
+            Logger.LogInformation(
+                $"call Incident api AddStepComment Start,workflowStepId:{addStepCommentGto.WorkflowStepId},comment:{addStepCommentGto.Comment}");
+
+            AddStepCommentRequestDto requestDto = new AddStepCommentRequestDto()
+            {
+                WorkflowStepId = Guid.Parse(addStepCommentGto.WorkflowStepId),
+                Comment = addStepCommentGto.Comment
+            };
+            var response = await _workflowInstanceApi.AddStepComment(requestDto);
+
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to AddStepComment!");
+            return ExecuteResult.Error;
+        }
+
     }
 }

@@ -8,6 +8,7 @@ using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
 using Honeywell.Micro.Services.Workflow.Api;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
@@ -585,6 +586,28 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.NotNull(response.Result);
             Assert.True(response.Result.Status == ExecuteStatus.Error);
             Assert.True(0 == response.Result.List.Count);
+        }
+
+        [Fact]
+        public void AddStepComment_Success()
+        {
+            //arrange
+            var response = new WorkflowActionResponseDto();
+            response.MakeSuccess();
+
+            _mockWorkflowInstanceApi.Setup(api => api.AddStepComment(It.IsAny<AddStepCommentRequestDto>()))
+                .Returns(Task.FromResult(response));
+
+            //act
+            var addStepCommentGto = new AddStepCommentGto()
+            {
+                WorkflowStepId = Guid.NewGuid().ToString(),
+                Comment = "this is comment"
+            };
+            var result = _incidentRepository.AddStepComment(addStepCommentGto);
+
+            //assert
+            Assert.True(result.Result.Status == ExecuteStatus.Successful);
         }
 
         #region private methods
