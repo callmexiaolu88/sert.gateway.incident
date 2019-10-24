@@ -31,9 +31,9 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var id = Guid.NewGuid();
             var name = "name";
 
-            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetWorkflowDesignIdentifiersResponseGto
+            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetWorkflowDesignIdsResponseGto
             {
-                Identifiers = new List<WorkflowDesignIdGto>
+                WorkflowDesignIds = new List<WorkflowDesignIdGto>
                 {
                     new WorkflowDesignIdGto
                     {
@@ -52,9 +52,9 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.NotNull(result);
             Assert.NotNull(result.Result.Value);
             Assert.True(result.Result.IsSuccess);
-            Assert.True(result.Result.Value.Identifiers.Any());
-            Assert.True(result.Result.Value.Identifiers.First().WorkflowDesignReferenceId == id);
-            Assert.True(result.Result.Value.Identifiers.First().Name == name);
+            Assert.True(result.Result.Value.WorkflowDesignIds.Any());
+            Assert.True(result.Result.Value.WorkflowDesignIds.First().WorkflowDesignReferenceId == id);
+            Assert.True(result.Result.Value.WorkflowDesignIds.First().Name == name);
         }
 
         [Fact]
@@ -69,9 +69,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Result.Value);
             Assert.False(result.Result.IsSuccess);
-            Assert.False(result.Result.Value.Identifiers.Any());
         }
 
         [Fact]
@@ -79,7 +77,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             //Arrange
             var id = Guid.NewGuid();
-            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetWorkflowDesignsResponseGto
+            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetWorkflowDesignDetailsResponseGto
             {
                 WorkflowDesigns = new List<WorkflowDesignGto>
                 {
@@ -89,11 +87,11 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                     }
                 }
             }));
-            _mockIncidentRepository.Setup(x => x.GetWorkflowDesigns(It.IsAny<GetWorkflowDesignsRequestGto>()))
+            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>()))
                 .Returns(mockResponse);
 
             //Act
-            var result = _testObj.GetDesignDetails(It.IsAny<GetWorkflowDesignsRequestGto>());
+            var result = _testObj.GetDesignDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>());
 
             //Assert
             Assert.NotNull(result);
@@ -107,17 +105,15 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void GetWorkflowDesigns_ThrowException()
         {
             //Arrange
-            _mockIncidentRepository.Setup(x => x.GetWorkflowDesigns(It.IsAny<GetWorkflowDesignsRequestGto>()))
+            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>()))
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.GetDesignDetails(It.IsAny<GetWorkflowDesignsRequestGto>());
+            var result = _testObj.GetDesignDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>());
 
             //Assert
             Assert.NotNull(result);
-            Assert.NotNull(result.Result.Value);
             Assert.False(result.Result.IsSuccess);
-            Assert.False(result.Result.Value.WorkflowDesigns.Any());
         }
 
     }

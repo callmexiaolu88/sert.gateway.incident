@@ -147,7 +147,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         }
 
         public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(
-            CreateIncidentByAlarmRequestGto request)
+            CreateByAlarmRequestGto request)
         {
             try
             {
@@ -156,21 +156,21 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To(new CreateIncidentResponseGto());
+                return ApiResponse.CreateFailed(ex).To<CreateIncidentResponseGto>();
             }
         }
 
-        public async Task<ApiResponse<GetIncidentStatusResponseGto>> GetStatusByAlarmId(
-            GetIncidentStatusRequestGto request)
+        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(
+            GetStatusByAlarmRequestGto request)
         {
             try
             {
-                return await _incidentRepository.GetIncidentStatusWithAlarmId(request);
+                return await _incidentRepository.GetIncidentStatusByAlarm(request);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To(new GetIncidentStatusResponseGto());
+                return ApiResponse.CreateFailed(ex).To<GetStatusByAlarmResponseGto>();
             }
         }
 

@@ -11,11 +11,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 {
     public class StubWorkflowAppService : BaseIncidentStub, IWorkflowAppService
     {
-        public Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetDesignDetails(GetWorkflowDesignsRequestGto request)
+        public Task<ApiResponse<GetWorkflowDesignDetailsResponseGto>> GetDesignDetails(GetWorkflowDesignDetailsRequestGto request)
         {
             try
             {
-                var response = new GetWorkflowDesignsResponseGto();
+                var response = new GetWorkflowDesignDetailsResponseGto();
                 foreach (var id in request.Ids)
                 {
                     var workflowDesigns = StubData<WorkflowDesignGto[]>().FirstOrDefault(m => m.Id == id);
@@ -28,15 +28,15 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignsResponseGto()));
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To<GetWorkflowDesignDetailsResponseGto>());
             }
         }
 
-        public Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetDesignIds()
+        public Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetDesignIds()
         {
             try
             {
-                var response = new GetWorkflowDesignIdentifiersResponseGto();
+                var response = new GetWorkflowDesignIdsResponseGto();
                 var workflowDesigns = StubData<WorkflowDesignGto[]>().Select(w => new WorkflowDesignIdGto
                 {
                     WorkflowDesignReferenceId = w.Id,
@@ -45,7 +45,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 
                 if (workflowDesigns.Any())
                 {
-                    response.Identifiers = workflowDesigns;
+                    response.WorkflowDesignIds = workflowDesigns;
                     return Task.FromResult(ApiResponse.CreateSuccess().To(response));
                 }
 
@@ -53,7 +53,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignIdentifiersResponseGto()));
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To<GetWorkflowDesignIdsResponseGto>());
             }
         }
     }

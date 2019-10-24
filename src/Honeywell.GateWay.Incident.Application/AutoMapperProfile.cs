@@ -53,31 +53,31 @@ namespace Honeywell.GateWay.Incident.Application
             CreateMap<StepCommentDto, StepCommentGto>();
 
             //CreateIncidentByAlarm Request
-            CreateMap<CreateIncidentByAlarmRequestGto, FacadeApi.CreateIncidentByAlarmRequestDto>();
-            CreateMap<CreateIncidentByAlarmGto, FacadeApi.CreateIncidentByAlarmDto>();
+            CreateMap<CreateByAlarmRequestGto, FacadeApi.CreateIncidentByAlarmRequestDto>();
+            CreateMap<CreateByAlarmGto, FacadeApi.CreateIncidentByAlarmDto>();
             CreateMap<IncidentPriority, FacadeApi.IncidentPriority>();
             CreateMap<AlarmData, FacadeApi.AlarmData>();
             //CreateIncidentByAlarm Response
             CreateMap<FacadeApi.CreateIncidentResponseDto, CreateIncidentResponseGto>();
 
             //GetWorkflowDesignIds Response
-            CreateMap<WorkflowDesignSummaryResponseDto, GetWorkflowDesignIdentifiersResponseGto>()
-                .ForMember(dest => dest.Identifiers, opt => opt.MapFrom(src => src.Summaries));
+            CreateMap<WorkflowDesignSummaryResponseDto, GetWorkflowDesignIdsResponseGto>()
+                .ForMember(dest => dest.WorkflowDesignIds, opt => opt.MapFrom(src => src.Summaries));
             CreateMap<WorkflowDesignSummaryDto, WorkflowDesignIdGto>()
                 .ForMember(dest => dest.WorkflowDesignReferenceId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
             //GetWorkflowDesigns Request
-            CreateMap<GetWorkflowDesignsRequestGto, WorkflowDesignDetailsRequestDto>();
+            CreateMap<GetWorkflowDesignDetailsRequestGto, WorkflowDesignDetailsRequestDto>();
             //GetWorkflowDesigns Response
-            CreateMap<WorkflowDesignResponseDto, GetWorkflowDesignsResponseGto>()
+            CreateMap<WorkflowDesignResponseDto, GetWorkflowDesignDetailsResponseGto>()
                 .ForMember(dest => dest.WorkflowDesigns, opt => opt.MapFrom(src => src.Details));
 
             //GetIncidentStatusWithAlarmId Request
-            CreateMap<GetIncidentStatusRequestGto, GetIncidentStatusRequestDto>()
+            CreateMap<GetStatusByAlarmRequestGto, GetIncidentStatusRequestDto>()
                 .ForMember(dest => dest.TriggerIds, opt => opt.MapFrom(src => src.AlarmIds));
             //GetIncidentStatusWithAlarmId Response
-            CreateMap<GetIncidentStatusResponseDto, GetIncidentStatusResponseGto>();
+            CreateMap<GetIncidentStatusResponseDto, GetStatusByAlarmResponseGto>();
             CreateMap<IncidentStatusDto, IncidentStatusInfoGto>()
                 .ForMember(dest => dest.AlarmId, opt => opt.MapFrom(src => src.TriggerId));
             CreateMap<IncidentState, IncidentStatus>();

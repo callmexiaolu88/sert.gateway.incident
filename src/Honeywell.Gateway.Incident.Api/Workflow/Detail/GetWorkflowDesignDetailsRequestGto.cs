@@ -2,7 +2,7 @@
 
 namespace Honeywell.Gateway.Incident.Api.Workflow.Detail
 {
-    public class GetWorkflowDesignsRequestGto
+    public class GetWorkflowDesignDetailsRequestGto
     {
         public Guid[] Ids { get; set; }
     }

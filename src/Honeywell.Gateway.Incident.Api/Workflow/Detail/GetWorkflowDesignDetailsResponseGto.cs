@@ -3,11 +3,11 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 
 namespace Honeywell.Gateway.Incident.Api.Workflow.Detail
 {
-    public class GetWorkflowDesignsResponseGto
+    public class GetWorkflowDesignDetailsResponseGto
     {
         public IList<WorkflowDesignGto> WorkflowDesigns { get; set; }
 
-        public GetWorkflowDesignsResponseGto()
+        public GetWorkflowDesignDetailsResponseGto()
         {
             WorkflowDesigns = new List<WorkflowDesignGto>();
         }

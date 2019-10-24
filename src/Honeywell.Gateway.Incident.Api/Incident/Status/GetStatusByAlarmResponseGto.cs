@@ -2,10 +2,10 @@
 
 namespace Honeywell.Gateway.Incident.Api.Incident.Status
 {
-    public class GetIncidentStatusResponseGto
+    public class GetStatusByAlarmResponseGto
     {
         public IList<IncidentStatusInfoGto> IncidentStatusInfos { get; set; }
-        public GetIncidentStatusResponseGto()
+        public GetStatusByAlarmResponseGto()
         {
             IncidentStatusInfos = new List<IncidentStatusInfoGto>();
         }

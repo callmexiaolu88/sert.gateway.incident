@@ -20,6 +20,7 @@ using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.Gateway.Incident.Api.Workflow.Detail;
+using Honeywell.Gateway.Incident.Api.Workflow.List;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Action;
@@ -367,12 +368,12 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             };
         }
 
-        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request)
+        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateByAlarmRequestGto request)
         {
             Logger.LogInformation($"call Incident api {nameof(CreateIncidentByAlarm)} Start");
 
             var facadeRequest =
-                HoneyMapper.Map<CreateIncidentByAlarmRequestGto, FacadeApi.Create.CreateIncidentByAlarmRequestDto>(
+                HoneyMapper.Map<CreateByAlarmRequestGto, FacadeApi.Create.CreateIncidentByAlarmRequestDto>(
                     request);
 
             var response = await _incidentFacadeApi.CreateIncidentByAlarm(facadeRequest);
@@ -380,37 +381,38 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 .Map<FacadeApi.Create.CreateIncidentResponseDto, CreateIncidentResponseGto>(response);
         }
 
-        public async Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds()
+        public async Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetWorkflowDesignIds()
         {
             Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignIds)} Start");
 
             var response = await _workflowDesignApi.GetSummaries();
             return HoneyMapper
-                .Map<WorkflowDesignSummaryResponseDto, GetWorkflowDesignIdentifiersResponseGto>(response);
+                .Map<WorkflowDesignSummaryResponseDto, GetWorkflowDesignIdsResponseGto>(response);
         }
 
-        public async Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request)
+        public async Task<ApiResponse<GetWorkflowDesignDetailsResponseGto>> GetWorkflowDesignDetails(GetWorkflowDesignDetailsRequestGto request)
         {
-            Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesigns)} Start");
+            Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignDetails)} Start");
 
             var workflowDesignRequest =
-                HoneyMapper.Map<GetWorkflowDesignsRequestGto, WorkflowDesignDetailsRequestDto>(request);
+                HoneyMapper.Map<GetWorkflowDesignDetailsRequestGto, WorkflowDesignDetailsRequestDto>(request);
 
             var response = await _workflowDesignApi.GetDetails(workflowDesignRequest);
-            return HoneyMapper.Map<WorkflowDesignResponseDto, GetWorkflowDesignsResponseGto>(response);
+            return HoneyMapper.Map<WorkflowDesignResponseDto, GetWorkflowDesignDetailsResponseGto>(response);
         }
 
-        public async Task<ApiResponse<GetIncidentStatusResponseGto>> GetIncidentStatusWithAlarmId(
-            GetIncidentStatusRequestGto request)
+        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetIncidentStatusByAlarm(
+            GetStatusByAlarmRequestGto request)
         {
-            Logger.LogInformation($"call Incident api {nameof(GetIncidentStatusWithAlarmId)} Start");
+            Logger.LogInformation($"call Incident api {nameof(GetIncidentStatusByAlarm)} Start");
 
             var incidentRequest =
-                HoneyMapper.Map<GetIncidentStatusRequestGto, GetIncidentStatusRequestDto>(request);
+                HoneyMapper.Map<GetStatusByAlarmRequestGto, GetIncidentStatusRequestDto>(request);
 
             var response = await _incidentMicroApi.GetIncidentStatusByTrigger(incidentRequest);
-
-            return HoneyMapper.Map<GetIncidentStatusResponseDto, GetIncidentStatusResponseGto>(response);
+            var tmp = HoneyMapper.Map<GetIncidentStatusResponseDto, GetStatusByAlarmResponseGto>(response);
+            return tmp;
+            //return HoneyMapper.Map<GetIncidentStatusResponseDto, GetStatusByAlarmResponseGto>(response);
         }
 
         public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)

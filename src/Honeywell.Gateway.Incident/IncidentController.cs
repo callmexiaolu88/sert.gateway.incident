@@ -152,16 +152,16 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(CreateIncidentByAlarmRequestGto request)
+        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(CreateByAlarmRequestGto request)
         {
             var result = await _incidentAppService.CreateByAlarm(request);
             return result;
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetIncidentStatusResponseGto>> GetStatusByAlarmId(GetIncidentStatusRequestGto request)
+        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(GetStatusByAlarmRequestGto request)
         {
-            var result = await _incidentAppService.GetStatusByAlarmId(request);
+            var result = await _incidentAppService.GetStatusByAlarm(request);
             return result;
         }
 

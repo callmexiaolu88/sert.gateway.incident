@@ -599,11 +599,11 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var workflowDesignReferenceId = Guid.NewGuid();
 
-            var request = new IncidentGTO.Create.CreateIncidentByAlarmRequestGto
+            var request = new IncidentGTO.Create.CreateByAlarmRequestGto
             {
-                CreateIncidentDatas = new[]
+                CreateDatas = new[]
                 {
-                    new IncidentGTO.Create.CreateIncidentByAlarmGto
+                    new IncidentGTO.Create.CreateByAlarmGto
                     {
                         WorkflowDesignReferenceId = workflowDesignReferenceId,
                         Priority =  Honeywell.Gateway.Incident.Api.Gtos.IncidentPriority.High,
@@ -667,8 +667,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
             //assert
             Assert.NotNull(workflowDesignIds.Result);
-            Assert.Equal(workflowDesignIds.Result.Value.Identifiers.First().WorkflowDesignReferenceId, summaryResponseDto.Summaries.First().Id);
-            Assert.Equal(workflowDesignIds.Result.Value.Identifiers.First().Name, summaryResponseDto.Summaries.First().Name);
+            Assert.Equal(workflowDesignIds.Result.Value.WorkflowDesignIds.First().WorkflowDesignReferenceId, summaryResponseDto.Summaries.First().Id);
+            Assert.Equal(workflowDesignIds.Result.Value.WorkflowDesignIds.First().Name, summaryResponseDto.Summaries.First().Name);
         }
 
         [Fact]
@@ -678,7 +678,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var workflowGuid = Guid.NewGuid();
             var setGuid = Guid.NewGuid();
 
-            var request = new WorkflowGTO.Detail.GetWorkflowDesignsRequestGto
+            var request = new WorkflowGTO.Detail.GetWorkflowDesignDetailsRequestGto
             {
                 Ids = new[] {workflowGuid}
             };
@@ -721,7 +721,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 .Returns(Task.FromResult(workflowDesignResponseDto));
 
             //act
-            var workflowDesigns = _incidentRepository.GetWorkflowDesigns(request);
+            var workflowDesigns = _incidentRepository.GetWorkflowDesignDetails(request);
 
             //assert
             Assert.NotNull(workflowDesigns.Result);
@@ -747,7 +747,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var alarmId = Guid.NewGuid().ToString();
             var incidentId = Guid.NewGuid();
 
-            var request = new IncidentGTO.Status.GetIncidentStatusRequestGto()
+            var request = new IncidentGTO.Status.GetStatusByAlarmRequestGto
             {
                 AlarmIds = new[] { alarmId }
             };
@@ -770,10 +770,13 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 .Returns(Task.FromResult(getIncidentStatusResponse));
 
             //act
-            var statusWithAlarmId = _incidentRepository.GetIncidentStatusWithAlarmId(request);
+            var statusWithAlarmId = _incidentRepository.GetIncidentStatusByAlarm(request);
 
             //assert
             Assert.NotNull(statusWithAlarmId.Result);
+            Assert.True(statusWithAlarmId.Result.IsSuccess);
+            Assert.NotNull(statusWithAlarmId.Result.Value);
+            Assert.True(statusWithAlarmId.Result.Value.IncidentStatusInfos.Any());
             Assert.Equal(getIncidentStatusResponse.IncidentStatusInfos.First().TriggerId, alarmId);
             Assert.Equal(getIncidentStatusResponse.IncidentStatusInfos.First().TriggerId, statusWithAlarmId.Result.Value.IncidentStatusInfos.First().AlarmId);
             Assert.Equal(IncidentStatus.Active, statusWithAlarmId.Result.Value.IncidentStatusInfos.First().Status);

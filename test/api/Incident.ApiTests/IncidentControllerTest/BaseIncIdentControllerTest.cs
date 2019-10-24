@@ -79,11 +79,11 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
             alarmId = string.IsNullOrEmpty(alarmId) ? Guid.NewGuid().ToString() : alarmId;
             var workflowDesignId = GetFirstWorkflowDesignId();
-            var request = new CreateIncidentByAlarmRequestGto
+            var request = new CreateByAlarmRequestGto
             {
-                CreateIncidentDatas = new[]
+                CreateDatas = new[]
                 {
-                    new CreateIncidentByAlarmGto
+                    new CreateByAlarmGto
                     {
                         WorkflowDesignReferenceId = new Guid(workflowDesignId),
                         Priority = IncidentPriority.High,

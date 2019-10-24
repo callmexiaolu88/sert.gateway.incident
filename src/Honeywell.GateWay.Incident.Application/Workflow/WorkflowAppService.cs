@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.Workflow.Detail;
+using Honeywell.Gateway.Incident.Api.Workflow.List;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
@@ -18,20 +19,20 @@ namespace Honeywell.GateWay.Incident.Application.Workflow
             _incidentRepository = incidentRepository;
         }
 
-        public async Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetDesignDetails(GetWorkflowDesignsRequestGto request)
+        public async Task<ApiResponse<GetWorkflowDesignDetailsResponseGto>> GetDesignDetails(GetWorkflowDesignDetailsRequestGto request)
         {
             try
             {
-                return await _incidentRepository.GetWorkflowDesigns(request);
+                return await _incidentRepository.GetWorkflowDesignDetails(request);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignsResponseGto());
+                return ApiResponse.CreateFailed(ex).To<GetWorkflowDesignDetailsResponseGto>();
             }
         }
 
-        public async Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetDesignIds()
+        public async Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetDesignIds()
         {
             try
             {
@@ -40,7 +41,7 @@ namespace Honeywell.GateWay.Incident.Application.Workflow
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignIdentifiersResponseGto());
+                return ApiResponse.CreateFailed(ex).To<GetWorkflowDesignIdsResponseGto>();
             }
         }
     }

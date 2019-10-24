@@ -148,12 +148,12 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         }
 
         public Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(
-            CreateIncidentByAlarmRequestGto request)
+            CreateByAlarmRequestGto request)
         {
             try
             {
                 var response = new CreateIncidentResponseGto();
-                foreach (var incidentData in request.CreateIncidentDatas)
+                foreach (var incidentData in request.CreateDatas)
                 {
                     var workflowName = StubData<WorkflowDesignGto[]>()
                         .FirstOrDefault(m => m.Id == incidentData.WorkflowDesignReferenceId)?.Name;
@@ -167,16 +167,16 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ApiResponse.CreateFailed(ex).To(new CreateIncidentResponseGto()));
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To<CreateIncidentResponseGto>());
             }
         }
 
-        public Task<ApiResponse<GetIncidentStatusResponseGto>> GetStatusByAlarmId(
-            GetIncidentStatusRequestGto request)
+        public Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(
+            GetStatusByAlarmRequestGto request)
         {
             try
             {
-                var response = new GetIncidentStatusResponseGto();
+                var response = new GetStatusByAlarmResponseGto();
                 foreach (var id in request.AlarmIds)
                 {
                     var incident = StubData<IncidentGto[]>().FirstOrDefault((m => m.DeviceId == id));
@@ -198,7 +198,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ApiResponse.CreateFailed(ex).To(new GetIncidentStatusResponseGto()));
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To<GetStatusByAlarmResponseGto>());
             }
         }
 
