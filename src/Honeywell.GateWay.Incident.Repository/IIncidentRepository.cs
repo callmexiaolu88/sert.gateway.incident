@@ -11,9 +11,9 @@ namespace Honeywell.GateWay.Incident.Repository
 {
     public interface IIncidentRepository
     {
-        Task<ExecuteResult> ImportWorkflowDesigns(Stream stream);
+        Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream);
 
-        Task<ExecuteResult> ValidatorWorkflowDesigns(Stream stream);
+        Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream);
 
         Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds);
 

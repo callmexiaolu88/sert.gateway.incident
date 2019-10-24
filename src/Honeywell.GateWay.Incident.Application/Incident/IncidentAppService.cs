@@ -1,6 +1,6 @@
 ﻿using System;
  using System.IO;
-using System.Linq;
+ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
@@ -62,9 +62,9 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.DownloadWorkflowTemplate();
         }
 
-        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
+        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds)
         {
-            return await _incidentRepository.ExportWorkflowDesigns(workflowIds);
+            return await _incidentRepository.ExportWorkflowDesigns(workflowDesignIds);
         }
 
         public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)

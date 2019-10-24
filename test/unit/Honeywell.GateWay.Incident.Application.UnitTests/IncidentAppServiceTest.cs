@@ -8,7 +8,6 @@ using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
-using Honeywell.GateWay.Incident.Repository.Data;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Api.Abstract;
 using Moq;

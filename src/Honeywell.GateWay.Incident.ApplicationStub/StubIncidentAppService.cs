@@ -9,6 +9,7 @@ using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
+using Honeywell.Infra.Core.Common.Exceptions;
 
 namespace Honeywell.GateWay.Incident.ApplicationStub
 {
@@ -68,17 +69,24 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         {
             var template = new WorkflowTemplateGto();
             var fs = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
-            if (fs != null)
+            if (fs == null)
             {
-                var filebytes = new byte[fs.Length];
-                fs.Read(filebytes, 0, filebytes.Length);
-                template.FileBytes = filebytes;
+                throw new HoneywellException($"{resourceName} is not found");
             }
+
+            var buffer = new byte[1024];
+            using var ms = new MemoryStream();
+            int read;
+            while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                ms.Write(buffer, 0, read);
+            }
+
+            template.FileBytes = ms.ToArray();
             template.FileName = fileName;
             template.Status = ExecuteStatus.Successful;
             return Task.FromResult(template);
         }
-
 
         public Task<IncidentGto> GetIncidentById(string incidentId)
         {

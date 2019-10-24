@@ -23,16 +23,16 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ImportWorkflowDesigns([FromBody]Stream workflowStream)
+        public async Task<ExecuteResult> ImportWorkflowDesigns([FromBody] Stream workflowDesignStream)
         {
-            var result = await _incidentAppService.ImportWorkflowDesigns(workflowStream);
+            var result = await _incidentAppService.ImportWorkflowDesigns(workflowDesignStream);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ValidatorWorkflowDesigns([FromBody]Stream workflowStream)
+        public async Task<ExecuteResult> ValidatorWorkflowDesigns([FromBody] Stream workflowDesignStream)
         {
-            var result = await _incidentAppService.ValidatorWorkflowDesigns(workflowStream);
+            var result = await _incidentAppService.ValidatorWorkflowDesigns(workflowDesignStream);
             return result;
         }
 
@@ -69,7 +69,8 @@ namespace Honeywell.Gateway.Incident
         {
             var result = await _incidentAppService.DownloadWorkflowTemplate();
             Response.ContentType = "application/octet-stream";
-            Response.Headers.Add("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(result.FileName, System.Text.Encoding.UTF8));
+            Response.Headers.Add("Content-Disposition",
+                "attachment; filename=" + HttpUtility.UrlEncode(result.FileName, System.Text.Encoding.UTF8));
             await Response.Body.WriteAsync(result.FileBytes);
             Response.Body.Flush();
             Response.Body.Close();
@@ -166,10 +167,10 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepComment)
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
         {
-            var result = await _incidentAppService.AddStepComment(addStepComment);
+            var result = await _incidentAppService.AddStepComment(addStepCommentGto);
             return result;
         }
-        }
+    }
 }

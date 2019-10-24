@@ -105,10 +105,10 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             if (!result.IsSuccess)
             {
                 Logger.LogError($"call workflow design api GetSelector error:{result.Message}");
-                return new WorkflowDesignSelectorListGto() { Status = ExecuteStatus.Error };
+                return new WorkflowDesignSelectorListGto { Status = ExecuteStatus.Error };
             }
 
-            return new WorkflowDesignSelectorListGto()
+            return new WorkflowDesignSelectorListGto
             {
                 Status = ExecuteStatus.Successful,
                 List = HoneyMapper.Map<WorkflowDesignSelectorDto[],
@@ -142,14 +142,15 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             }
 
             Logger.LogError($"call workflow design api DownloadWorkflowTemplate error:|{result.Message}");
-            return new WorkflowTemplateGto() { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
+            return new WorkflowTemplateGto { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
 
         public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
         {
-            Logger.LogInformation(string.Format("call workflow design api ExportWorkflows Start|workflowId.Length:{0},guids:{1}", workflowIds.Length, string.Join(",", workflowIds.ToArray())));
+            Logger.LogInformation(
+                $"call workflow design api ExportWorkflows Start|workflowId.Length:{workflowIds.Length},guids:{string.Join(",", workflowIds.ToArray())}");
             Guid[] guidWorkflowIds = workflowIds.Select(o => Guid.Parse(o)).ToArray();
-            var exportWorkflowRequestDto = new ExportWorkflowRequestDto() { WorkflowIds = guidWorkflowIds };
+            var exportWorkflowRequestDto = new ExportWorkflowRequestDto { WorkflowIds = guidWorkflowIds };
             var result = await _workflowDesignApi.ExportWorkflows(exportWorkflowRequestDto);
 
             if (result.IsSuccess)
@@ -160,7 +161,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             }
 
             Logger.LogError($"call workflow design api ExportWorkflowDesigns error:{result.Message}");
-            return new WorkflowTemplateGto() { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
+            return new WorkflowTemplateGto { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
 
         public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
@@ -168,7 +169,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
             var workflowStepGuid = Guid.Parse(workflowStepId);
 
-            var request = new UpdateWorkflowStepStatusRequestDto() { WorkflowStepId = workflowStepGuid, IsHandled = isHandled };
+            var request = new UpdateWorkflowStepStatusRequestDto { WorkflowStepId = workflowStepGuid, IsHandled = isHandled };
 
             var response = await _workflowInstanceApi.UpdateWorkflowStepStatus(request);
             if (response.IsSuccess)
@@ -253,7 +254,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 return ExecuteResult.Error;
             }
 
-            var request = new FacadeApi.Respond.RespondIncidentRequestDto() { IncidentId = incidentGuid };
+            var request = new FacadeApi.Respond.RespondIncidentRequestDto { IncidentId = incidentGuid };
 
             var response = await _incidentFacadeApi.RespondIncident(request);
             if (response.IsSuccess)
@@ -274,7 +275,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 return ExecuteResult.Error;
             }
 
-            var request = new FacadeApi.Takeover.TakeoverIncidentRequestDto() { IncidentId = incidentGuid };
+            var request = new FacadeApi.Takeover.TakeoverIncidentRequestDto { IncidentId = incidentGuid };
             var response = await _incidentFacadeApi.TakeoverIncident(request);
             if (response.IsSuccess)
             {
@@ -314,7 +315,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 return ExecuteResult.Error;
             }
 
-            var request = new FacadeApi.Complete.CompleteIncidentRequestDto() { IncidentId = incidentGuid };
+            var request = new FacadeApi.Complete.CompleteIncidentRequestDto { IncidentId = incidentGuid };
             var response = await _incidentFacadeApi.CompleteIncident(request);
             if (response.IsSuccess)
             {
@@ -332,7 +333,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             if (!result.IsSuccess)
             {
                 Logger.LogError($"call workflow design api GetActiveList error:{result.Message}");
-                return new ActiveIncidentListGto() { Status = ExecuteStatus.Error };
+                return new ActiveIncidentListGto { Status = ExecuteStatus.Error };
             }
 
             var workflowIds = result.List.Select(x => x.WorkflowId).ToArray();
@@ -344,7 +345,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             if (!workflowSummaries.IsSuccess)
             {
                 Logger.LogError($"call workflow design api GetWorkflowSummaries error:{result.Message}");
-                return new ActiveIncidentListGto() { Status = ExecuteStatus.Error };
+                return new ActiveIncidentListGto { Status = ExecuteStatus.Error };
             }
 
             var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], ActiveIncidentGto[]>(result.List.ToArray());
@@ -361,7 +362,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 }
             }
 
-            return new ActiveIncidentListGto()
+            return new ActiveIncidentListGto
             {
                 Status = ExecuteStatus.Successful,
                 List = activeIncidentsGto.ToList()
@@ -420,7 +421,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             Logger.LogInformation(
                 $"call Incident api AddStepComment Start,workflowStepId:{addStepCommentGto.WorkflowStepId},comment:{addStepCommentGto.Comment}");
 
-            AddStepCommentRequestDto requestDto = new AddStepCommentRequestDto()
+            AddStepCommentRequestDto requestDto = new AddStepCommentRequestDto
             {
                 WorkflowStepId = Guid.Parse(addStepCommentGto.WorkflowStepId),
                 Comment = addStepCommentGto.Comment
