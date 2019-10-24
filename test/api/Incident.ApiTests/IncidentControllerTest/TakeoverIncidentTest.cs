@@ -15,15 +15,16 @@ namespace Incident.ApiTests.IncidentControllerTest
         }
 
         [Fact]
-        public async void TakeoverIncident_Success()
+        public async void TakeoverIncident_Fail()
         {
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
 
             var takeoverResult = await IncidentGateWayApi.TakeoverIncident(incidentId);
-            Assert.True(takeoverResult.Status == ExecuteStatus.Successful);
+            Assert.False(takeoverResult.Status == ExecuteStatus.Successful);
 
             await DeleteWorkflowDesign();
         }
+
     }
 }

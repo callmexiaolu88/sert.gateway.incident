@@ -28,5 +28,17 @@ namespace Incident.ApiTests.IncidentControllerTest
 
             await DeleteWorkflowDesign();
         }
+
+        [Fact]
+        public async void CompleteIncident_Fail()
+        {
+            await ImportWorkflowDesign();
+            var incidentId = CreateIncident().Result;
+
+            var completeResult = await IncidentGateWayApi.CompleteIncident(incidentId);
+            Assert.False(completeResult.Status == ExecuteStatus.Successful);
+
+            await DeleteWorkflowDesign();
+        }
     }
 }
