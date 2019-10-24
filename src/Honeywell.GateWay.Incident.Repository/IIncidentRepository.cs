@@ -14,7 +14,7 @@ namespace Honeywell.GateWay.Incident.Repository
 
         Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns();
 
-        Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName);
+        Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors();
 
         Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
 
@@ -35,6 +35,8 @@ namespace Honeywell.GateWay.Incident.Repository
         Task<ExecuteResult> CloseIncident(string incidentId, string reason);
 
         Task<ExecuteResult> CompleteIncident(string incidentId);
+
+        Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
 
         Task<ActiveIncidentListGto> GetActiveIncidentList();
     }

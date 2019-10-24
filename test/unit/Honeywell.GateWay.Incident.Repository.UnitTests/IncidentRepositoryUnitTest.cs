@@ -8,6 +8,7 @@ using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
 using Honeywell.Micro.Services.Workflow.Api;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
@@ -108,23 +109,18 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
-        public async Task WorkflowDesign_GetWorkflowDesignSelectorsByName_Success()
+        public async Task WorkflowDesign_GetWorkflowDesignSelectors_Success()
         {
             // arrange
             var selectorResponseDto = MockWorkflowDesignSelectorResponseDto();
-            var workflowDesignSelectorRequestDto = new WorkflowDesignSelectorRequestDto()
-            {
-                WorkflowName = ""
-            };
-            _workflowDesignApiMock.Setup(x => x.GetSelector(It.IsAny<WorkflowDesignSelectorRequestDto>())).Returns(Task.FromResult(selectorResponseDto));
+            _workflowDesignApiMock.Setup(x => x.GetSelector()).Returns(Task.FromResult(selectorResponseDto));
 
             // action
-            var result = await _incidentRepository.GetWorkflowDesignSelectorsByName(workflowDesignSelectorRequestDto.WorkflowName);
+            var result = await _incidentRepository.GetWorkflowDesignSelectors();
 
             // assert
-            Assert.True(1 == result.Length);
-
-            foreach (var item in result)
+            Assert.True(1 == result.List.Count);
+            foreach (var item in result.List)
             {
                 var expectedItem = selectorResponseDto.Selectors.FirstOrDefault(x => x.Id == item.Id);
                 Assert.NotNull(expectedItem);
@@ -590,6 +586,28 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.NotNull(response.Result);
             Assert.True(response.Result.Status == ExecuteStatus.Error);
             Assert.True(0 == response.Result.List.Count);
+        }
+
+        [Fact]
+        public void AddStepComment_Success()
+        {
+            //arrange
+            var response = new WorkflowActionResponseDto();
+            response.MakeSuccess();
+
+            _mockWorkflowInstanceApi.Setup(api => api.AddStepComment(It.IsAny<AddStepCommentRequestDto>()))
+                .Returns(Task.FromResult(response));
+
+            //act
+            var addStepCommentGto = new AddStepCommentGto()
+            {
+                WorkflowStepId = Guid.NewGuid().ToString(),
+                Comment = "this is comment"
+            };
+            var result = _incidentRepository.AddStepComment(addStepCommentGto);
+
+            //assert
+            Assert.True(result.Result.Status == ExecuteStatus.Successful);
         }
 
         #region private methods

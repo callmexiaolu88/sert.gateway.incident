@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Honeywell.Gateway.Incident.Api.Gtos
 {
@@ -9,5 +10,7 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
         public bool IsOptional { get; set; }
         public string Instruction { get; set; }
         public string HelpText { get; set; }
+
+        public IList<StepCommentGto> StepComments { get; set; } = new List<StepCommentGto>();
     }
 }

@@ -18,8 +18,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Action;
-using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
 
 namespace Honeywell.GateWay.Incident.Repository.Incident
 {
@@ -91,24 +91,21 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return new WorkflowDesignSummaryGto[] { };
         }
 
-        public async Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName)
+        public async Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
         {
-            var workflowDesignSelectorRequestDto = new WorkflowDesignSelectorRequestDto();
-
-            if (string.IsNullOrEmpty(workflowName))
+            var result = await _workflowDesignApi.GetSelector();
+            if (!result.IsSuccess)
             {
-                workflowName = "";
-            }
-            workflowDesignSelectorRequestDto.WorkflowName = workflowName;
-            var result = await _workflowDesignApi.GetSelector(workflowDesignSelectorRequestDto);
-            if (result.IsSuccess)
-            {
-                return HoneyMapper.Map<WorkflowDesignSelectorDto[],
-                    WorkflowDesignSelectorGto[]>(result.Selectors.ToArray());
+                Logger.LogError($"call workflow design api GetSelector error:{result.Message}");
+                return new WorkflowDesignSelectorListGto() { Status = ExecuteStatus.Error };
             }
 
-            Logger.LogError($"call workflow design api GetSelectors error:{result.Message}");
-            return new WorkflowDesignSelectorGto[] { };
+            return new WorkflowDesignSelectorListGto()
+            {
+                Status = ExecuteStatus.Successful,
+                List = HoneyMapper.Map<WorkflowDesignSelectorDto[],
+                    WorkflowDesignSelectorGto[]>(result.Selectors.ToArray()).ToList()
+            };
         }
 
         public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
@@ -362,5 +359,27 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 List = activeIncidentsGto.ToList()
             };
         }
+
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        {
+            Logger.LogInformation(
+                $"call Incident api AddStepComment Start,workflowStepId:{addStepCommentGto.WorkflowStepId},comment:{addStepCommentGto.Comment}");
+
+            AddStepCommentRequestDto requestDto = new AddStepCommentRequestDto()
+            {
+                WorkflowStepId = Guid.Parse(addStepCommentGto.WorkflowStepId),
+                Comment = addStepCommentGto.Comment
+            };
+            var response = await _workflowInstanceApi.AddStepComment(requestDto);
+
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to AddStepComment!");
+            return ExecuteResult.Error;
+        }
+
     }
 }

@@ -15,7 +15,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns();
 
-        Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName);
+        Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors();
 
         Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
 
@@ -40,5 +40,7 @@ namespace Honeywell.Gateway.Incident.Api
         Task<ExecuteResult> CloseIncident(string incidentId, string reason);
 
         Task<ExecuteResult> CompleteIncident(string incidentId);
+
+        Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
     }
 }

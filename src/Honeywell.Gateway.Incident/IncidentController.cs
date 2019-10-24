@@ -48,9 +48,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectorsByName(string workflowName)
+        public async Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
         {
-            var workflowDesignSelectorList = await _incidentAppService.GetWorkflowDesignSelectorsByName(workflowName);
+            var workflowDesignSelectorList = await _incidentAppService.GetWorkflowDesignSelectors();
             return workflowDesignSelectorList;
         }
 
@@ -145,6 +145,13 @@ namespace Honeywell.Gateway.Incident
         public async Task<ExecuteResult> CompleteIncident(string incidentId)
         {
             var result = await _incidentAppService.CompleteIncident(incidentId);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepComment)
+        {
+            var result = await _incidentAppService.AddStepComment(addStepComment);
             return result;
         }
     }
