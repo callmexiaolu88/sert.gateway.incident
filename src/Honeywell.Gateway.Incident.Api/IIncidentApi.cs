@@ -45,6 +45,8 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ExecuteResult> CompleteIncident(string incidentId);
 
+        Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
+
         Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request);
 
         Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds();

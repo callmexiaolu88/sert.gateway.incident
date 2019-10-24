@@ -67,7 +67,7 @@ namespace Incident.ApiTests
             return content;
         }
 
-        private class RequestContent
+        public class RequestContent
         {
             public string Username { get; set; }
             public string Password { get; set; }
@@ -77,7 +77,7 @@ namespace Incident.ApiTests
             public string Scope { get; set; }
         }
 
-        private class TokenResult
+        public class TokenResult
         {
             public string AccessToken { get; set; }
             public int StatusCode { get; set; }

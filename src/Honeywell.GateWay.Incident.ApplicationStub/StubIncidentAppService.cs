@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.Gtos.Create;
+using Honeywell.Gateway.Incident.Api.Gtos.Detail;
 using Honeywell.Gateway.Incident.Api.Gtos.Status;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
@@ -230,6 +231,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                     {
                         throw new Exception($"cannot found the incident associates with alarm id {id}");
                     }
+
                     var statusInfoGto = new IncidentStatusInfoGto
                     {
                         AlarmId = id,
@@ -245,6 +247,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             {
                 return Task.FromResult(ApiResponse.CreateFailed(ex).To(new GetIncidentStatusResponseGto()));
             }
+        }
+
+        public Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        {
+            return ResponseRequest();
         }
     }
 }

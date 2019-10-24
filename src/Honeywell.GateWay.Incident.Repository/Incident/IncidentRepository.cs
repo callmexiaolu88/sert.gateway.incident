@@ -24,8 +24,7 @@ using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Action;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
-using MicroWorkflowDesignApi = Honeywell.Micro.Services.Workflow.Api.WorkflowDesign;
-
+using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
 
 #pragma warning disable CS0612 // Type or member is obsolete
 
@@ -412,6 +411,27 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var response = await _incidentMicroApi.GetIncidentStatusByTrigger(incidentRequest);
 
             return HoneyMapper.Map<GetIncidentStatusResponseDto, GetIncidentStatusResponseGto>(response);
+        }
+
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        {
+            Logger.LogInformation(
+                $"call Incident api AddStepComment Start,workflowStepId:{addStepCommentGto.WorkflowStepId},comment:{addStepCommentGto.Comment}");
+
+            AddStepCommentRequestDto requestDto = new AddStepCommentRequestDto()
+            {
+                WorkflowStepId = Guid.Parse(addStepCommentGto.WorkflowStepId),
+                Comment = addStepCommentGto.Comment
+            };
+            var response = await _workflowInstanceApi.AddStepComment(requestDto);
+
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to AddStepComment!");
+            return ExecuteResult.Error;
         }
     }
 }

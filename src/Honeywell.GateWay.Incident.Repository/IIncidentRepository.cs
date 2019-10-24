@@ -40,6 +40,8 @@ namespace Honeywell.GateWay.Incident.Repository
 
         Task<ExecuteResult> CompleteIncident(string incidentId);
 
+        Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
+
         Task<ActiveIncidentListGto> GetActiveIncidentList();
 
         Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request);

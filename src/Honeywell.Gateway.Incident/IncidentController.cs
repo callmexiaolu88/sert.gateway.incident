@@ -179,5 +179,12 @@ namespace Honeywell.Gateway.Incident
             var result = await _incidentAppService.GetIncidentStatusWithAlarmId(request);
             return result;
         }
-    }
+
+        [HttpPost]
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepComment)
+        {
+            var result = await _incidentAppService.AddStepComment(addStepComment);
+            return result;
+        }
+        }
 }
