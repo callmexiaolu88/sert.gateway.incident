@@ -1,7 +1,4 @@
-﻿using Honeywell.Gateway.Incident.Api.Gtos;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 using System.Linq;
 using System.Net.Http;
 using System.Text;

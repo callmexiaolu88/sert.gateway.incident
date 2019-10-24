@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Core.Ddd.Application;
-using Honeywell.Micro.Services.Incident.Api.Incident.List;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Microsoft.Extensions.Logging;
 
 namespace Honeywell.GateWay.Incident.Application.Incident
@@ -61,9 +58,9 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.DownloadWorkflowTemplate();
         }
 
-        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
+        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds)
         {
-            return await _incidentRepository.ExportWorkflowDesigns(workflowIds);
+            return await _incidentRepository.ExportWorkflowDesigns(workflowDesignIds);
         }
 
         public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)

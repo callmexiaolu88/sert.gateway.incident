@@ -1,4 +1,4 @@
-﻿namespace Honeywell.GateWay.Incident.Repository.Data
+﻿namespace Honeywell.GateWay.Incident.Repository.Device
 {
     public class DevicesEntity
     {

@@ -8,9 +8,9 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 
         public List<string> ErrorList { get; set; }
 
-        public static ExecuteResult Success = new ExecuteResult { Status = ExecuteStatus.Successful };
+        public static readonly ExecuteResult Success = new ExecuteResult { Status = ExecuteStatus.Successful };
 
-        public static ExecuteResult Error = new ExecuteResult {Status = ExecuteStatus.Error};
+        public static readonly ExecuteResult Error = new ExecuteResult {Status = ExecuteStatus.Error};
 
         public ExecuteResult()
         {

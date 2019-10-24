@@ -7,9 +7,9 @@ namespace Honeywell.Gateway.Incident.Api
 {
     public interface IIncidentApi : IRemoteService
     {
-        Task<ExecuteResult> ImportWorkflowDesigns(Stream stream);
+        Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream);
 
-        Task<ExecuteResult> ValidatorWorkflowDesigns(Stream stream);
+        Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream);
 
         Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds);
 
@@ -21,7 +21,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<WorkflowTemplateGto> DownloadWorkflowTemplate();
 
-        Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds);
+        Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds);
 
         Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
 
