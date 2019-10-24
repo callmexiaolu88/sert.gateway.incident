@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Honeywell.Gateway.Incident.Api.Gtos.Create
+namespace Honeywell.Gateway.Incident.Api.Gtos
 {
     public class CreateIncidentResponseGto
     {

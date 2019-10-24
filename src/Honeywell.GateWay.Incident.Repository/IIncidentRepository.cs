@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Gtos.Create;
-using Honeywell.Gateway.Incident.Api.Gtos.Detail;
-using Honeywell.Gateway.Incident.Api.Gtos.Status;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
+using Honeywell.Gateway.Incident.Api.Workflow.Detail;
 using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.GateWay.Incident.Repository

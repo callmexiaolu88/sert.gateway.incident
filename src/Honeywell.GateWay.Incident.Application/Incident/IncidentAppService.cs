@@ -3,9 +3,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Gtos.Create;
-using Honeywell.Gateway.Incident.Api.Gtos.Detail;
-using Honeywell.Gateway.Incident.Api.Gtos.Status;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Api.Abstract;
@@ -147,7 +146,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.GetActiveIncidentList();
         }
 
-        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(
+        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(
             CreateIncidentByAlarmRequestGto request)
         {
             try
@@ -161,34 +160,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
-        public async Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds()
-        {
-            try
-            {
-                return await _incidentRepository.GetWorkflowDesignIds();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignIdentifiersResponseGto());
-            }
-        }
-
-        public async Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetWorkflowDesigns(
-            GetWorkflowDesignsRequestGto request)
-        {
-            try
-            {
-                return await _incidentRepository.GetWorkflowDesigns(request);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignsResponseGto());
-            }
-        }
-
-        public async Task<ApiResponse<GetIncidentStatusResponseGto>> GetIncidentStatusWithAlarmId(
+        public async Task<ApiResponse<GetIncidentStatusResponseGto>> GetStatusByAlarmId(
             GetIncidentStatusRequestGto request)
         {
             try

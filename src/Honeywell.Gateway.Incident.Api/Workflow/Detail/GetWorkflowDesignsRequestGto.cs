@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Honeywell.Gateway.Incident.Api.Gtos.Detail
+namespace Honeywell.Gateway.Incident.Api.Workflow.Detail
 {
     public class GetWorkflowDesignsRequestGto
     {

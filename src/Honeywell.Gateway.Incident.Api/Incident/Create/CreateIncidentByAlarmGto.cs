@@ -1,6 +1,7 @@
 ﻿using System;
+using Honeywell.Gateway.Incident.Api.Gtos;
 
-namespace Honeywell.Gateway.Incident.Api.Gtos.Create
+namespace Honeywell.Gateway.Incident.Api.Incident.Create
 {
     public class CreateIncidentByAlarmGto
     {

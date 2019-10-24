@@ -4,9 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Gtos.Create;
-using Honeywell.Gateway.Incident.Api.Gtos.Detail;
-using Honeywell.Gateway.Incident.Api.Gtos.Status;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Data;
@@ -322,7 +321,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
-        public void CreateIncidentByAlarm_Successful()
+        public void CreateByAlarm_Successful()
         {
             //Arrange
             var id = Guid.NewGuid();
@@ -334,7 +333,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockResponse);
 
             //Act
-            var result = _testObj.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto>());
+            var result = _testObj.CreateByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto>());
 
             //Assert
             Assert.NotNull(result);
@@ -345,116 +344,20 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
-        public void CreateIncidentByAlarm_ThrowException()
+        public void CreateByAlarm_ThrowException()
         {
             //Arrange
             _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto>()))
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto>());
+            var result = _testObj.CreateByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto>());
 
             //Assert
             Assert.NotNull(result);
             Assert.NotNull(result.Result.Value);
             Assert.False(result.Result.IsSuccess);
             Assert.False(result.Result.Value.IncidentIds.Any());
-        }
-
-        [Fact]
-        public void GetWorkflowDesignIds_Successful()
-        {
-            //Arrange
-            var id = Guid.NewGuid();
-            var name = "name";
-
-            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetWorkflowDesignIdentifiersResponseGto
-            {
-                Identifiers = new List<WorkflowDesignIdentifierGto>
-                {
-                    new WorkflowDesignIdentifierGto
-                    {
-                        Name = name,
-                        WorkflowDesignReferenceId = id,
-                    }
-                }
-            }));
-            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignIds())
-                .Returns(mockResponse);
-
-            //Act
-            var result = _testObj.GetWorkflowDesignIds();
-
-            //Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.Result.Value);
-            Assert.True(result.Result.IsSuccess);
-            Assert.True(result.Result.Value.Identifiers.Any());
-            Assert.True(result.Result.Value.Identifiers.First().WorkflowDesignReferenceId == id);
-            Assert.True(result.Result.Value.Identifiers.First().Name == name);
-        }
-
-        [Fact]
-        public void GetWorkflowDesignIds_ThrowException()
-        {
-            //Arrange
-            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignIds())
-                .Throws(new Exception());
-
-            //Act
-            var result = _testObj.GetWorkflowDesignIds();
-
-            //Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.Result.Value);
-            Assert.False(result.Result.IsSuccess);
-            Assert.False(result.Result.Value.Identifiers.Any());
-        }
-
-        [Fact]
-        public void GetWorkflowDesigns_Successful()
-        {
-            //Arrange
-            var id = Guid.NewGuid();
-            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetWorkflowDesignsResponseGto
-            {
-                WorkflowDesigns = new List<WorkflowDesignGto>
-                {
-                    new WorkflowDesignGto
-                    {
-                        Id = id
-                    }
-                }
-            }));
-            _mockIncidentRepository.Setup(x => x.GetWorkflowDesigns(It.IsAny<GetWorkflowDesignsRequestGto>()))
-                .Returns(mockResponse);
-
-            //Act
-            var result = _testObj.GetWorkflowDesigns(It.IsAny<GetWorkflowDesignsRequestGto>());
-
-            //Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.Result.Value);
-            Assert.True(result.Result.IsSuccess);
-            Assert.True(result.Result.Value.WorkflowDesigns.Any());
-            Assert.True(result.Result.Value.WorkflowDesigns.First().Id == id);
-        }
-
-        [Fact]
-        public void GetWorkflowDesigns_ThrowException()
-        {
-            //Arrange
-            _mockIncidentRepository.Setup(x => x.GetWorkflowDesigns(It.IsAny<GetWorkflowDesignsRequestGto>()))
-                .Throws(new Exception());
-
-            //Act
-            var result = _testObj.GetWorkflowDesigns(It.IsAny<GetWorkflowDesignsRequestGto>());
-
-            //Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.Result.Value);
-            Assert.False(result.Result.IsSuccess);
-            Assert.False(result.Result.Value.WorkflowDesigns.Any());
         }
 
         [Fact]
@@ -479,7 +382,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockResponse);
 
             //Act
-            var result = _testObj.GetIncidentStatusWithAlarmId(It.IsAny<GetIncidentStatusRequestGto>());
+            var result = _testObj.GetStatusByAlarmId(It.IsAny<GetIncidentStatusRequestGto>());
 
             //Assert
             Assert.NotNull(result);
@@ -499,7 +402,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.GetIncidentStatusWithAlarmId(It.IsAny<GetIncidentStatusRequestGto>());
+            var result = _testObj.GetStatusByAlarmId(It.IsAny<GetIncidentStatusRequestGto>());
 
             //Assert
             Assert.NotNull(result);

@@ -5,9 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Gtos.Create;
-using Honeywell.Gateway.Incident.Api.Gtos.Detail;
-using Honeywell.Gateway.Incident.Api.Gtos.Status;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
 
@@ -148,7 +147,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return Task.FromResult(new ActiveIncidentListGto { List = result, Status = ExecuteStatus.Successful });
         }
 
-        public Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(
+        public Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(
             CreateIncidentByAlarmRequestGto request)
         {
             try
@@ -172,53 +171,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
         }
 
-        public Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds()
-        {
-            try
-            {
-                var response = new GetWorkflowDesignIdentifiersResponseGto();
-                var workflowDesigns = StubData<WorkflowDesignGto[]>().Select(w => new WorkflowDesignIdentifierGto
-                {
-                    WorkflowDesignReferenceId = w.Id,
-                    Name = w.Name
-                }).ToList();
-
-                if (workflowDesigns.Any())
-                {
-                    response.Identifiers = workflowDesigns;
-                    return Task.FromResult(ApiResponse.CreateSuccess().To(response));
-                }
-
-                throw new Exception("cannot found any workflow design");
-            }
-            catch (Exception ex)
-            {
-                return Task.FromResult(ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignIdentifiersResponseGto()));
-            }
-        }
-
-        public Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request)
-        {
-            try
-            {
-                var response = new GetWorkflowDesignsResponseGto();
-                foreach (var id in request.Ids)
-                {
-                    var workflowDesigns = StubData<WorkflowDesignGto[]>().FirstOrDefault(m => m.Id == id);
-                    if (workflowDesigns != null) {response.WorkflowDesigns.Add(workflowDesigns);}
-
-                    throw new Exception($"cannot found the workflow design by id:{id}");
-                }
-
-                return Task.FromResult(ApiResponse.CreateSuccess().To(response));
-            }
-            catch (Exception ex)
-            {
-                return Task.FromResult(ApiResponse.CreateFailed(ex).To(new GetWorkflowDesignsResponseGto()));
-            }
-        }
-
-        public Task<ApiResponse<GetIncidentStatusResponseGto>> GetIncidentStatusWithAlarmId(
+        public Task<ApiResponse<GetIncidentStatusResponseGto>> GetStatusByAlarmId(
             GetIncidentStatusRequestGto request)
         {
             try

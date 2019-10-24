@@ -1,5 +1,6 @@
 ﻿using Honeywell.GateWay.Incident.Application;
 using Honeywell.GateWay.Incident.Application.Incident;
+using Honeywell.GateWay.Incident.Application.Workflow;
 using Honeywell.Infra.Core.Modular;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,13 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                         typeof(StubIncidentAppService),
                         ServiceLifetime.Transient);
                 IocContainer.Replace(incidentDescriptor);
+
+                var workflowDescriptor =
+                    new ServiceDescriptor(
+                        typeof(IWorkflowAppService),
+                        typeof(StubWorkflowAppService),
+                        ServiceLifetime.Transient);
+                IocContainer.Replace(workflowDescriptor);
             }
         }
     }

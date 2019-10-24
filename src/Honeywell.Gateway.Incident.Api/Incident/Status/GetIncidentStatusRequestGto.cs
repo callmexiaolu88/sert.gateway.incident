@@ -1,4 +1,4 @@
-﻿namespace Honeywell.Gateway.Incident.Api.Gtos.Status
+﻿namespace Honeywell.Gateway.Incident.Api.Incident.Status
 {
     public class GetIncidentStatusRequestGto
     {

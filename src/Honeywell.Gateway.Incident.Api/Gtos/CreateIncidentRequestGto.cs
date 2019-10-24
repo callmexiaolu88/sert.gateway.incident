@@ -1,4 +1,4 @@
-﻿namespace Honeywell.Gateway.Incident.Api.Gtos.Create
+﻿namespace Honeywell.Gateway.Incident.Api.Gtos
 {
     public class CreateIncidentRequestGto
     {

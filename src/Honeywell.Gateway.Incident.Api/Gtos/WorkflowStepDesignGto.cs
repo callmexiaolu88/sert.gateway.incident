@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Honeywell.Gateway.Incident.Api.Gtos.Detail
+namespace Honeywell.Gateway.Incident.Api.Gtos
 {
     public class WorkflowStepDesignGto
     {

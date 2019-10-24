@@ -2,9 +2,10 @@
 using FacadeApi= Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Gtos.Create;
-using Honeywell.Gateway.Incident.Api.Gtos.Detail;
-using Honeywell.Gateway.Incident.Api.Gtos.Status;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
+using Honeywell.Gateway.Incident.Api.Workflow.Detail;
+using Honeywell.Gateway.Incident.Api.Workflow.List;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Incident.Api.Incident.Status;
@@ -62,7 +63,7 @@ namespace Honeywell.GateWay.Incident.Application
             //GetWorkflowDesignIds Response
             CreateMap<WorkflowDesignSummaryResponseDto, GetWorkflowDesignIdentifiersResponseGto>()
                 .ForMember(dest => dest.Identifiers, opt => opt.MapFrom(src => src.Summaries));
-            CreateMap<WorkflowDesignSummaryDto, WorkflowDesignIdentifierGto>()
+            CreateMap<WorkflowDesignSummaryDto, WorkflowDesignIdGto>()
                 .ForMember(dest => dest.WorkflowDesignReferenceId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 

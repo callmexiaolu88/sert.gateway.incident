@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Honeywell.Gateway.Incident.Api.Gtos
+namespace Honeywell.Gateway.Incident.Api.Workflow.List
 {
-    public class WorkflowDesignIdentifierGto
+    public class WorkflowDesignIdGto
     {
         public Guid WorkflowDesignReferenceId { get; set; }
         public string Name { get; set; }

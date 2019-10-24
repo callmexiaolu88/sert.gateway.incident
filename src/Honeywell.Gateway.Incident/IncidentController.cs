@@ -5,10 +5,9 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.Infra.Api.Abstract;
-using Honeywell.Gateway.Incident.Api.Gtos.Create;
-using Honeywell.Gateway.Incident.Api.Gtos.Detail;
-using Honeywell.Gateway.Incident.Api.Gtos.Status;
 
 namespace Honeywell.Gateway.Incident
 {
@@ -153,30 +152,16 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request)
+        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(CreateIncidentByAlarmRequestGto request)
         {
-            var result = await _incidentAppService.CreateIncidentByAlarm(request);
+            var result = await _incidentAppService.CreateByAlarm(request);
             return result;
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds()
+        public async Task<ApiResponse<GetIncidentStatusResponseGto>> GetStatusByAlarmId(GetIncidentStatusRequestGto request)
         {
-            var result = await _incidentAppService.GetWorkflowDesignIds();
-            return result;
-        }
-
-        [HttpPost]
-        public async Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request)
-        {
-            var result = await _incidentAppService.GetWorkflowDesigns(request);
-            return result;
-        }
-
-        [HttpPost]
-        public async Task<ApiResponse<GetIncidentStatusResponseGto>> GetIncidentStatusWithAlarmId(GetIncidentStatusRequestGto request)
-        {
-            var result = await _incidentAppService.GetIncidentStatusWithAlarmId(request);
+            var result = await _incidentAppService.GetStatusByAlarmId(request);
             return result;
         }
 

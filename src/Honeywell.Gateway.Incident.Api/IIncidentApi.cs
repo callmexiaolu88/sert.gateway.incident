@@ -2,9 +2,8 @@
 using Honeywell.Infra.Core;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Gtos.Create;
-using Honeywell.Gateway.Incident.Api.Gtos.Detail;
-using Honeywell.Gateway.Incident.Api.Gtos.Status;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.Gateway.Incident.Api
@@ -47,12 +46,8 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
 
-        Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request);
+        Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(CreateIncidentByAlarmRequestGto request);
 
-        Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds();
-
-        Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request);
-
-        Task<ApiResponse<GetIncidentStatusResponseGto>> GetIncidentStatusWithAlarmId(GetIncidentStatusRequestGto request);
+        Task<ApiResponse<GetIncidentStatusResponseGto>> GetStatusByAlarmId(GetIncidentStatusRequestGto request);
     }
 }

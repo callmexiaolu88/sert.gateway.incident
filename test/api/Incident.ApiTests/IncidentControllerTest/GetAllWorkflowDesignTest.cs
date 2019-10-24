@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System.Linq;
+using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
 {
@@ -17,6 +18,19 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.NotNull(workflowDesigns);
             Assert.NotNull(workflowDesigns.Result);
             Assert.True(workflowDesigns.Result.Length > 0);
+            await DeleteWorkflowDesign();
+        }
+
+        [Fact]
+        public async void GetWorkflowDesignIds_Success()
+        {
+            await ImportWorkflowDesign();
+            var workflowDesigns = await WorkflowGateWayApi.GetDesignIds();
+            Assert.NotNull(workflowDesigns);
+            Assert.True(workflowDesigns.IsSuccess);
+            Assert.NotNull(workflowDesigns.Value);
+            Assert.NotNull(workflowDesigns.Value.Identifiers);
+            Assert.True(workflowDesigns.Value.Identifiers.Any());
             await DeleteWorkflowDesign();
         }
     }
