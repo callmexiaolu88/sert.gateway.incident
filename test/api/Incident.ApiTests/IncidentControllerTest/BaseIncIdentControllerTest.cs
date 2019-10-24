@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Gtos.Create;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

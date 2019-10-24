@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Honeywell.Gateway.Incident.Api.Gtos
+namespace Honeywell.Gateway.Incident.Api.Gtos.Status
 {
     public class GetIncidentStatusResponseGto
     {

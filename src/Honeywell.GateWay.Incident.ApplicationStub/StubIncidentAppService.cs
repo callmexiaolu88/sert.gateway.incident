@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Gtos.Create;
+using Honeywell.Gateway.Incident.Api.Gtos.Status;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
 

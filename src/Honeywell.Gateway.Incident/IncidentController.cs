@@ -6,6 +6,9 @@ using Honeywell.GateWay.Incident.Application.Incident;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
 using Honeywell.Infra.Api.Abstract;
+using Honeywell.Gateway.Incident.Api.Gtos.Create;
+using Honeywell.Gateway.Incident.Api.Gtos.Detail;
+using Honeywell.Gateway.Incident.Api.Gtos.Status;
 
 namespace Honeywell.Gateway.Incident
 {

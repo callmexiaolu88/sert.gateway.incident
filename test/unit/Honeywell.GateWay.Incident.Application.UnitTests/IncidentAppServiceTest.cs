@@ -4,10 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Gtos.Create;
+using Honeywell.Gateway.Incident.Api.Gtos.Detail;
+using Honeywell.Gateway.Incident.Api.Gtos.Status;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Data;
 using Honeywell.GateWay.Incident.Repository.Device;
+using Honeywell.Infra.Api.Abstract;
 using Moq;
 using Xunit;
 
@@ -310,10 +314,10 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             //Arrange
             var id = Guid.NewGuid();
-            var mockResponse = Task.FromResult(new CreateIncidentResponseGto
+            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new CreateIncidentResponseGto
             {
                 IncidentIds = new List<Guid>() {id}
-            });
+            }));
             _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto>()))
                 .Returns(mockResponse);
 
@@ -352,7 +356,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var id = Guid.NewGuid();
             var name = "name";
 
-            var mockResponse = Task.FromResult(new GetWorkflowDesignIdentifiersResponseGto
+            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetWorkflowDesignIdentifiersResponseGto
             {
                 Identifiers = new List<WorkflowDesignIdentifierGto>
                 {
@@ -362,7 +366,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                         WorkflowDesignReferenceId = id,
                     }
                 }
-            });
+            }));
             _mockIncidentRepository.Setup(x => x.GetWorkflowDesignIds())
                 .Returns(mockResponse);
 
@@ -400,7 +404,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             //Arrange
             var id = Guid.NewGuid();
-            var mockResponse = Task.FromResult(new GetWorkflowDesignsResponseGto
+            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetWorkflowDesignsResponseGto
             {
                 WorkflowDesigns = new List<WorkflowDesignGto>
                 {
@@ -409,7 +413,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                         Id = id
                     }
                 }
-            });
+            }));
             _mockIncidentRepository.Setup(x => x.GetWorkflowDesigns(It.IsAny<GetWorkflowDesignsRequestGto>()))
                 .Returns(mockResponse);
 
@@ -447,7 +451,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //Arrange
             var incidentId = Guid.NewGuid();
             var alarmId = Guid.NewGuid().ToString();
-            var mockResponse = Task.FromResult(new GetIncidentStatusResponseGto
+            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetIncidentStatusResponseGto
             {
                 IncidentStatusInfos = new List<IncidentStatusInfoGto>
                 {
@@ -458,7 +462,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                         Status = IncidentStatus.Active
                     }
                 }
-            });
+            }));
             _mockIncidentRepository.Setup(x => x.GetIncidentStatusWithAlarmId(It.IsAny<GetIncidentStatusRequestGto>()))
                 .Returns(mockResponse);
 

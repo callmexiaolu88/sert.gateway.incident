@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Honeywell.Gateway.Incident.Api.Gtos
+namespace Honeywell.Gateway.Incident.Api.Gtos.Detail
 {
     public class GetWorkflowDesignsResponseGto
     {

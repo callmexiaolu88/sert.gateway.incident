@@ -1,6 +1,10 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Gtos.Create;
+using Honeywell.Gateway.Incident.Api.Gtos.Detail;
+using Honeywell.Gateway.Incident.Api.Gtos.Status;
+using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
@@ -38,12 +42,12 @@ namespace Honeywell.GateWay.Incident.Repository
 
         Task<ActiveIncidentListGto> GetActiveIncidentList();
 
-        Task<CreateIncidentResponseGto> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request);
+        Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request);
 
-        Task<GetWorkflowDesignIdentifiersResponseGto> GetWorkflowDesignIds();
+        Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds();
 
-        Task<GetWorkflowDesignsResponseGto> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request);
+        Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request);
 
-        Task<GetIncidentStatusResponseGto> GetIncidentStatusWithAlarmId(GetIncidentStatusRequestGto request);
+        Task<ApiResponse<GetIncidentStatusResponseGto>> GetIncidentStatusWithAlarmId(GetIncidentStatusRequestGto request);
     }
 }

@@ -2,6 +2,9 @@
 using FacadeApi= Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Gtos.Create;
+using Honeywell.Gateway.Incident.Api.Gtos.Detail;
+using Honeywell.Gateway.Incident.Api.Gtos.Status;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Incident.Api.Incident.Status;

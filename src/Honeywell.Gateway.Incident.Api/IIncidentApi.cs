@@ -2,6 +2,9 @@
 using Honeywell.Infra.Core;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Gtos.Create;
+using Honeywell.Gateway.Incident.Api.Gtos.Detail;
+using Honeywell.Gateway.Incident.Api.Gtos.Status;
 using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.Gateway.Incident.Api

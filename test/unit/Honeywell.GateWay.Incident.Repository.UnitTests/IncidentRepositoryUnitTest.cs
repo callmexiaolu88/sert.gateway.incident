@@ -22,8 +22,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Honeywell.Micro.Services.Workflow.Api.Workflow;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Action;
 using Xunit;
@@ -36,7 +36,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 {
     public class IncidentRepositoryUnitTest : ApplicationServiceTestBase
     {
-        private readonly Mock<IWorkflowDesignApi> _workflowDesignApiMock;
+        private readonly Mock<IWorkflowDesignApi> _mockWorkflowDesignApi;
         private readonly Mock<IIncidentMicroApi> _mockIncidentMicroApi;
         private readonly Mock<IWorkflowInstanceApi> _mockWorkflowInstanceApi;
         private readonly Mock<IIncidentFacadeApi> _mockIncidentFacadeApi;
@@ -45,12 +45,12 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
         public IncidentRepositoryUnitTest()
         {
-            _workflowDesignApiMock = new Mock<IWorkflowDesignApi>();
+            _mockWorkflowDesignApi = new Mock<IWorkflowDesignApi>();
             _mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
             _mockWorkflowInstanceApi = new Mock<IWorkflowInstanceApi>();
             _mockIncidentFacadeApi = new Mock<IIncidentFacadeApi>();
             _incidentRepository = new IncidentRepository(
-                _workflowDesignApiMock.Object,
+                _mockWorkflowDesignApi.Object,
                 _mockIncidentMicroApi.Object,
                 _mockWorkflowInstanceApi.Object,
                 _mockIncidentFacadeApi.Object);
@@ -60,7 +60,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         public async Task WorkflowDesign_DeleteWorkflowDesigns_Success()
         {
             // arrange
-            _workflowDesignApiMock.Setup(x => x.Deletes(It.IsAny<WorkflowDesignDeleteRequestDto>()))
+            _mockWorkflowDesignApi.Setup(x => x.Deletes(It.IsAny<WorkflowDesignDeleteRequestDto>()))
                 .Returns(Task.FromResult(new ApiResponse { IsSuccess = true }));
 
             // action
@@ -75,7 +75,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             // arrange
             var mockResult = new ApiResponse { IsSuccess = false, Message = "error delete" };
-            _workflowDesignApiMock.Setup(x => x.Deletes(It.IsAny<WorkflowDesignDeleteRequestDto>()))
+            _mockWorkflowDesignApi.Setup(x => x.Deletes(It.IsAny<WorkflowDesignDeleteRequestDto>()))
                 .Returns(Task.FromResult(mockResult));
 
             // action
@@ -93,7 +93,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             // arrange
             var summaryResponseDto = MockWorkflowDesignSummaryResponseDto();
-            _workflowDesignApiMock.Setup(x => x.GetSummaries()).Returns(Task.FromResult(summaryResponseDto));
+            _mockWorkflowDesignApi.Setup(x => x.GetSummaries()).Returns(Task.FromResult(summaryResponseDto));
 
             // action
             var result = await _incidentRepository.GetAllActiveWorkflowDesigns();
@@ -115,7 +115,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             // arrange
             var selectorResponseDto = MockWorkflowDesignSelectorResponseDto();
-            _workflowDesignApiMock.Setup(x => x.GetSelector()).Returns(Task.FromResult(selectorResponseDto));
+            _mockWorkflowDesignApi.Setup(x => x.GetSelector()).Returns(Task.FromResult(selectorResponseDto));
 
             // action
             var result = await _incidentRepository.GetWorkflowDesignSelectors();
@@ -135,7 +135,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             // arrange
             var summaryResponseDto = new WorkflowDesignSummaryResponseDto { IsSuccess = false, Message = "error 1" };
-            _workflowDesignApiMock.Setup(x => x.GetSummaries()).Returns(Task.FromResult(summaryResponseDto));
+            _mockWorkflowDesignApi.Setup(x => x.GetSummaries()).Returns(Task.FromResult(summaryResponseDto));
 
             // action
             var result = await _incidentRepository.GetAllActiveWorkflowDesigns();
@@ -149,7 +149,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             // arrange
             var workflowDesignDto = MockWorkflowDesignResponseDto();
-            _workflowDesignApiMock
+            _mockWorkflowDesignApi
                 .Setup(x => x.GetDetails(It.IsAny<WorkflowDesignDetailsRequestDto>()))
                 .Returns(Task.FromResult(workflowDesignDto));
 
@@ -178,7 +178,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             // arrange
             var workflowDesignDto = new WorkflowDesignResponseDto { IsSuccess = false, Message = "error 1" };
-            _workflowDesignApiMock
+            _mockWorkflowDesignApi
                 .Setup(x => x.GetDetails(It.IsAny<WorkflowDesignDetailsRequestDto>()))
                 .Returns(Task.FromResult(workflowDesignDto));
 
@@ -195,7 +195,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             // arrange
             var responseDto = new ImportWorkflowDesignsResponseDto { IsSuccess = false };
             responseDto.ImportResponseList.Add(new WorkflowResponseDto("workflow1", new List<string> { "duplicate name", "desc over length" }));
-            _workflowDesignApiMock.Setup(x => x.Imports(It.IsAny<Stream>())).
+            _mockWorkflowDesignApi.Setup(x => x.Imports(It.IsAny<Stream>())).
                 Returns(Task.FromResult(responseDto));
             // action
 
@@ -209,7 +209,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         public async Task DownloadWorkflowTemplate_Success()
         {
             var responseDto = new WorkflowDownloadTemplateResultDto() { IsSuccess = true };
-            _workflowDesignApiMock.Setup(x => x.DownloadTemplate()).Returns(Task.FromResult(responseDto));
+            _mockWorkflowDesignApi.Setup(x => x.DownloadTemplate()).Returns(Task.FromResult(responseDto));
             var result = await _incidentRepository.DownloadWorkflowTemplate();
             // assert
             Assert.True(result.Status == GTO.ExecuteStatus.Successful);
@@ -222,7 +222,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             string[] strIds = guidIds.Select(x => x.ToString()).ToArray();
             ExportWorkflowsResponseDto workflowsDto = new ExportWorkflowsResponseDto() { IsSuccess = true, WorkflowsBytes = new byte[10] };
 
-            _workflowDesignApiMock.Setup(x => x.ExportWorkflows(It.IsAny<ExportWorkflowRequestDto>())).Returns(Task.FromResult(workflowsDto));
+            _mockWorkflowDesignApi.Setup(x => x.ExportWorkflows(It.IsAny<ExportWorkflowRequestDto>())).Returns(Task.FromResult(workflowsDto));
             var result = await _incidentRepository.ExportWorkflowDesigns(strIds);
 
             // assert
@@ -332,7 +332,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var priority = "HIGH";
             var description = "description";
 
-            var request = new GTO.CreateIncidentRequestGto
+            var request = new GTO.Create.CreateIncidentRequestGto
             {
                 WorkflowDesignReferenceId = workflowDesignReferenceId,
                 Priority = priority,
@@ -596,11 +596,11 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var workflowDesignReferenceId = Guid.NewGuid();
 
-            var request = new GTO.CreateIncidentByAlarmRequestGto
+            var request = new GTO.Create.CreateIncidentByAlarmRequestGto
             {
                 CreateIncidentDatas = new[]
                 {
-                    new GTO.CreateIncidentByAlarmGto
+                    new GTO.Create.CreateIncidentByAlarmGto
                     {
                         WorkflowDesignReferenceId = workflowDesignReferenceId,
                         Priority = GTO.IncidentPriority.High,
@@ -608,7 +608,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                         DeviceId = Guid.NewGuid().ToString(),
                         DeviceType = "Door",
                         AlarmId = Guid.NewGuid().ToString(),
-                        AlarmData = new GTO.AlarmData
+                        AlarmData = new GTO.Create.AlarmData
                         {
                             AlarmType = "AlarmType",
                             Description = "alarm description"
@@ -633,8 +633,148 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var incidentIds = _incidentRepository.CreateIncidentByAlarm(request);
 
             //assert
-            Assert.True(createIncidentResponse.IsSuccess);
-            Assert.Equal(createIncidentResponse.IncidentIds.First(), incidentIds.Result.IncidentIds.First());
+            Assert.NotNull(incidentIds.Result);
+            Assert.Equal(createIncidentResponse.IncidentIds.First(), incidentIds.Result.Value.IncidentIds.First());
+        }
+
+        [Fact]
+        public void GetWorkflowDesignIds_Success()
+        {
+            //arrange
+            var summaryResponseDto = new WorkflowDesignSummaryResponseDto
+            {
+                IsSuccess = true,
+                Summaries = new List<WorkflowDesignSummaryDto>
+                {
+                    new WorkflowDesignSummaryDto
+                    {
+                        Description = "description",
+                        Id = new Guid(),
+                        Name = "name",
+                        Version = 1
+                    }
+                }
+            };
+
+            _mockWorkflowDesignApi.Setup(api => api.GetSummaries())
+                .Returns(Task.FromResult(summaryResponseDto));
+
+            //act
+            var workflowDesignIds = _incidentRepository.GetWorkflowDesignIds();
+
+            //assert
+            Assert.NotNull(workflowDesignIds.Result);
+            Assert.Equal(workflowDesignIds.Result.Value.Identifiers.First().WorkflowDesignReferenceId, summaryResponseDto.Summaries.First().Id);
+            Assert.Equal(workflowDesignIds.Result.Value.Identifiers.First().Name, summaryResponseDto.Summaries.First().Name);
+        }
+
+        [Fact]
+        public void GetWorkflowDesigns_Success()
+        {
+            //arrange
+            var workflowGuid = Guid.NewGuid();
+            var setGuid = Guid.NewGuid();
+
+            var request = new GTO.Detail.GetWorkflowDesignsRequestGto
+            {
+                Ids = new[] {workflowGuid}
+            };
+
+            var workflowDesignResponseDto = new WorkflowDesignResponseDto
+            {
+                IsSuccess = true,
+                Details = new List<WorkflowDesignDto>
+                {
+                    new WorkflowDesignDto
+                    {
+                        Id = workflowGuid,
+                        Description = "description",
+                        Name = "name",
+                        Version = 1,
+                        Steps = new[]
+                        {
+                            new WorkflowStepDesignDto
+                            {
+                                Id = setGuid,
+                                HelpText = "help text 1",
+                                Instruction = "instruction 1",
+                                IsOptional = false,
+                                ParentStepId = null
+                            },
+                            new WorkflowStepDesignDto
+                            {
+                                Id = new Guid(),
+                                HelpText = "help text 2",
+                                Instruction = "instruction 2",
+                                IsOptional = true,
+                                ParentStepId = setGuid,
+                            }
+                        }
+                    }
+                }
+            };
+
+            _mockWorkflowDesignApi.Setup(api => api.GetDetails(It.IsAny<WorkflowDesignDetailsRequestDto>()))
+                .Returns(Task.FromResult(workflowDesignResponseDto));
+
+            //act
+            var workflowDesigns = _incidentRepository.GetWorkflowDesigns(request);
+
+            //assert
+            Assert.NotNull(workflowDesigns.Result);
+            Assert.Equal(workflowGuid,workflowDesignResponseDto.Details.First().Id);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Id, workflowDesigns.Result.Value.WorkflowDesigns.First().Id);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Name, workflowDesigns.Result.Value.WorkflowDesigns.First().Name);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Description, workflowDesigns.Result.Value.WorkflowDesigns.First().Description);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].Id, workflowDesigns.Result.Value.WorkflowDesigns.First().Steps[0].Id);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].HelpText, workflowDesigns.Result.Value.WorkflowDesigns.First().Steps[0].HelpText);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].Instruction, workflowDesigns.Result.Value.WorkflowDesigns.First().Steps[0].Instruction);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].IsOptional, workflowDesigns.Result.Value.WorkflowDesigns.First().Steps[0].IsOptional);
+
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].Id, workflowDesigns.Result.Value.WorkflowDesigns.First().Steps[1].Id);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].HelpText, workflowDesigns.Result.Value.WorkflowDesigns.First().Steps[1].HelpText);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].Instruction, workflowDesigns.Result.Value.WorkflowDesigns.First().Steps[1].Instruction);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].IsOptional, workflowDesigns.Result.Value.WorkflowDesigns.First().Steps[1].IsOptional);
+        }
+
+        [Fact]
+        public void GetIncidentStatusWithAlarmId_Success()
+        {
+            //arrange
+            var alarmId = Guid.NewGuid().ToString();
+            var incidentId = Guid.NewGuid();
+
+            var request = new GTO.Status.GetIncidentStatusRequestGto()
+            {
+                AlarmIds = new[] { alarmId }
+            };
+
+            var getIncidentStatusResponse = new GetIncidentStatusResponseDto
+            {
+                IsSuccess = true,
+                IncidentStatusInfos = new List<IncidentStatusDto>
+                {
+                    new IncidentStatusDto
+                    {
+                        IncidentId = incidentId,
+                        TriggerId = alarmId,
+                        Status = IncidentState.Active
+                    }
+                }
+            };
+
+            _mockIncidentMicroApi.Setup(api => api.GetIncidentStatusByTrigger(It.IsAny<GetIncidentStatusRequestDto>()))
+                .Returns(Task.FromResult(getIncidentStatusResponse));
+
+            //act
+            var statusWithAlarmId = _incidentRepository.GetIncidentStatusWithAlarmId(request);
+
+            //assert
+            Assert.NotNull(statusWithAlarmId.Result);
+            Assert.Equal(getIncidentStatusResponse.IncidentStatusInfos.First().TriggerId, alarmId);
+            Assert.Equal(getIncidentStatusResponse.IncidentStatusInfos.First().TriggerId, statusWithAlarmId.Result.Value.IncidentStatusInfos.First().AlarmId);
+            Assert.Equal(GTO.IncidentStatus.Active, statusWithAlarmId.Result.Value.IncidentStatusInfos.First().Status);
+            Assert.Equal(incidentId, statusWithAlarmId.Result.Value.IncidentStatusInfos.First().IncidentId);
         }
 
         #region private methods

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Honeywell.Gateway.Incident.Api.Gtos
+namespace Honeywell.Gateway.Incident.Api.Gtos.Status
 {
     public class IncidentStatusInfoGto
     {

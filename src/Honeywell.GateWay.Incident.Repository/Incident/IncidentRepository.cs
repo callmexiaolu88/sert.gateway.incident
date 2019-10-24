@@ -17,6 +17,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
+using Honeywell.Gateway.Incident.Api.Gtos.Create;
+using Honeywell.Gateway.Incident.Api.Gtos.Detail;
+using Honeywell.Gateway.Incident.Api.Gtos.Status;
+using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Action;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
@@ -364,7 +368,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             };
         }
 
-        public async Task<CreateIncidentResponseGto> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request)
+        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto request)
         {
             Logger.LogInformation($"call Incident api {nameof(CreateIncidentByAlarm)} Start");
 
@@ -377,7 +381,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 .Map<FacadeApi.Create.CreateIncidentResponseDto, CreateIncidentResponseGto>(response);
         }
 
-        public async Task<GetWorkflowDesignIdentifiersResponseGto> GetWorkflowDesignIds()
+        public async Task<ApiResponse<GetWorkflowDesignIdentifiersResponseGto>> GetWorkflowDesignIds()
         {
             Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignIds)} Start");
 
@@ -386,7 +390,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 .Map<WorkflowDesignSummaryResponseDto, GetWorkflowDesignIdentifiersResponseGto>(response);
         }
 
-        public async Task<GetWorkflowDesignsResponseGto> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request)
+        public async Task<ApiResponse<GetWorkflowDesignsResponseGto>> GetWorkflowDesigns(GetWorkflowDesignsRequestGto request)
         {
             Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesigns)} Start");
 
@@ -397,7 +401,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return HoneyMapper.Map<WorkflowDesignResponseDto, GetWorkflowDesignsResponseGto>(response);
         }
 
-        public async Task<GetIncidentStatusResponseGto> GetIncidentStatusWithAlarmId(
+        public async Task<ApiResponse<GetIncidentStatusResponseGto>> GetIncidentStatusWithAlarmId(
             GetIncidentStatusRequestGto request)
         {
             Logger.LogInformation($"call Incident api {nameof(GetIncidentStatusWithAlarmId)} Start");
