@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Honeywell.GateWay.Incident.Repository.Data;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Moq;
 using Xunit;

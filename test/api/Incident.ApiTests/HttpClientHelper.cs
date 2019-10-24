@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -88,8 +87,8 @@ namespace Incident.ApiTests
             {
                 Username = username,
                 Password = password,
-                workspace = "",
-                ClientID = "ProWatchWebClient",
+                Workspace = "",
+                ClientId = "ProWatchWebClient",
                 ClientSecret = "secret",
                 Scope = "prowatch offline_access"
             };

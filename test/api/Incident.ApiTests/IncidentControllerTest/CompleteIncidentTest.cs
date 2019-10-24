@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Honeywell.Gateway.Incident.Api.Gtos;
+﻿using Honeywell.Gateway.Incident.Api.Gtos;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest

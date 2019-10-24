@@ -1,21 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
-using Honeywell.GateWay.Incident.Repository.Data;
 using Honeywell.GateWay.Incident.Repository.Device;
-using Honeywell.Micro.Services.Incident.Api;
-using Honeywell.Micro.Services.Incident.Api.Incident.Details;
-using Honeywell.Micro.Services.Incident.Api.Incident.List;
-using Honeywell.Micro.Services.Incident.Domain.Shared;
-using Honeywell.Micro.Services.Workflow.Api;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
-using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using Moq;
 using Xunit;
 

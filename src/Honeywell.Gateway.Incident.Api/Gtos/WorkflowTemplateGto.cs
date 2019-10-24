@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
+﻿
 namespace Honeywell.Gateway.Incident.Api.Gtos
 {
     public class WorkflowTemplateGto: ExecuteResult
