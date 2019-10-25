@@ -59,25 +59,25 @@ namespace Incident.ApiTests
             {
                 Username = username,
                 Password = password,
-                workspace = "",
-                ClientID = "ProWatchWebClient",
+                Workspace = "",
+                ClientId = "ProWatchWebClient",
                 ClientSecret = "secret",
                 Scope = "prowatch offline_access"
             };
             return content;
         }
 
-        private class RequestContent
+        public class RequestContent
         {
             public string Username { get; set; }
             public string Password { get; set; }
-            public string workspace { get; set; }
-            public string ClientID { get; set; }
+            public string Workspace { get; set; }
+            public string ClientId { get; set; }
             public string ClientSecret { get; set; }
             public string Scope { get; set; }
         }
 
-        private class TokenResult
+        public class TokenResult
         {
             public string AccessToken { get; set; }
             public int StatusCode { get; set; }

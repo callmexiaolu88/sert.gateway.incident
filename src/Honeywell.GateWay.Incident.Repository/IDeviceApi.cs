@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Honeywell.GateWay.Incident.Repository.Data;
+using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Client.WebApi.Attributes.HttpMethodAttributes;
 using Honeywell.Infra.Client.WebApi.Attributes.RouteAttribute;
 using Honeywell.Infra.Core;

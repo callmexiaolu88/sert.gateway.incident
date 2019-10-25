@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using Honeywell.Infra.Core.Common.Exceptions;
 using Newtonsoft.Json;
 
 namespace Honeywell.GateWay.Incident.ApplicationStub
@@ -23,12 +23,12 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             if (type != null)
             {
                 var filePath = Path.Combine(assemblyFolder, "StubData", $"{type.Name}.json");
-                using StreamReader r = new StreamReader(filePath);
-                var json = r.ReadToEnd();
-                T items = JsonConvert.DeserializeObject<T>(json);
+                using var reader = new StreamReader(filePath);
+                var json = reader.ReadToEnd();
+                var items = JsonConvert.DeserializeObject<T>(json);
                 return items;
             }
-            throw new Exception($"can not identity the type {typeof(T).FullName}");
+            throw new HoneywellException($"can not identity the type {typeof(T).FullName}");
         }
 
         protected Task<T> StubDataTask<T>()

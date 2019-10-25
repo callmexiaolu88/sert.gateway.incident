@@ -1,21 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
-using Honeywell.GateWay.Incident.Repository.Data;
 using Honeywell.GateWay.Incident.Repository.Device;
-using Honeywell.Micro.Services.Incident.Api;
-using Honeywell.Micro.Services.Incident.Api.Incident.Details;
-using Honeywell.Micro.Services.Incident.Api.Incident.List;
-using Honeywell.Micro.Services.Incident.Domain.Shared;
-using Honeywell.Micro.Services.Workflow.Api;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
-using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using Moq;
 using Xunit;
 
@@ -290,6 +279,18 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.True(result.Result.List.Count == 1);
             Assert.True(result.Result.List[0].WorkflowId == mockActiveIncidentGto.WorkflowId);
             Assert.True(result.Result.List[0].WorkflowDesignName == mockActiveIncidentGto.WorkflowDesignName);
+        }
+
+        [Fact]
+        public void AddStepComment_Successful()
+        {
+            AddStepCommentGto addStepComment = new AddStepCommentGto()
+                {WorkflowStepId = It.IsAny<string>(), Comment = It.IsAny<string>()};
+
+            _mockIncidentRepository.Setup(x => x.AddStepComment(addStepComment)).Returns(MockExecuteResult());
+
+            var result = _testObj.AddStepComment(addStepComment);
+            VerifyResult(result);
         }
 
         private DevicesEntity MockDeviceEntities()

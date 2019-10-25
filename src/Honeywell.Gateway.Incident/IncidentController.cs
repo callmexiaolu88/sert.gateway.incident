@@ -20,16 +20,16 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ImportWorkflowDesigns([FromBody]Stream workflowStream)
+        public async Task<ExecuteResult> ImportWorkflowDesigns([FromBody]Stream workflowDesignStream)
         {
-            var result = await _incidentAppService.ImportWorkflowDesigns(workflowStream);
+            var result = await _incidentAppService.ImportWorkflowDesigns(workflowDesignStream);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ValidatorWorkflowDesigns([FromBody]Stream workflowStream)
+        public async Task<ExecuteResult> ValidatorWorkflowDesigns([FromBody]Stream workflowDesignStream)
         {
-            var result = await _incidentAppService.ValidatorWorkflowDesigns(workflowStream);
+            var result = await _incidentAppService.ValidatorWorkflowDesigns(workflowDesignStream);
             return result;
         }
 
@@ -145,6 +145,13 @@ namespace Honeywell.Gateway.Incident
         public async Task<ExecuteResult> CompleteIncident(string incidentId)
         {
             var result = await _incidentAppService.CompleteIncident(incidentId);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        {
+            var result = await _incidentAppService.AddStepComment(addStepCommentGto);
             return result;
         }
     }

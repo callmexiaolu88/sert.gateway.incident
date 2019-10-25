@@ -2,12 +2,10 @@
 
 namespace Honeywell.Gateway.Incident.Api.Gtos
 {
-    public class ActivityGto
+    public class StepCommentGto
     {
-        public DateTime CreateAtUtc { get; set; }
-
+        public DateTime AtUtc { get; set; }
         public string Operator { get; set; }
-
         public string Description { get; set; }
     }
 }

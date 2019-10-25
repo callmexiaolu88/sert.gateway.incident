@@ -20,6 +20,7 @@ using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Actions;
 using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
 
 namespace Honeywell.GateWay.Incident.Repository.Incident
 {
@@ -97,10 +98,10 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             if (!result.IsSuccess)
             {
                 Logger.LogError($"call workflow design api GetSelector error:{result.Message}");
-                return new WorkflowDesignSelectorListGto() { Status = ExecuteStatus.Error };
+                return new WorkflowDesignSelectorListGto { Status = ExecuteStatus.Error };
             }
 
-            return new WorkflowDesignSelectorListGto()
+            return new WorkflowDesignSelectorListGto
             {
                 Status = ExecuteStatus.Successful,
                 List = HoneyMapper.Map<WorkflowDesignSelectorDto[],
@@ -134,12 +135,13 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             }
 
             Logger.LogError($"call workflow design api DownloadWorkflowTemplate error:|{result.Message}");
-            return new WorkflowTemplateGto() { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
+            return new WorkflowTemplateGto { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
 
         public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
         {
-            Logger.LogInformation(string.Format("call workflow design api ExportWorkflows Start|workflowId.Length:{0},guids:{1}", workflowIds.Length, string.Join(",", workflowIds.ToArray())));
+            Logger.LogInformation(
+                $"call workflow design api ExportWorkflows Start|workflowId.Length:{workflowIds.Length},guids:{string.Join(",", workflowIds.ToArray())}");
             Guid[] guidWorkflowIds = workflowIds.Select(o => Guid.Parse(o)).ToArray();
             var exportWorkflowRequestDto = new ExportWorkflowRequestDto() { WorkflowIds = guidWorkflowIds };
             var result = await _workflowDesignApi.ExportAsync(exportWorkflowRequestDto);
@@ -152,7 +154,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             }
 
             Logger.LogError($"call workflow design api ExportWorkflowDesigns error:{result.Message}");
-            return new WorkflowTemplateGto() { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
+            return new WorkflowTemplateGto { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
 
         public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
@@ -160,7 +162,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
             var workflowStepGuid = Guid.Parse(workflowStepId);
 
-            var request = new UpdateWorkflowStepStatusRequestDto() { WorkflowStepId = workflowStepGuid, IsHandled = isHandled };
+            var request = new UpdateWorkflowStepStatusRequestDto { WorkflowStepId = workflowStepGuid, IsHandled = isHandled };
 
             var response = await _workflowMicroApi.UpdateStepStatusAsync(request);
             if (response.IsSuccess)
@@ -359,5 +361,27 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 List = activeIncidentsGto.ToList()
             };
         }
+
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        {
+            Logger.LogInformation(
+                $"call Incident api AddStepComment Start,workflowStepId:{addStepCommentGto.WorkflowStepId},comment:{addStepCommentGto.Comment}");
+
+            AddStepCommentRequestDto requestDto = new AddStepCommentRequestDto
+            {
+                WorkflowStepId = Guid.Parse(addStepCommentGto.WorkflowStepId),
+                Comment = addStepCommentGto.Comment
+            };
+            var response = await _workflowInstanceApi.AddStepComment(requestDto);
+
+            if (response.IsSuccess)
+            {
+                return ExecuteResult.Success;
+            }
+
+            Logger.LogError("Failed to AddStepComment!");
+            return ExecuteResult.Error;
+        }
+
     }
 }

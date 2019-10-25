@@ -5,8 +5,6 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Core.Ddd.Application;
-using Honeywell.Micro.Services.Incident.Api.Incident.List;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Microsoft.Extensions.Logging;
 
 namespace Honeywell.GateWay.Incident.Application.Incident
@@ -60,9 +58,9 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.DownloadWorkflowTemplate();
         }
 
-        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
+        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds)
         {
-            return await _incidentRepository.ExportWorkflowDesigns(workflowIds);
+            return await _incidentRepository.ExportWorkflowDesigns(workflowDesignIds);
         }
 
         public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
@@ -86,6 +84,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             var deviceInfo = await _deviceRepository.GetDeviceById(incidentInfo.DeviceId);
             incidentInfo.DeviceDisplayName = deviceInfo.Config[0].Identifiers.Name;
             incidentInfo.DeviceLocation = deviceInfo.Config[0].Identifiers.Tag[0];
+
             return incidentInfo;
         }
 
@@ -141,6 +140,11 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         public async Task<ActiveIncidentListGto> GetActiveIncidentList()
         {
             return await _incidentRepository.GetActiveIncidentList();
+        }
+
+        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        {
+            return await _incidentRepository.AddStepComment(addStepCommentGto);
         }
     }
 }
