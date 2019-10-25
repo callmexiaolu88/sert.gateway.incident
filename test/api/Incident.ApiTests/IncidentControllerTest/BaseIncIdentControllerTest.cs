@@ -70,5 +70,4 @@ namespace Incident.ApiTests.IncidentControllerTest
             return result;
         }
     }
-
 }

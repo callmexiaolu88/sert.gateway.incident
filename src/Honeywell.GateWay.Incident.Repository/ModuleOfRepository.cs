@@ -29,8 +29,8 @@ namespace Honeywell.GateWay.Incident.Repository
                     o.ConfigRemoteService(assembly, configuration);
                 });
 
-            IocContainer.AddRemoteService(typeof(IWorkflowDesignApi).Assembly);
-            IocContainer.AddRemoteService(typeof(IWorkflowInstanceApi).Assembly);
+            IocContainer.AddRemoteService(typeof(IWorkflowDesignMicroApi).Assembly);
+            IocContainer.AddRemoteService(typeof(IWorkflowMicroApi).Assembly);
             IocContainer.AddRemoteService(typeof(IIncidentMicroApi).Assembly);
             IocContainer.AddRemoteService(typeof(IIncidentFacadeApi).Assembly);
             IocContainer.AddHttpContextAccessor();
