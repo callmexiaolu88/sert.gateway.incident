@@ -372,7 +372,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 WorkflowStepId = Guid.Parse(addStepCommentGto.WorkflowStepId),
                 Comment = addStepCommentGto.Comment
             };
-            var response = await _workflowInstanceApi.AddStepComment(requestDto);
+            var response = await _workflowMicroApi.AddStepCommentAsync(requestDto);
 
             if (response.IsSuccess)
             {

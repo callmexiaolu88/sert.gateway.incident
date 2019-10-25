@@ -614,10 +614,9 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var response = new WorkflowActionResponseDto();
-            response.MakeSuccess();
 
-            _mockWorkflowInstanceApi.Setup(api => api.AddStepComment(It.IsAny<AddStepCommentRequestDto>()))
-                .Returns(Task.FromResult(response));
+            _mockWorkflowMicroApi.Setup(api => api.AddStepCommentAsync(It.IsAny<AddStepCommentRequestDto>()))
+                .ReturnsAsync(response);
 
             //act
             var addStepCommentGto = new AddStepCommentGto()
