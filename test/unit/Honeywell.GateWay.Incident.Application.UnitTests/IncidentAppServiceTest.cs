@@ -9,7 +9,6 @@ using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
-using Honeywell.Infra.Api.Abstract;
 using Moq;
 using Xunit;
 
@@ -324,10 +323,10 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             //Arrange
             var id = Guid.NewGuid();
-            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new CreateIncidentResponseGto
+            var mockResponse = Task.FromResult(new CreateIncidentResponseGto
             {
                 IncidentIds = new List<Guid>() {id}
-            }));
+            });
             _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateByAlarmRequestGto>()))
                 .Returns(mockResponse);
 
@@ -363,7 +362,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //Arrange
             var incidentId = Guid.NewGuid();
             var alarmId = Guid.NewGuid().ToString();
-            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetStatusByAlarmResponseGto
+            var mockResponse = Task.FromResult(new GetStatusByAlarmResponseGto
             {
                 IncidentStatusInfos = new List<IncidentStatusInfoGto>
                 {
@@ -374,7 +373,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                         Status = IncidentStatus.Active
                     }
                 }
-            }));
+            });
             _mockIncidentRepository.Setup(x => x.GetIncidentStatusByAlarm(It.IsAny<GetStatusByAlarmRequestGto>()))
                 .Returns(mockResponse);
 

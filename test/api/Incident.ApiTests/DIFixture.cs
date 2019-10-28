@@ -32,6 +32,13 @@ namespace Incident.ApiTests
                     client.DefaultRequestHeaders.AcceptLanguage.Add(service.LoginLanaugeSetting());
                     client.DefaultRequestHeaders.Authorization = service.GenerateTokenAsync();
                 });
+            serviceCollection.AddHttpClient(typeof(IWorkflowApi).GUID.ToString())
+                .ConfigureHttpClient((provider, client) =>
+                {
+                    var service = provider.GetRequiredService<ProWatchClient>();
+                    client.DefaultRequestHeaders.AcceptLanguage.Add(service.LoginLanaugeSetting());
+                    client.DefaultRequestHeaders.Authorization = service.GenerateTokenAsync();
+                });
             ServiceProvider = serviceCollection.BuildServiceProvider();
         }
     }

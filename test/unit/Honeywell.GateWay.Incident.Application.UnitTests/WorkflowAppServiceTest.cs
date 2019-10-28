@@ -7,7 +7,6 @@ using Honeywell.Gateway.Incident.Api.Workflow.Detail;
 using Honeywell.Gateway.Incident.Api.Workflow.List;
 using Honeywell.GateWay.Incident.Application.Workflow;
 using Honeywell.GateWay.Incident.Repository;
-using Honeywell.Infra.Api.Abstract;
 using Moq;
 using Xunit;
 
@@ -31,7 +30,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var id = Guid.NewGuid();
             var name = "name";
 
-            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetWorkflowDesignIdsResponseGto
+            var mockResponse = Task.FromResult(new GetWorkflowDesignIdsResponseGto
             {
                 WorkflowDesignIds = new List<WorkflowDesignIdGto>
                 {
@@ -41,7 +40,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                         WorkflowDesignReferenceId = id,
                     }
                 }
-            }));
+            });
             _mockIncidentRepository.Setup(x => x.GetWorkflowDesignIds())
                 .Returns(mockResponse);
 
@@ -77,7 +76,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             //Arrange
             var id = Guid.NewGuid();
-            var mockResponse = Task.FromResult(ApiResponse.CreateSuccess().To(new GetWorkflowDesignDetailsResponseGto
+            var mockResponse = Task.FromResult(new GetWorkflowDesignDetailsResponseGto
             {
                 WorkflowDesigns = new List<WorkflowDesignGto>
                 {
@@ -86,7 +85,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                         Id = id
                     }
                 }
-            }));
+            });
             _mockIncidentRepository.Setup(x => x.GetWorkflowDesignDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>()))
                 .Returns(mockResponse);
 
