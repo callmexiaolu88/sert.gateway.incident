@@ -1,4 +1,5 @@
 ﻿using Honeywell.GateWay.Incident.Application.Incident;
+using Honeywell.GateWay.Incident.Application.Workflow;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Core.Modular;
 using Honeywell.Infra.HoneyMapper.AutoMapper;
@@ -18,6 +19,7 @@ namespace Honeywell.GateWay.Incident.Application
                 options.AddProfile<AutoMapperProfile>();
             });
             IocContainer.AddScoped<IIncidentAppService, IncidentAppService>();
+            IocContainer.AddScoped<IWorkflowDesignAppService, WorkflowDesignAppService>();
             IocContainer.AddHttpContextAccessor();
         }
     }

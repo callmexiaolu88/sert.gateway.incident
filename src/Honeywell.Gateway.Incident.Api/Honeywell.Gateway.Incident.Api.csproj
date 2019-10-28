@@ -11,13 +11,10 @@
   <ItemGroup>
     <Compile Remove="Enum\**" />
     <Compile Remove="WorkflowDesignActivity\**" />
-    <Compile Remove="WorkflowDesign\**" />
     <EmbeddedResource Remove="Enum\**" />
     <EmbeddedResource Remove="WorkflowDesignActivity\**" />
-    <EmbeddedResource Remove="WorkflowDesign\**" />
     <None Remove="Enum\**" />
     <None Remove="WorkflowDesignActivity\**" />
-    <None Remove="WorkflowDesign\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Honeywell.Infra.Api.Abstract" Version="0.0.2.*" />
     <PackageReference Include="Honeywell.Infra.Core" Version="0.0.2.*" />
-    <PackageReference Include="Honeywell.Micro.Services.Incident.Api" Version="0.0.2.*" />
   </ItemGroup>
 
 </Project>

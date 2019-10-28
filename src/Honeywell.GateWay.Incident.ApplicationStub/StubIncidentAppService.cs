@@ -5,7 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.GateWay.Incident.Application.Incident;
+using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Common.Exceptions;
 
 namespace Honeywell.GateWay.Incident.ApplicationStub
@@ -150,6 +153,61 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         {
             var result = StubData<List<ActiveIncidentGto>>();
             return Task.FromResult(new ActiveIncidentListGto { List = result, Status = ExecuteStatus.Successful });
+        }
+
+        public Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(
+            CreateByAlarmRequestGto request)
+        {
+            try
+            {
+                var response = new CreateIncidentResponseGto();
+                foreach (var incidentData in request.CreateDatas)
+                {
+                    var workflowName = StubData<WorkflowDesignGto[]>()
+                        .FirstOrDefault(m => m.Id == incidentData.WorkflowDesignReferenceId)?.Name;
+
+                    var incident = StubData<IncidentGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
+                    if (incident != null) response.IncidentIds.Add(incident.Id);
+                    throw new Exception("cannot found the incident");
+                }
+
+                return Task.FromResult(ApiResponse.CreateSuccess().To(response));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To<CreateIncidentResponseGto>());
+            }
+        }
+
+        public Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(
+            GetStatusByAlarmRequestGto request)
+        {
+            try
+            {
+                var response = new GetStatusByAlarmResponseGto();
+                foreach (var id in request.AlarmIds)
+                {
+                    var incident = StubData<IncidentGto[]>().FirstOrDefault((m => m.DeviceId == id));
+                    if (incident == null)
+                    {
+                        throw new Exception($"cannot found the incident associates with alarm id {id}");
+                    }
+
+                    var statusInfoGto = new IncidentStatusInfoGto
+                    {
+                        AlarmId = id,
+                        IncidentId = incident.Id,
+                        Status = incident.State
+                    };
+                    response.IncidentStatusInfos.Add(statusInfoGto);
+                }
+
+                return Task.FromResult(ApiResponse.CreateSuccess().To(response));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To<GetStatusByAlarmResponseGto>());
+            }
         }
 
         public Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)

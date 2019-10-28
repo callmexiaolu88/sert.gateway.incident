@@ -1,9 +1,13 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System;
+ using System.IO;
+ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
+using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
 using Microsoft.Extensions.Logging;
 
@@ -98,18 +102,18 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             Logger.LogInformation("call Incident api GetDeviceList Start");
             var result = await _deviceRepository.GetDevices();
 
-            var devices = result.Config.GroupBy(item => new { item.Relation[0].Id, item.Relation[0].EntityId })
+            var devices = result.Config.GroupBy(item => new {item.Relation[0].Id, item.Relation[0].EntityId})
                 .Select(group => new SiteDeviceGto
                 {
                     SiteId = group.Key.Id,
                     SiteDisplayName = group.Key.EntityId,
                     Devices = group.Select(x => new DeviceGto
-                    {
-                        DeviceDisplayName = x.Identifiers.Name,
-                        DeviceId = x.Identifiers.Id,
-                        DeviceType = x.Type,
-                        DeviceLocation = x.Identifiers.Tag[0]
-                    })
+                        {
+                            DeviceDisplayName = x.Identifiers.Name,
+                            DeviceId = x.Identifiers.Id,
+                            DeviceType = x.Type,
+                            DeviceLocation = x.Identifiers.Tag[0]
+                        })
                         .ToArray()
                 });
 
@@ -140,6 +144,34 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         public async Task<ActiveIncidentListGto> GetActiveIncidentList()
         {
             return await _incidentRepository.GetActiveIncidentList();
+        }
+
+        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(
+            CreateByAlarmRequestGto request)
+        {
+            try
+            {
+                return await _incidentRepository.CreateIncidentByAlarm(request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<CreateIncidentResponseGto>();
+            }
+        }
+
+        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(
+            GetStatusByAlarmRequestGto request)
+        {
+            try
+            {
+                return await _incidentRepository.GetIncidentStatusByAlarm(request);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<GetStatusByAlarmResponseGto>();
+            }
         }
 
         public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)

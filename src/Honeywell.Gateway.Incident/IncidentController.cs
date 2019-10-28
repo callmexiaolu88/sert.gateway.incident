@@ -5,6 +5,11 @@ using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
+using Honeywell.Infra.Api.Abstract;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Honeywell.Gateway.Incident
 {
@@ -13,21 +18,23 @@ namespace Honeywell.Gateway.Incident
     public class IncidentController : ControllerBase, IIncidentApi
     {
         private readonly IIncidentAppService _incidentAppService;
+        private readonly ILogger<IncidentController> _logger;
 
-        public IncidentController(IIncidentAppService incidentAppService)
+        public IncidentController(ILogger<IncidentController> logger, IIncidentAppService incidentAppService)
         {
             _incidentAppService = incidentAppService;
+            _logger = logger;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ImportWorkflowDesigns([FromBody]Stream workflowDesignStream)
+        public async Task<ExecuteResult> ImportWorkflowDesigns([FromBody] Stream workflowDesignStream)
         {
             var result = await _incidentAppService.ImportWorkflowDesigns(workflowDesignStream);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ValidatorWorkflowDesigns([FromBody]Stream workflowDesignStream)
+        public async Task<ExecuteResult> ValidatorWorkflowDesigns([FromBody] Stream workflowDesignStream)
         {
             var result = await _incidentAppService.ValidatorWorkflowDesigns(workflowDesignStream);
             return result;
@@ -66,7 +73,8 @@ namespace Honeywell.Gateway.Incident
         {
             var result = await _incidentAppService.DownloadWorkflowTemplate();
             Response.ContentType = "application/octet-stream";
-            Response.Headers.Add("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(result.FileName, System.Text.Encoding.UTF8));
+            Response.Headers.Add("Content-Disposition",
+                "attachment; filename=" + HttpUtility.UrlEncode(result.FileName, System.Text.Encoding.UTF8));
             await Response.Body.WriteAsync(result.FileBytes);
             Response.Body.Flush();
             Response.Body.Close();
@@ -145,6 +153,20 @@ namespace Honeywell.Gateway.Incident
         public async Task<ExecuteResult> CompleteIncident(string incidentId)
         {
             var result = await _incidentAppService.CompleteIncident(incidentId);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(CreateByAlarmRequestGto request)
+        {
+            var result = await _incidentAppService.CreateByAlarm(request);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(GetStatusByAlarmRequestGto request)
+        {
+            var result = await _incidentAppService.GetStatusByAlarm(request);
             return result;
         }
 

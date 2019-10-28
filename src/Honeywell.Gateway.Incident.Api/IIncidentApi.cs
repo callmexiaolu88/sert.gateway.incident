@@ -2,6 +2,9 @@
 using Honeywell.Infra.Core;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
+using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.Gateway.Incident.Api
 {
@@ -42,5 +45,9 @@ namespace Honeywell.Gateway.Incident.Api
         Task<ExecuteResult> CompleteIncident(string incidentId);
 
         Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
+
+        Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(CreateByAlarmRequestGto request);
+
+        Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(GetStatusByAlarmRequestGto request);
     }
 }

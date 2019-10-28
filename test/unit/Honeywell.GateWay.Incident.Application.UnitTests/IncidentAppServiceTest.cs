@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
@@ -29,6 +33,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             return Task.FromResult(new ExecuteResult { Status = ExecuteStatus.Successful });
         }
 
+        // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
         private void VerifyResult(Task<ExecuteResult> result)
         {
             Assert.NotNull(result);
@@ -311,6 +316,93 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 Type = deviceType
             };
             return new DevicesEntity { Config = new[] { deviceEntity } };
+        }
+
+        [Fact]
+        public void CreateByAlarm_Successful()
+        {
+            //Arrange
+            var id = Guid.NewGuid();
+            var mockResponse = Task.FromResult(new CreateIncidentResponseGto
+            {
+                IncidentIds = new List<Guid>() {id}
+            });
+            _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateByAlarmRequestGto>()))
+                .Returns(mockResponse);
+
+            //Act
+            var result = _testObj.CreateByAlarm(It.IsAny<CreateByAlarmRequestGto>());
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Result.Value);
+            Assert.True(result.Result.IsSuccess);
+            Assert.True(result.Result.Value.IncidentIds.Any());
+            Assert.True(result.Result.Value.IncidentIds.First() == id);
+        }
+
+        [Fact]
+        public void CreateByAlarm_ThrowException()
+        {
+            //Arrange
+            _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateByAlarmRequestGto>()))
+                .Throws(new Exception());
+
+            //Act
+            var result = _testObj.CreateByAlarm(It.IsAny<CreateByAlarmRequestGto>());
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void GetIncidentStatusWithAlarmId_Successful()
+        {
+            //Arrange
+            var incidentId = Guid.NewGuid();
+            var alarmId = Guid.NewGuid().ToString();
+            var mockResponse = Task.FromResult(new GetStatusByAlarmResponseGto
+            {
+                IncidentStatusInfos = new List<IncidentStatusInfoGto>
+                {
+                    new IncidentStatusInfoGto
+                    {
+                        IncidentId = incidentId,
+                        AlarmId = alarmId,
+                        Status = IncidentStatus.Active
+                    }
+                }
+            });
+            _mockIncidentRepository.Setup(x => x.GetIncidentStatusByAlarm(It.IsAny<GetStatusByAlarmRequestGto>()))
+                .Returns(mockResponse);
+
+            //Act
+            var result = _testObj.GetStatusByAlarm(It.IsAny<GetStatusByAlarmRequestGto>());
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Result.Value);
+            Assert.True(result.Result.IsSuccess);
+            Assert.True(result.Result.Value.IncidentStatusInfos.Any());
+            Assert.True(result.Result.Value.IncidentStatusInfos.First().IncidentId == incidentId);
+            Assert.True(result.Result.Value.IncidentStatusInfos.First().AlarmId == alarmId);
+            Assert.True(result.Result.Value.IncidentStatusInfos.First().Status == IncidentStatus.Active);
+        }
+
+        [Fact]
+        public void GetIncidentStatusWithAlarmId_ThrowException()
+        {
+            //Arrange
+            _mockIncidentRepository.Setup(x => x.GetIncidentStatusByAlarm(It.IsAny<GetStatusByAlarmRequestGto>()))
+                .Throws(new Exception());
+
+            //Act
+            var result = _testObj.GetStatusByAlarm(It.IsAny<GetStatusByAlarmRequestGto>());
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
         }
     }
 }

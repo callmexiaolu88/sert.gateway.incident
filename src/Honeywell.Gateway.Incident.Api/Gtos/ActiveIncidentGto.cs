@@ -1,5 +1,4 @@
 ﻿using System;
-using Honeywell.Micro.Services.Incident.Domain.Shared;
 
 namespace Honeywell.Gateway.Incident.Api.Gtos
 {
