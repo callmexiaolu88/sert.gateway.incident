@@ -9,5 +9,7 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
         public string Operator { get; set; }
 
         public string Description { get; set; }
+
+        public string DescriptionLocalized { get; set; }
     }
 }
