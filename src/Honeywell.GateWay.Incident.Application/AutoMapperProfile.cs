@@ -53,7 +53,8 @@ namespace Honeywell.GateWay.Incident.Application
             CreateMap<StepCommentDto, StepCommentGto>();
 
             //CreateIncidentByAlarm Request
-            CreateMap<CreateByAlarmRequestGto, FacadeApi.CreateIncidentByAlarmRequestDto>();
+            CreateMap<CreateByAlarmRequestGto, FacadeApi.CreateIncidentByAlarmRequestDto>()
+                .ForMember(dest => dest.CreateIncidentDatas, opt => opt.MapFrom(src => src.CreateDatas));
             CreateMap<CreateByAlarmGto, FacadeApi.CreateIncidentByAlarmDto>();
             CreateMap<IncidentPriority, FacadeApi.IncidentPriority>();
             CreateMap<AlarmData, FacadeApi.AlarmData>();

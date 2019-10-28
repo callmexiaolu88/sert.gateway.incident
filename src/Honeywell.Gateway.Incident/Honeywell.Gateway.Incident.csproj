@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Honeywell.Infra.AspNetCore" Version="0.0.2.*" />
+    <PackageReference Include="Honeywell.Infra.AspNetCore" Version="0.0.2.211" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

@@ -26,6 +26,7 @@ using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Action;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
+using Newtonsoft.Json;
 
 #pragma warning disable CS0612 // Type or member is obsolete
 
@@ -372,14 +373,13 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         public async Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(CreateByAlarmRequestGto request)
         {
             Logger.LogInformation($"call Incident api {nameof(CreateIncidentByAlarm)} Start");
-
             var facadeRequest =
                 HoneyMapper.Map<CreateByAlarmRequestGto, FacadeApi.Create.CreateIncidentByAlarmRequestDto>(
                     request);
-
             var response = await _incidentFacadeApi.CreateIncidentByAlarm(facadeRequest);
-            return HoneyMapper
+            var result= HoneyMapper
                 .Map<FacadeApi.Create.CreateIncidentResponseDto, CreateIncidentResponseGto>(response);
+            return result;
         }
 
         public async Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetWorkflowDesignIds()
@@ -387,8 +387,9 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignIds)} Start");
 
             var response = await _workflowDesignApi.GetSummaries();
-            return HoneyMapper
+            var result = HoneyMapper
                 .Map<WorkflowDesignSummaryResponseDto, GetWorkflowDesignIdsResponseGto>(response);
+            return result;
         }
 
         public async Task<ApiResponse<GetWorkflowDesignDetailsResponseGto>> GetWorkflowDesignDetails(GetWorkflowDesignDetailsRequestGto request)
@@ -399,7 +400,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 HoneyMapper.Map<GetWorkflowDesignDetailsRequestGto, WorkflowDesignDetailsRequestDto>(request);
 
             var response = await _workflowDesignApi.GetDetails(workflowDesignRequest);
-            return HoneyMapper.Map<WorkflowDesignResponseDto, GetWorkflowDesignDetailsResponseGto>(response);
+            var result = HoneyMapper.Map<WorkflowDesignResponseDto, GetWorkflowDesignDetailsResponseGto>(response);
+            return result;
         }
 
         public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetIncidentStatusByAlarm(
@@ -411,9 +413,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 HoneyMapper.Map<GetStatusByAlarmRequestGto, GetIncidentStatusRequestDto>(request);
 
             var response = await _incidentMicroApi.GetIncidentStatusByTrigger(incidentRequest);
-            var tmp = HoneyMapper.Map<GetIncidentStatusResponseDto, GetStatusByAlarmResponseGto>(response);
-            return tmp;
-            //return HoneyMapper.Map<GetIncidentStatusResponseDto, GetStatusByAlarmResponseGto>(response);
+            var result = HoneyMapper.Map<GetIncidentStatusResponseDto, GetStatusByAlarmResponseGto>(response);
+            return result;
         }
 
         public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
