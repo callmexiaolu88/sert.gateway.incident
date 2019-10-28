@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.Status;
-using Honeywell.Gateway.Incident.Api.Workflow.Detail;
-using Honeywell.Gateway.Incident.Api.Workflow.List;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 
 namespace Honeywell.GateWay.Incident.Repository
 {

@@ -2,7 +2,6 @@ using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
-using WorkflowGTO = Honeywell.Gateway.Incident.Api.Workflow;
 using Honeywell.GateWay.Incident.Repository.Incident;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api;
@@ -24,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Xunit;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
@@ -702,7 +702,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var workflowGuid = Guid.NewGuid();
             var setGuid = Guid.NewGuid();
 
-            var request = new WorkflowGTO.Detail.GetWorkflowDesignDetailsRequestGto
+            var request = new GetWorkflowDesignDetailsRequestGto
             {
                 Ids = new[] {workflowGuid}
             };

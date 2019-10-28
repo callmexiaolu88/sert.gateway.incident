@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Honeywell.Gateway.Incident.Api.Workflow.Detail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
@@ -36,7 +36,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             {
                 Ids = new[] {new Guid(workflowDesignId)}
             };
-            var workflowDesigns = await WorkflowGateWayApi.GetDesignDetails(request);
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetDetails(request);
 
             Assert.NotNull(workflowDesigns);
             Assert.True(workflowDesigns.IsSuccess);

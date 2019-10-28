@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Workflow.Detail;
-using Honeywell.Gateway.Incident.Api.Workflow.List;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
@@ -10,16 +10,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Honeywell.GateWay.Incident.Application.Workflow
 {
-    public class WorkflowAppService : ApplicationService, IWorkflowAppService
+    public class WorkflowDesignAppService : ApplicationService, IWorkflowDesignAppService
     {
         private readonly IIncidentRepository _incidentRepository;
 
-        public WorkflowAppService(IIncidentRepository incidentRepository)
+        public WorkflowDesignAppService(IIncidentRepository incidentRepository)
         {
             _incidentRepository = incidentRepository;
         }
 
-        public async Task<ApiResponse<GetWorkflowDesignDetailsResponseGto>> GetDesignDetails(GetWorkflowDesignDetailsRequestGto request)
+        public async Task<ApiResponse<GetWorkflowDesignDetailsResponseGto>> GetDetails(GetWorkflowDesignDetailsRequestGto request)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace Honeywell.GateWay.Incident.Application.Workflow
             }
         }
 
-        public async Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetDesignIds()
+        public async Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetIds()
         {
             try
             {

@@ -19,7 +19,7 @@ namespace Honeywell.GateWay.Incident.Application
                 options.AddProfile<AutoMapperProfile>();
             });
             IocContainer.AddScoped<IIncidentAppService, IncidentAppService>();
-            IocContainer.AddScoped<IWorkflowAppService, WorkflowAppService>();
+            IocContainer.AddScoped<IWorkflowDesignAppService, WorkflowDesignAppService>();
             IocContainer.AddHttpContextAccessor();
         }
     }

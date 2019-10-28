@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Honeywell.Gateway.Incident.Api.Workflow.List
+namespace Honeywell.Gateway.Incident.Api.WorkflowDesign.List
 {
     public class WorkflowDesignIdGto
     {

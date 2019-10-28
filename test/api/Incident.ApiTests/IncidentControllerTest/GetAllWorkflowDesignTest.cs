@@ -25,7 +25,7 @@ namespace Incident.ApiTests.IncidentControllerTest
         public async void GetWorkflowDesignIds_Success()
         {
             await ImportWorkflowDesign();
-            var workflowDesigns = await WorkflowGateWayApi.GetDesignIds();
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetIds();
             Assert.NotNull(workflowDesigns);
             Assert.True(workflowDesigns.IsSuccess);
             Assert.NotNull(workflowDesigns.Value);

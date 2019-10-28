@@ -33,8 +33,8 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 
                 var workflowDescriptor =
                     new ServiceDescriptor(
-                        typeof(IWorkflowAppService),
-                        typeof(StubWorkflowAppService),
+                        typeof(IWorkflowDesignAppService),
+                        typeof(StubWorkflowDesignAppService),
                         ServiceLifetime.Transient);
                 IocContainer.Replace(workflowDescriptor);
             }

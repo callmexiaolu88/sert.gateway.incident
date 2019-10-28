@@ -2,16 +2,16 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Workflow.Detail;
-using Honeywell.Gateway.Incident.Api.Workflow.List;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.GateWay.Incident.Application.Workflow;
 using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.GateWay.Incident.ApplicationStub
 {
-    public class StubWorkflowAppService : BaseIncidentStub, IWorkflowAppService
+    public class StubWorkflowDesignAppService : BaseIncidentStub, IWorkflowDesignAppService
     {
-        public Task<ApiResponse<GetWorkflowDesignDetailsResponseGto>> GetDesignDetails(GetWorkflowDesignDetailsRequestGto request)
+        public Task<ApiResponse<GetWorkflowDesignDetailsResponseGto>> GetDetails(GetWorkflowDesignDetailsRequestGto request)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
         }
 
-        public Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetDesignIds()
+        public Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetIds()
         {
             try
             {

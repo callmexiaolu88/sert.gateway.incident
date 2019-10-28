@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Workflow.Detail;
-using Honeywell.Gateway.Incident.Api.Workflow.List;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.GateWay.Incident.Application.Workflow;
 using Honeywell.GateWay.Incident.Repository;
 using Moq;
@@ -14,13 +14,13 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 {
     public class WorkflowAppServiceTest : ApplicationServiceTestBase
     {
-        private readonly IWorkflowAppService _testObj;
+        private readonly IWorkflowDesignAppService _testObj;
         private readonly Mock<IIncidentRepository> _mockIncidentRepository;
 
         public WorkflowAppServiceTest()
         {
             _mockIncidentRepository = new Mock<IIncidentRepository>();
-            _testObj = new WorkflowAppService(_mockIncidentRepository.Object);
+            _testObj = new WorkflowDesignAppService(_mockIncidentRepository.Object);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockResponse);
 
             //Act
-            var result = _testObj.GetDesignIds();
+            var result = _testObj.GetIds();
 
             //Assert
             Assert.NotNull(result);
@@ -64,7 +64,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.GetDesignIds();
+            var result = _testObj.GetIds();
 
             //Assert
             Assert.NotNull(result);
@@ -90,7 +90,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockResponse);
 
             //Act
-            var result = _testObj.GetDesignDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>());
+            var result = _testObj.GetDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>());
 
             //Assert
             Assert.NotNull(result);
@@ -108,7 +108,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.GetDesignDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>());
+            var result = _testObj.GetDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>());
 
             //Assert
             Assert.NotNull(result);

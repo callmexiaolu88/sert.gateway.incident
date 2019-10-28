@@ -12,20 +12,19 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.Status;
-using Honeywell.Gateway.Incident.Api.Workflow.Detail;
-using Honeywell.Gateway.Incident.Api.Workflow.List;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
+using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Actions;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
-using Newtonsoft.Json;
 
 #pragma warning disable CS0612 // Type or member is obsolete
 
@@ -78,12 +77,12 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 return ExecuteResult.Success;
             }
 
-            Logger.LogError($"call workflow design api Deletes error:{result.Message}");
+            Logger.LogError($"call workflow design api Deletes error:{result.Messages?.FirstOrDefault()?.Message}");
             return new ExecuteResult
             {
                 Status = ExecuteStatus.Error,
-                ErrorList = new List<string> { result.Message }
-            };
+                ErrorList = result.Messages?.Select(item => item.Message).ToList()
+        };
         }
 
         public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
@@ -95,7 +94,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                     WorkflowDesignSummaryGto[]>(result.Value.Summaries.ToArray());
             }
 
-            Logger.LogError($"call workflow design api GetSummaries error:{result.Message}");
+            Logger.LogError($"call workflow design api GetSummaries error:{result.Messages?.FirstOrDefault()?.Message}");
             return new WorkflowDesignSummaryGto[] { };
         }
 
@@ -104,7 +103,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var result = await _workflowDesignApi.GetSelectorAsync();
             if (!result.IsSuccess)
             {
-                Logger.LogError($"call workflow design api GetSelector error:{result.Message}");
+                Logger.LogError($"call workflow design api GetSelector error:{result.Messages?.FirstOrDefault()?.Message}");
                 return new WorkflowDesignSelectorListGto { Status = ExecuteStatus.Error };
             }
 
@@ -125,7 +124,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 var workflowDesignList = HoneyMapper.Map<WorkflowDesignDto[], WorkflowDesignGto[]>(result.Value.Details.ToArray());
                 return workflowDesignList.FirstOrDefault();
             }
-            Logger.LogError($"call workflow design api GetDetails error:{result.Message}");
+
+            Logger.LogError($"call workflow design api GetDetails error:{result.Messages?.FirstOrDefault()?.Message}");
             return null;
         }
 
@@ -141,7 +141,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 return workflowDownloadTemplateGto;
             }
 
-            Logger.LogError($"call workflow design api DownloadWorkflowTemplate error:|{result.Message}");
+            Logger.LogError($"call workflow design api DownloadWorkflowTemplate error:|{result.Messages?.FirstOrDefault()?.Message}");
             return new WorkflowTemplateGto { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
 
@@ -160,7 +160,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 return workflowDownloadTemplateGto;
             }
 
-            Logger.LogError($"call workflow design api ExportWorkflowDesigns error:{result.Message}");
+            Logger.LogError($"call workflow design api ExportWorkflowDesigns error:{result.Messages?.FirstOrDefault()?.Message}");
             return new WorkflowTemplateGto { Status = ExecuteStatus.Error, FileBytes = new byte[0] };
         }
 
@@ -179,7 +179,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             Logger.LogError("Failed to update workflow stepStatus!");
             var result = ExecuteResult.Error;
-            result.ErrorList.Add(response.Message);
+            result.ErrorList.AddRange(response.Messages.Select(item => item.Message));
             return result;
         }
 
@@ -195,7 +195,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var response = await _incidentFacadeApi.GetDetailsAsync(new GetDetailRequestDto { IncidentIds = requestId });
             if (!response.IsSuccess)
             {
-                result.ErrorList.Add(response.Message);
+                result.ErrorList.AddRange(response.Messages.Select(item=>item.Message));
                 return result;
             }
 
@@ -332,7 +332,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var result = await _incidentMicroApi.GetListAsync();
             if (!result.IsSuccess)
             {
-                Logger.LogError($"call workflow design api GetActiveList error:{result.Message}");
+                Logger.LogError($"call workflow design api GetActiveList error:{result.Messages?.FirstOrDefault()?.Message}");
                 return new ActiveIncidentListGto { Status = ExecuteStatus.Error };
             }
 
@@ -344,7 +344,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var workflowSummaries = await _workflowMicroApi.GetSummariesAsync(request);
             if (!workflowSummaries.IsSuccess)
             {
-                Logger.LogError($"call workflow design api GetWorkflowSummaries error:{result.Message}");
+                Logger.LogError($"call workflow design api GetWorkflowSummaries error:{result.Messages?.FirstOrDefault()?.Message}");
                 return new ActiveIncidentListGto { Status = ExecuteStatus.Error };
             }
 
@@ -376,13 +376,10 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 HoneyMapper.Map<CreateByAlarmRequestGto, FacadeApi.Create.CreateIncidentByAlarmRequestDto>(
                     request);
             var response = await _incidentFacadeApi.CreateByAlarmAsync(facadeRequest);
-            //if (!response.IsSuccess)
-            //{
-            //   return ApiResponse.CreateFailed().MakeFrom(response).To< CreateIncidentResponseGto>();
-            //}
-            var responseValue = HoneyMapper
-                .Map<FacadeApi.Create.CreateIncidentResponseDto, CreateIncidentResponseGto>(response.Value);
+            ApiResponse.ThrowExceptionIfFailed(response);
 
+            var responseValue = HoneyMapper
+                  .Map<FacadeApi.Create.CreateIncidentResponseDto, CreateIncidentResponseGto>(response.Value);
             return responseValue;
         }
 
@@ -391,7 +388,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignIds)} Start");
 
             var response = await _workflowDesignApi.GetSummariesAsync();
-            Logger.LogInformation($"{JsonConvert.SerializeObject(response)}");
+            ApiResponse.ThrowExceptionIfFailed(response);
+
             var result = HoneyMapper
                 .Map<WorkflowDesignSummaryResponseDto, GetWorkflowDesignIdsResponseGto>(response.Value);
             return result;
@@ -403,8 +401,9 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var workflowDesignRequest =
                 HoneyMapper.Map<GetWorkflowDesignDetailsRequestGto, WorkflowDesignDetailsRequestDto>(request);
-
             var response = await _workflowDesignApi.GetDetailsAsync(workflowDesignRequest);
+            ApiResponse.ThrowExceptionIfFailed(response);
+
             var result = HoneyMapper.Map<WorkflowDesignResponseDto, GetWorkflowDesignDetailsResponseGto>(response.Value);
             return result;
         }
@@ -416,8 +415,9 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var incidentRequest =
                 HoneyMapper.Map<GetStatusByAlarmRequestGto, GetIncidentStatusRequestDto>(request);
-
             var response = await _incidentMicroApi.GetStatusByTriggerAsync(incidentRequest);
+            ApiResponse.ThrowExceptionIfFailed(response);
+
             var result = HoneyMapper.Map<GetIncidentStatusResponseDto, GetStatusByAlarmResponseGto>(response.Value);
             return result;
         }

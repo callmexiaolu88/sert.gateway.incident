@@ -2,7 +2,7 @@
 
 namespace Honeywell.GateWay.Incident.Application.Workflow
 {
-    public interface IWorkflowAppService : IWorkflowApi
+    public interface IWorkflowDesignAppService : IWorkflowDesignApi
     {
     }
 }
