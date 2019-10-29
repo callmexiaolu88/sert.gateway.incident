@@ -1,5 +1,5 @@
 ﻿
-namespace Honeywell.Gateway.Incident.Api.Gtos
+namespace Honeywell.Gateway.Incident.Api.Incident.AddStepComment
 {
     public class AddStepCommentGto
     {

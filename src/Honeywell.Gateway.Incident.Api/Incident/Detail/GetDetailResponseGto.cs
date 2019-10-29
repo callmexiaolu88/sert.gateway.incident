@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Honeywell.Gateway.Incident.Api.Gtos;
 
-namespace Honeywell.Gateway.Incident.Api.Gtos
+namespace Honeywell.Gateway.Incident.Api.Incident.Detail
 {
-    public class IncidentGto : ExecuteResult
+    public class GetDetailResponseGto : ExecuteResult
     {
-        public IncidentGto()
+        public GetDetailResponseGto()
         {
             Status = ExecuteStatus.Error;
             IncidentSteps = new List<IncidentStepGto>();
@@ -42,6 +43,5 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
         public string DeviceLocation { get; set; }
 
         public string DeviceId { get; set; }
-
     }
 }

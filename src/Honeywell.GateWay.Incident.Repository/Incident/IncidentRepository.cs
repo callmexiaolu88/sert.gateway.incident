@@ -17,7 +17,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.Infra.Api.Abstract;
@@ -25,6 +24,11 @@ using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Actions;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
+using Honeywell.Gateway.Incident.Api.Incident;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.List;
 
 #pragma warning disable CS0612 // Type or member is obsolete
 
@@ -68,14 +72,14 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return result;
         }
 
-        public async Task<IncidentGto> GetIncidentById(string incidentId)
+        public async Task<GetDetailResponseGto> GetIncidentById(string incidentId)
         {
             Logger.LogInformation("call Incident api GetIncidentById Start");
             if (!Guid.TryParse(incidentId, out var guid))
             {
                 throw new ArgumentException("incidentId is invalid", nameof(incidentId));
             }
-            var result = new IncidentGto();
+            var result = new GetDetailResponseGto();
             var requestId = new[] { guid };
             var response = await _incidentFacadeApi.GetDetailsAsync(new GetDetailRequestDto { IncidentIds = requestId });
             if (!response.IsSuccess)
@@ -211,14 +215,14 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return ExecuteResult.Error;
         }
 
-        public async Task<ActiveIncidentListGto> GetActiveIncidentList()
+        public async Task<GetListResponseGto> GetActiveIncidentList()
         {
             Logger.LogInformation("call Incident api GetActiveIncidentList Start");
             var result = await _incidentMicroApi.GetListAsync();
             if (!result.IsSuccess)
             {
                 Logger.LogError($"call workflow design api GetActiveList error:{result.Messages?.FirstOrDefault()?.Message}");
-                return new ActiveIncidentListGto { Status = ExecuteStatus.Error };
+                return new GetListResponseGto { Status = ExecuteStatus.Error };
             }
 
             var workflowIds = result.Value.List.Select(x => x.WorkflowId).ToArray();
@@ -230,10 +234,10 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             if (!workflowSummaries.IsSuccess)
             {
                 Logger.LogError($"call workflow design api GetWorkflowSummaries error:{result.Messages?.FirstOrDefault()?.Message}");
-                return new ActiveIncidentListGto { Status = ExecuteStatus.Error };
+                return new GetListResponseGto { Status = ExecuteStatus.Error };
             }
 
-            var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], ActiveIncidentGto[]>(result.Value.List.ToArray());
+            var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], Gateway.Incident.Api.Incident.List.IncidentGto[]>(result.Value.List.ToArray());
             foreach (var activeIncident in activeIncidentsGto)
             {
                 foreach (var workflowSummary in workflowSummaries.Value.Summaries)
@@ -247,7 +251,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 }
             }
 
-            return new ActiveIncidentListGto
+            return new GetListResponseGto
             {
                 Status = ExecuteStatus.Successful,
                 List = activeIncidentsGto.ToList()

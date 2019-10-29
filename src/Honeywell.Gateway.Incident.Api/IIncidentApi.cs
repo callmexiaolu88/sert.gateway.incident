@@ -3,8 +3,13 @@ using Honeywell.Infra.Core;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.Infra.Api.Abstract;
+using Honeywell.Gateway.Incident.Api.Incident;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.List;
 
 namespace Honeywell.Gateway.Incident.Api
 {
@@ -12,11 +17,11 @@ namespace Honeywell.Gateway.Incident.Api
     {
         Task<ExecuteResult> UpdateStepStatusAsync(string workflowStepId, bool isHandled);
 
-        Task<IncidentGto> GetByIdAsync(string incidentId);
+        Task<GetDetailResponseGto> GetDetailAsync(string incidentId);
 
         Task<string> CreateAsync(CreateIncidentRequestGto request);
 
-        Task<ActiveIncidentListGto> GetListAsync();
+        Task<GetListResponseGto> GetListAsync();
 
         Task<SiteDeviceGto[]> GetSiteDevicesAsync();
 

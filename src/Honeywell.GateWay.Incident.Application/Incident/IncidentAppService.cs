@@ -1,10 +1,15 @@
 ﻿using System;
- using System.IO;
- using System.Linq;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
+using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.List;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Api.Abstract;
@@ -32,7 +37,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId, isHandled);
         }
 
-        public async Task<IncidentGto> GetByIdAsync(string incidentId)
+        public async Task<GetDetailResponseGto> GetDetailAsync(string incidentId)
         {
             var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
             if (incidentInfo.Status != ExecuteStatus.Successful)
@@ -101,7 +106,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.CompleteIncident(incidentId);
         }
 
-        public async Task<ActiveIncidentListGto> GetListAsync()
+        public async Task<GetListResponseGto> GetListAsync()
         {
             return await _incidentRepository.GetActiveIncidentList();
         }

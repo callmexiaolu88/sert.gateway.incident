@@ -1,8 +1,12 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
+using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.List;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 
@@ -12,7 +16,7 @@ namespace Honeywell.GateWay.Incident.Repository
     {
         Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
 
-        Task<IncidentGto> GetIncidentById(string incidentId);
+        Task<GetDetailResponseGto> GetIncidentById(string incidentId);
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);
 
@@ -26,7 +30,7 @@ namespace Honeywell.GateWay.Incident.Repository
 
         Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
 
-        Task<ActiveIncidentListGto> GetActiveIncidentList();
+        Task<GetListResponseGto> GetActiveIncidentList();
 
         Task<CreateIncidentResponseGto> CreateIncidentByAlarm(CreateByAlarmRequestGto request);
 

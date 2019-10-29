@@ -1,5 +1,7 @@
 ﻿
-namespace Honeywell.Gateway.Incident.Api.Gtos
+using Honeywell.Gateway.Incident.Api.Gtos;
+
+namespace Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate
 {
     public class WorkflowTemplateGto: ExecuteResult
     {

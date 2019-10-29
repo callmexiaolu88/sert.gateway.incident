@@ -1,35 +1,32 @@
 using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
-using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
+using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.GateWay.Incident.Repository.Incident;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
+using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
+using Honeywell.Micro.Services.Workflow.Api;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Actions;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Import;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Xunit;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
-using IncidentPriority = Honeywell.Micro.Services.Incident.Domain.Shared.IncidentPriority;
-using Honeywell.Micro.Services.Workflow.Api;
-using Honeywell.Micro.Services.Workflow.Api.DownloadTemplate;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Actions;
+using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
 
 #pragma warning disable CS0612 // Type or member is obsolete
 
@@ -356,7 +353,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 Owner = "Admin1",
                 State = IncidentState.Active,
                 Number = 10,
-                Priority = IncidentPriority.High
+                Priority = Micro.Services.Incident.Domain.Shared.IncidentPriority.High
             };
 
             var mockIncidentResponse = ApiResponse.CreateSuccess().To(new GetIncidentListResponseDto
@@ -430,14 +427,14 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var workflowDesignReferenceId = Guid.NewGuid();
 
-            var request = new IncidentGTO.Create.CreateByAlarmRequestGto
+            var request = new CreateByAlarmRequestGto
             {
                 CreateDatas = new[]
                 {
-                    new IncidentGTO.Create.CreateByAlarmGto
+                    new CreateByAlarmGto
                     {
                         WorkflowDesignReferenceId = workflowDesignReferenceId,
-                        Priority =  Honeywell.Gateway.Incident.Api.Gtos.IncidentPriority.High,
+                        Priority =  IncidentGTO.Detail.IncidentPriority.High,
                         Description = "incident description",
                         DeviceId = Guid.NewGuid().ToString(),
                         DeviceType = "Door",
@@ -479,7 +476,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var alarmId = Guid.NewGuid().ToString();
             var incidentId = Guid.NewGuid();
 
-            var request = new IncidentGTO.Status.GetStatusByAlarmRequestGto
+            var request = new GetStatusByAlarmRequestGto
             {
                 AlarmIds = new[] { alarmId }
             };

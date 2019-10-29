@@ -5,8 +5,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
+using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.List;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Common.Exceptions;
@@ -22,9 +28,9 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         }
 
 
-        public Task<IncidentGto> GetByIdAsync(string incidentId)
+        public Task<GetDetailResponseGto> GetDetailAsync(string incidentId)
         {
-            var incidentInfo = StubData<IncidentGto[]>().First(m => m.Id == Guid.Parse(incidentId));
+            var incidentInfo = StubData<GetDetailResponseGto[]>().First(m => m.Id == Guid.Parse(incidentId));
             if (string.IsNullOrEmpty(incidentInfo.DeviceId))
             {
                 return Task.FromResult(incidentInfo);
@@ -47,7 +53,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             var workflowName = StubData<WorkflowDesignGto[]>()
                 .FirstOrDefault(m => m.Id == Guid.Parse(request.WorkflowDesignReferenceId))
                 ?.Name;
-            var incident = StubData<IncidentGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
+            var incident = StubData<GetDetailResponseGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
             if (incident != null) return Task.FromResult(incident.Id.ToString());
             throw new Exception("cannot found the incident");
         }
@@ -83,10 +89,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return ResponseRequest();
         }
 
-        public Task<ActiveIncidentListGto> GetListAsync()
+        public Task<GetListResponseGto> GetListAsync()
         {
-            var result = StubData<List<ActiveIncidentGto>>();
-            return Task.FromResult(new ActiveIncidentListGto { List = result, Status = ExecuteStatus.Successful });
+            var result = StubData<List<Gateway.Incident.Api.Incident.List.IncidentGto>>();
+            return Task.FromResult(new GetListResponseGto { List = result, Status = ExecuteStatus.Successful });
         }
 
         public Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarmAsync(
@@ -100,7 +106,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                     var workflowName = StubData<WorkflowDesignGto[]>()
                         .FirstOrDefault(m => m.Id == incidentData.WorkflowDesignReferenceId)?.Name;
 
-                    var incident = StubData<IncidentGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
+                    var incident = StubData<GetDetailResponseGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
                     if (incident != null) response.IncidentIds.Add(incident.Id);
                     throw new Exception("cannot found the incident");
                 }
@@ -121,7 +127,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                 var response = new GetStatusByAlarmResponseGto();
                 foreach (var id in request.AlarmIds)
                 {
-                    var incident = StubData<IncidentGto[]>().FirstOrDefault((m => m.DeviceId == id));
+                    var incident = StubData<GetDetailResponseGto[]>().FirstOrDefault((m => m.DeviceId == id));
                     if (incident == null)
                     {
                         throw new Exception($"cannot found the incident associates with alarm id {id}");

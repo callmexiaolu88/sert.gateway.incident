@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
@@ -19,7 +20,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
 
-            var incidentDetails = await IncidentGateWayApi.GetByIdAsync(incidentId);
+            var incidentDetails = await IncidentGateWayApi.GetDetailAsync(incidentId);
             var workflowStepId = incidentDetails.IncidentSteps[0].Id;
             string commentRemark = Guid.NewGuid().ToString();
             var addStepCommentGto = new AddStepCommentGto()
@@ -30,7 +31,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             var result = await IncidentGateWayApi.AddStepCommentAsync(addStepCommentGto);
             Assert.True(result.Status == ExecuteStatus.Successful);
 
-            var incidentDetailReponse = await IncidentGateWayApi.GetByIdAsync(incidentId);
+            var incidentDetailReponse = await IncidentGateWayApi.GetDetailAsync(incidentId);
             bool isAddCommentSucess = incidentDetailReponse.IncidentSteps.First(o => o.Id == workflowStepId)
                 .StepComments.Any(x => x.Description.Contains(commentRemark));
             Assert.True(isAddCommentSucess);

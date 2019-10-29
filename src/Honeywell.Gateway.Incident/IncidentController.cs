@@ -6,9 +6,14 @@ using Honeywell.GateWay.Incident.Application.Incident;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.Infra.Api.Abstract;
 using Microsoft.Extensions.Logging;
+using Honeywell.Gateway.Incident.Api.Incident;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.List;
 
 namespace Honeywell.Gateway.Incident
 {
@@ -32,9 +37,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<IncidentGto> GetByIdAsync(string incidentId)
+        public async Task<GetDetailResponseGto> GetDetailAsync(string incidentId)
         {
-            var incident = await _incidentAppService.GetByIdAsync(incidentId);
+            var incident = await _incidentAppService.GetDetailAsync(incidentId);
             return incident;
         }
 
@@ -46,7 +51,7 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ActiveIncidentListGto> GetListAsync()
+        public async Task<GetListResponseGto> GetListAsync()
         {
             var activeIncidents = await _incidentAppService.GetListAsync();
             return activeIncidents;

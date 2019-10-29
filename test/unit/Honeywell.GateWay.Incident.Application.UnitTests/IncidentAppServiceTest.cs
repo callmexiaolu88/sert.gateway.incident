@@ -4,8 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
+using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.List;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
@@ -43,7 +47,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         [Fact]
         public void GetIncidentById_EmptyDevice_Succeed()
         {
-            var mockIncident = new IncidentGto
+            var mockIncident = new GetDetailResponseGto
             {
                 Description = "Test Incident Description",
                 Status = ExecuteStatus.Successful
@@ -51,7 +55,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetByIdAsync(It.IsAny<string>());
+            var result = _testObj.GetDetailAsync(It.IsAny<string>());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Successful);
             Assert.True(result.Result.Description == mockIncident.Description);
@@ -60,14 +64,14 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         [Fact]
         public void GetIncidentById_EmptyDevice_Failed()
         {
-            var mockIncident = new IncidentGto
+            var mockIncident = new GetDetailResponseGto
             {
                 Status = ExecuteStatus.Error
             };
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetByIdAsync(It.IsAny<string>());
+            var result = _testObj.GetDetailAsync(It.IsAny<string>());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Error);
         }
@@ -77,7 +81,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             var mockDeviceResult = MockDeviceEntities();
             var device = mockDeviceResult.Config[0];
-            var mockIncident = new IncidentGto
+            var mockIncident = new GetDetailResponseGto
             {
                 Description = "Test Incident Description",
                 Status = ExecuteStatus.Successful,
@@ -90,7 +94,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockIncidentTask);
             _mockDeviceRepository.Setup(x => x.GetDeviceById(It.IsAny<string>())).Returns(Task.FromResult(mockDeviceResult));
 
-            var result = _testObj.GetByIdAsync(It.IsAny<string>());
+            var result = _testObj.GetDetailAsync(It.IsAny<string>());
 
             Assert.NotNull(result);
             Assert.True(result.Result.Description == mockIncident.Description);
@@ -157,12 +161,12 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void GetActiveIncidentList_Test()
         {
 
-            var mockActiveIncidentGto = new ActiveIncidentGto
+            var mockActiveIncidentGto = new Gateway.Incident.Api.Incident.List.IncidentGto
             {
                 WorkflowId = Guid.NewGuid(),
                 WorkflowDesignName = "test"
             };
-            var mockActiveIncidentListGto = new ActiveIncidentListGto();
+            var mockActiveIncidentListGto = new GetListResponseGto();
             mockActiveIncidentListGto.List.Add(mockActiveIncidentGto);
 
             _mockIncidentRepository.Setup(x => x.GetActiveIncidentList())
