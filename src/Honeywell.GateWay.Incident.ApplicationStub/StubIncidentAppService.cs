@@ -16,13 +16,13 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
     public class StubIncidentAppService : BaseIncidentStub, IIncidentAppService
     {
   
-        public Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
+        public Task<ExecuteResult> UpdateWorkflowStepStatusAsync(string workflowStepId, bool isHandled)
         {
             return ResponseRequest();
         }
 
 
-        public Task<IncidentGto> GetIncidentById(string incidentId)
+        public Task<IncidentGto> GetAsync(string incidentId)
         {
             var incidentInfo = StubData<IncidentGto[]>().First(m => m.Id == Guid.Parse(incidentId));
             if (string.IsNullOrEmpty(incidentInfo.DeviceId))
@@ -42,7 +42,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return Task.FromResult(incidentInfo);
         }
 
-        public Task<string> CreateIncident(CreateIncidentRequestGto request)
+        public Task<string> CreateAsync(CreateIncidentRequestGto request)
         {
             var workflowName = StubData<WorkflowDesignGto[]>()
                 .FirstOrDefault(m => m.Id == Guid.Parse(request.WorkflowDesignReferenceId))
@@ -52,12 +52,12 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             throw new Exception("cannot found the incident");
         }
 
-        public Task<SiteDeviceGto[]> GetSiteDevices()
+        public Task<SiteDeviceGto[]> GetSiteDevicesAsync()
         {
             return StubDataTask<SiteDeviceGto[]>();
         }
 
-        public Task<ExecuteResult> RespondIncident(string incidentId)
+        public Task<ExecuteResult> RespondAsync(string incidentId)
         {
             return ResponseRequest();
         }
@@ -68,22 +68,22 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return Task.FromResult(result);
         }
 
-        public Task<ExecuteResult> TakeoverIncident(string incidentId)
+        public Task<ExecuteResult> TakeoverAsync(string incidentId)
         {
             return ResponseRequest();
         }
 
-        public Task<ExecuteResult> CloseIncident(string incidentId, string reason)
+        public Task<ExecuteResult> CloseAsync(string incidentId, string reason)
         {
             return ResponseRequest();
         }
 
-        public Task<ExecuteResult> CompleteIncident(string incidentId)
+        public Task<ExecuteResult> CompleteAsync(string incidentId)
         {
             return ResponseRequest();
         }
 
-        public Task<ActiveIncidentListGto> GetActiveIncidentList()
+        public Task<ActiveIncidentListGto> GetsAsync()
         {
             var result = StubData<List<ActiveIncidentGto>>();
             return Task.FromResult(new ActiveIncidentListGto { List = result, Status = ExecuteStatus.Successful });
@@ -144,7 +144,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
         }
 
-        public Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        public Task<ExecuteResult> AddStepCommentAsync(AddStepCommentGto addStepCommentGto)
         {
             return ResponseRequest();
         }

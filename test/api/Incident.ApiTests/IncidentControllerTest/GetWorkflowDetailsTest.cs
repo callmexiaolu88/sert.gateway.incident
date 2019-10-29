@@ -18,7 +18,7 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
             await ImportWorkflowDesign();
             var workflowDesignId = GetFirstWorkflowDesignId();
-            var workflowDesignGto = await WorkflowDesignGateWayApi.GetWorkflowDesignById(workflowDesignId);
+            var workflowDesignGto = await WorkflowDesignGateWayApi.GetByIdAsync(workflowDesignId);
             Assert.NotNull(workflowDesignGto);
             Assert.NotNull(workflowDesignGto.Name);
             Assert.NotNull(workflowDesignGto.Description);
@@ -36,7 +36,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             {
                 Ids = new[] {new Guid(workflowDesignId)}
             };
-            var workflowDesigns = await WorkflowDesignGateWayApi.GetDetails(request);
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetDetailsAsync(request);
 
             Assert.NotNull(workflowDesigns);
             Assert.True(workflowDesigns.IsSuccess);

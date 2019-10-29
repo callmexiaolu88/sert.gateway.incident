@@ -51,7 +51,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetIncidentById(It.IsAny<string>());
+            var result = _testObj.GetAsync(It.IsAny<string>());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Successful);
             Assert.True(result.Result.Description == mockIncident.Description);
@@ -67,7 +67,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetIncidentById(It.IsAny<string>());
+            var result = _testObj.GetAsync(It.IsAny<string>());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Error);
         }
@@ -90,7 +90,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockIncidentTask);
             _mockDeviceRepository.Setup(x => x.GetDeviceById(It.IsAny<string>())).Returns(Task.FromResult(mockDeviceResult));
 
-            var result = _testObj.GetIncidentById(It.IsAny<string>());
+            var result = _testObj.GetAsync(It.IsAny<string>());
 
             Assert.NotNull(result);
             Assert.True(result.Result.Description == mockIncident.Description);
@@ -106,7 +106,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockResponse = Task.FromResult(id);
             _mockIncidentRepository.Setup(x => x.CreateIncident(It.IsAny<CreateIncidentRequestGto>()))
                 .Returns(mockResponse);
-            var result = _testObj.CreateIncident(It.IsAny<CreateIncidentRequestGto>());
+            var result = _testObj.CreateAsync(It.IsAny<CreateIncidentRequestGto>());
             Assert.NotNull(result);
             Assert.True(result.Result == id);
         }
@@ -116,7 +116,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             _mockIncidentRepository.Setup(x => x.RespondIncident(It.IsAny<string>()))
                 .Returns(MockExecuteResult());
-            var result = _testObj.RespondIncident(It.IsAny<string>());
+            var result = _testObj.RespondAsync(It.IsAny<string>());
             VerifyResult(result);
         }
         [Fact]
@@ -124,7 +124,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             _mockIncidentRepository.Setup(x => x.TakeoverIncident(It.IsAny<string>()))
                 .Returns(MockExecuteResult());
-            var result = _testObj.TakeoverIncident(It.IsAny<string>());
+            var result = _testObj.TakeoverAsync(It.IsAny<string>());
             VerifyResult(result);
         }
 
@@ -133,7 +133,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             _mockIncidentRepository.Setup(x => x.CloseIncident(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(MockExecuteResult());
-            var result = _testObj.CloseIncident(It.IsAny<string>(), It.IsAny<string>());
+            var result = _testObj.CloseAsync(It.IsAny<string>(), It.IsAny<string>());
             VerifyResult(result);
         }
 
@@ -142,7 +142,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             var mockDevice = MockDeviceEntities();
             _mockDeviceRepository.Setup(x => x.GetDevices()).Returns(Task.FromResult(mockDevice));
-            var result = _testObj.GetSiteDevices();
+            var result = _testObj.GetSiteDevicesAsync();
             Assert.NotNull(result);
             Assert.True(result.Result.Length == 1);
             Assert.Equal(result.Result[0].Devices[0].DeviceDisplayName, mockDevice.Config[0].Identifiers.Name);
@@ -167,7 +167,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             _mockIncidentRepository.Setup(x => x.GetActiveIncidentList())
                 .Returns(Task.FromResult(mockActiveIncidentListGto));
-            var result = _testObj.GetActiveIncidentList();
+            var result = _testObj.GetsAsync();
             Assert.NotNull(result);
             Assert.True(result.Result.List.Count == 1);
             Assert.True(result.Result.List[0].WorkflowId == mockActiveIncidentGto.WorkflowId);
@@ -182,7 +182,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             _mockIncidentRepository.Setup(x => x.AddStepComment(addStepComment)).Returns(MockExecuteResult());
 
-            var result = _testObj.AddStepComment(addStepComment);
+            var result = _testObj.AddStepCommentAsync(addStepComment);
             VerifyResult(result);
         }
 

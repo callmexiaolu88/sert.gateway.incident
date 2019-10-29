@@ -23,51 +23,51 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ImportWorkflowDesigns([FromBody] Stream workflowDesignStream)
+        public async Task<ExecuteResult> ImportAsync([FromBody] Stream workflowDesignStream)
         {
-            var result = await _workflowDesignAppService.ImportWorkflowDesigns(workflowDesignStream);
+            var result = await _workflowDesignAppService.ImportAsync(workflowDesignStream);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ValidatorWorkflowDesigns([FromBody] Stream workflowDesignStream)
+        public async Task<ExecuteResult> ValidatorAsync([FromBody] Stream workflowDesignStream)
         {
-            var result = await _workflowDesignAppService.ValidatorWorkflowDesigns(workflowDesignStream);
+            var result = await _workflowDesignAppService.ValidatorAsync(workflowDesignStream);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
+        public async Task<ExecuteResult> DeletesAsync(string[] workflowDesignIds)
         {
-            var result = await _workflowDesignAppService.DeleteWorkflowDesigns(workflowDesignIds);
+            var result = await _workflowDesignAppService.DeletesAsync(workflowDesignIds);
             return result;
         }
 
         [HttpPost]
-        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
+        public async Task<WorkflowDesignSummaryGto[]> GetSummariesAsync()
         {
-            var workflowDesignList = await _workflowDesignAppService.GetAllActiveWorkflowDesigns();
+            var workflowDesignList = await _workflowDesignAppService.GetSummariesAsync();
             return workflowDesignList;
         }
 
         [HttpPost]
-        public async Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
+        public async Task<WorkflowDesignSelectorListGto> GetSelectorsAsync()
         {
-            var workflowDesignSelectorList = await _workflowDesignAppService.GetWorkflowDesignSelectors();
+            var workflowDesignSelectorList = await _workflowDesignAppService.GetSelectorsAsync();
             return workflowDesignSelectorList;
         }
 
         [HttpPost]
-        public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
+        public async Task<WorkflowDesignGto> GetByIdAsync(string workflowDesignId)
         {
-            var workflowDetail = await _workflowDesignAppService.GetWorkflowDesignById(workflowDesignId);
+            var workflowDetail = await _workflowDesignAppService.GetByIdAsync(workflowDesignId);
             return workflowDetail;
         }
 
         [HttpPost]
-        public async Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
+        public async Task<WorkflowTemplateGto> DownloadTemplateAsync()
         {
-            var result = await _workflowDesignAppService.DownloadWorkflowTemplate();
+            var result = await _workflowDesignAppService.DownloadTemplateAsync();
             Response.ContentType = "application/octet-stream";
             Response.Headers.Add("Content-Disposition",
                 "attachment; filename=" + HttpUtility.UrlEncode(result.FileName, System.Text.Encoding.UTF8));
@@ -78,10 +78,10 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds)
+        public async Task<WorkflowTemplateGto> ExportsAsync(string[] workflowDesignIds)
         {
 
-            var result = await _workflowDesignAppService.ExportWorkflowDesigns(workflowDesignIds);
+            var result = await _workflowDesignAppService.ExportsAsync(workflowDesignIds);
             Response.ContentType = "application/octet-stream";
             await Response.Body.WriteAsync(result.FileBytes);
             Response.Body.Flush();
@@ -90,16 +90,16 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetIdsResponseGto>> GetIds()
+        public async Task<ApiResponse<GetIdsResponseGto>> GetIdsAsync()
         {
-            var result = await _workflowDesignAppService.GetIds();
+            var result = await _workflowDesignAppService.GetIdsAsync();
             return result;
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetDetailsResponseGto>> GetDetails(GetDetailsRequestGto request)
+        public async Task<ApiResponse<GetDetailsResponseGto>> GetDetailsAsync(GetDetailsRequestGto request)
         {
-            var result = await _workflowDesignAppService.GetDetails(request);
+            var result = await _workflowDesignAppService.GetDetailsAsync(request);
             return result;
         }
     }

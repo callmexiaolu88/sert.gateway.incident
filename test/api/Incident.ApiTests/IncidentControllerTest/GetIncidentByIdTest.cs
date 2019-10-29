@@ -15,7 +15,7 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
             await ImportWorkflowDesign();
             
-            var devices = await IncidentGateWayApi.GetSiteDevices();
+            var devices = await IncidentGateWayApi.GetSiteDevicesAsync();
             Assert.NotNull(devices);
             Assert.True(devices.Length > 0);
 
@@ -24,7 +24,7 @@ namespace Incident.ApiTests.IncidentControllerTest
 
             var incidentId = await CreateIncident(device.DeviceId, device.DeviceType);
 
-            var incidentDetails = await IncidentGateWayApi.GetIncidentById(incidentId);
+            var incidentDetails = await IncidentGateWayApi.GetAsync(incidentId);
             Assert.True(incidentDetails.Status == ExecuteStatus.Successful);
             Assert.Equal(incidentDetails.Id.ToString(), incidentId);
             Assert.Equal(incidentDetails.DeviceDisplayName, device.DeviceDisplayName);

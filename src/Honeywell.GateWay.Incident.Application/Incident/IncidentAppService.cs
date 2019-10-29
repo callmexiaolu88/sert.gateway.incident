@@ -27,12 +27,12 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             _deviceRepository = deviceRepository;
         }
 
-        public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
+        public async Task<ExecuteResult> UpdateWorkflowStepStatusAsync(string workflowStepId, bool isHandled)
         {
             return await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId, isHandled);
         }
 
-        public async Task<IncidentGto> GetIncidentById(string incidentId)
+        public async Task<IncidentGto> GetAsync(string incidentId)
         {
             var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
             if (incidentInfo.Status != ExecuteStatus.Successful)
@@ -52,12 +52,12 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return incidentInfo;
         }
 
-        public async Task<string> CreateIncident(CreateIncidentRequestGto request)
+        public async Task<string> CreateAsync(CreateIncidentRequestGto request)
         {
             return await _incidentRepository.CreateIncident(request);
         }
 
-        public async Task<SiteDeviceGto[]> GetSiteDevices()
+        public async Task<SiteDeviceGto[]> GetSiteDevicesAsync()
         {
             Logger.LogInformation("call Incident api GetDeviceList Start");
             var result = await _deviceRepository.GetDevices();
@@ -81,27 +81,27 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return devices.ToArray();
         }
 
-        public async Task<ExecuteResult> RespondIncident(string incidentId)
+        public async Task<ExecuteResult> RespondAsync(string incidentId)
         {
             return await _incidentRepository.RespondIncident(incidentId);
         }
 
-        public async Task<ExecuteResult> TakeoverIncident(string incidentId)
+        public async Task<ExecuteResult> TakeoverAsync(string incidentId)
         {
             return await _incidentRepository.TakeoverIncident(incidentId);
         }
 
-        public async Task<ExecuteResult> CloseIncident(string incidentId, string reason)
+        public async Task<ExecuteResult> CloseAsync(string incidentId, string reason)
         {
             return await _incidentRepository.CloseIncident(incidentId, reason);
         }
 
-        public async Task<ExecuteResult> CompleteIncident(string incidentId)
+        public async Task<ExecuteResult> CompleteAsync(string incidentId)
         {
             return await _incidentRepository.CompleteIncident(incidentId);
         }
 
-        public async Task<ActiveIncidentListGto> GetActiveIncidentList()
+        public async Task<ActiveIncidentListGto> GetsAsync()
         {
             return await _incidentRepository.GetActiveIncidentList();
         }
@@ -134,7 +134,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
-        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        public async Task<ExecuteResult> AddStepCommentAsync(AddStepCommentGto addStepCommentGto)
         {
             return await _incidentRepository.AddStepComment(addStepCommentGto);
         }

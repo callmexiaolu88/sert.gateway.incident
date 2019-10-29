@@ -19,47 +19,47 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
         {
             _workflowDesignRepository = workflowDesignRepository;
         }
-        public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
+        public async Task<ExecuteResult> ImportAsync(Stream workflowDesignStream)
         {
             return await _workflowDesignRepository.ImportWorkflowDesigns(workflowDesignStream);
         }
 
-        public async Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream)
+        public async Task<ExecuteResult> ValidatorAsync(Stream workflowDesignStream)
         {
             return await _workflowDesignRepository.ValidatorWorkflowDesigns(workflowDesignStream);
         }
 
-        public async Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
+        public async Task<ExecuteResult> DeletesAsync(string[] workflowDesignIds)
         {
             return await _workflowDesignRepository.DeleteWorkflowDesigns(workflowDesignIds);
         }
 
-        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
+        public async Task<WorkflowDesignSummaryGto[]> GetSummariesAsync()
         {
             return await _workflowDesignRepository.GetAllActiveWorkflowDesigns();
         }
 
-        public async Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
+        public async Task<WorkflowDesignSelectorListGto> GetSelectorsAsync()
         {
             return await _workflowDesignRepository.GetWorkflowDesignSelectors();
         }
 
-        public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
+        public async Task<WorkflowDesignGto> GetByIdAsync(string workflowDesignId)
         {
             return await _workflowDesignRepository.GetWorkflowDesignById(workflowDesignId);
         }
 
-        public async Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
+        public async Task<WorkflowTemplateGto> DownloadTemplateAsync()
         {
             return await _workflowDesignRepository.DownloadWorkflowTemplate();
         }
 
-        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds)
+        public async Task<WorkflowTemplateGto> ExportsAsync(string[] workflowDesignIds)
         {
             return await _workflowDesignRepository.ExportWorkflowDesigns(workflowDesignIds);
         }
 
-        public async Task<ApiResponse<GetDetailsResponseGto>> GetDetails(GetDetailsRequestGto request)
+        public async Task<ApiResponse<GetDetailsResponseGto>> GetDetailsAsync(GetDetailsRequestGto request)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             }
         }
 
-        public async Task<ApiResponse<GetIdsResponseGto>> GetIds()
+        public async Task<ApiResponse<GetIdsResponseGto>> GetIdsAsync()
         {
             try
             {

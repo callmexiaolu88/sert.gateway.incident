@@ -10,24 +10,24 @@ namespace Honeywell.Gateway.Incident.Api
 {
     public interface IWorkflowDesignApi : IRemoteService
     {
-        Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream);
+        Task<ExecuteResult> ImportAsync(Stream workflowDesignStream);
 
-        Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream);
+        Task<ExecuteResult> ValidatorAsync(Stream workflowDesignStream);
 
-        Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds);
+        Task<ExecuteResult> DeletesAsync(string[] workflowDesignIds);
 
-        Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns();
+        Task<WorkflowDesignSummaryGto[]> GetSummariesAsync();
 
-        Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors();
+        Task<WorkflowDesignSelectorListGto> GetSelectorsAsync();
 
-        Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
+        Task<WorkflowDesignGto> GetByIdAsync(string workflowDesignId);
 
-        Task<WorkflowTemplateGto> DownloadWorkflowTemplate();
+        Task<WorkflowTemplateGto> DownloadTemplateAsync();
 
-        Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds);
+        Task<WorkflowTemplateGto> ExportsAsync(string[] workflowDesignIds);
 
-        Task<ApiResponse<GetIdsResponseGto>> GetIds();
+        Task<ApiResponse<GetIdsResponseGto>> GetIdsAsync();
 
-        Task<ApiResponse<GetDetailsResponseGto>> GetDetails(GetDetailsRequestGto request);
+        Task<ApiResponse<GetDetailsResponseGto>> GetDetailsAsync(GetDetailsRequestGto request);
     }
 }

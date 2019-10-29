@@ -17,10 +17,10 @@ namespace Incident.ApiTests.IncidentControllerTest
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
 
-            var respondResult = await IncidentGateWayApi.RespondIncident(incidentId);
+            var respondResult = await IncidentGateWayApi.RespondAsync(incidentId);
             Assert.True(respondResult.Status == ExecuteStatus.Successful);
 
-            var completeResult = await IncidentGateWayApi.CompleteIncident(incidentId);
+            var completeResult = await IncidentGateWayApi.CompleteAsync(incidentId);
             Assert.True(completeResult.Status == ExecuteStatus.Successful);
 
             await DeleteWorkflowDesign();
@@ -32,7 +32,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
 
-            var completeResult = await IncidentGateWayApi.CompleteIncident(incidentId);
+            var completeResult = await IncidentGateWayApi.CompleteAsync(incidentId);
             Assert.False(completeResult.Status == ExecuteStatus.Successful);
 
             await DeleteWorkflowDesign();

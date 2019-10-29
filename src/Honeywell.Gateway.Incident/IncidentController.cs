@@ -25,65 +25,65 @@ namespace Honeywell.Gateway.Incident
 
    
         [HttpPost]
-        public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
+        public async Task<ExecuteResult> UpdateWorkflowStepStatusAsync(string workflowStepId, bool isHandled)
         {
-            var result = await _incidentAppService.UpdateWorkflowStepStatus(workflowStepId, isHandled);
+            var result = await _incidentAppService.UpdateWorkflowStepStatusAsync(workflowStepId, isHandled);
             return result;
         }
 
         [HttpPost]
-        public async Task<IncidentGto> GetIncidentById(string incidentId)
+        public async Task<IncidentGto> GetAsync(string incidentId)
         {
-            var incident = await _incidentAppService.GetIncidentById(incidentId);
+            var incident = await _incidentAppService.GetAsync(incidentId);
             return incident;
         }
 
         [HttpPost]
-        public async Task<string> CreateIncident(CreateIncidentRequestGto request)
+        public async Task<string> CreateAsync(CreateIncidentRequestGto request)
         {
-            var incidentId = await _incidentAppService.CreateIncident(request);
+            var incidentId = await _incidentAppService.CreateAsync(request);
             return incidentId;
         }
 
         [HttpPost]
-        public async Task<ActiveIncidentListGto> GetActiveIncidentList()
+        public async Task<ActiveIncidentListGto> GetsAsync()
         {
-            var activeIncidents = await _incidentAppService.GetActiveIncidentList();
+            var activeIncidents = await _incidentAppService.GetsAsync();
             return activeIncidents;
         }
 
         [HttpPost]
-        public async Task<SiteDeviceGto[]> GetSiteDevices()
+        public async Task<SiteDeviceGto[]> GetSiteDevicesAsync()
         {
-            var devices = await _incidentAppService.GetSiteDevices();
+            var devices = await _incidentAppService.GetSiteDevicesAsync();
             return devices;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> RespondIncident(string incidentId)
+        public async Task<ExecuteResult> RespondAsync(string incidentId)
         {
-            var result = await _incidentAppService.RespondIncident(incidentId);
+            var result = await _incidentAppService.RespondAsync(incidentId);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> TakeoverIncident(string incidentId)
+        public async Task<ExecuteResult> TakeoverAsync(string incidentId)
         {
-            var result = await _incidentAppService.TakeoverIncident(incidentId);
+            var result = await _incidentAppService.TakeoverAsync(incidentId);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> CloseIncident(string incidentId, string reason)
+        public async Task<ExecuteResult> CloseAsync(string incidentId, string reason)
         {
-            var result = await _incidentAppService.CloseIncident(incidentId, reason);
+            var result = await _incidentAppService.CloseAsync(incidentId, reason);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> CompleteIncident(string incidentId)
+        public async Task<ExecuteResult> CompleteAsync(string incidentId)
         {
-            var result = await _incidentAppService.CompleteIncident(incidentId);
+            var result = await _incidentAppService.CompleteAsync(incidentId);
             return result;
         }
 
@@ -102,9 +102,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        public async Task<ExecuteResult> AddStepCommentAsync(AddStepCommentGto addStepCommentGto)
         {
-            var result = await _incidentAppService.AddStepComment(addStepCommentGto);
+            var result = await _incidentAppService.AddStepCommentAsync(addStepCommentGto);
             return result;
         }
     }

@@ -18,7 +18,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             var workflowDesigns = GetAllWorkflowDesigns();
 
             //action
-            var workflowDesignSelectors = await WorkflowDesignGateWayApi.GetWorkflowDesignSelectors();
+            var workflowDesignSelectors = await WorkflowDesignGateWayApi.GetSelectorsAsync();
 
             //assert
             Assert.True(workflowDesignSelectors.Status == ExecuteStatus.Successful);

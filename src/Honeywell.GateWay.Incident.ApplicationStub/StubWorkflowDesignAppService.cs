@@ -15,52 +15,52 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 {
     public class StubWorkflowDesignAppService : BaseIncidentStub, IWorkflowDesignAppService
     {
-        public Task<ExecuteResult> ImportWorkflowDesigns(Stream stream)
+        public Task<ExecuteResult> ImportAsync(Stream stream)
         {
             return ResponseRequest();
         }
 
-        public Task<ExecuteResult> ValidatorWorkflowDesigns(Stream stream)
+        public Task<ExecuteResult> ValidatorAsync(Stream stream)
         {
             return ResponseRequest();
         }
 
-        public Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
+        public Task<ExecuteResult> DeletesAsync(string[] workflowDesignIds)
         {
             return ResponseRequest();
         }
 
-        public Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
+        public Task<WorkflowDesignSummaryGto[]> GetSummariesAsync()
         {
             return StubDataTask<WorkflowDesignSummaryGto[]>();
         }
 
-        public Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
+        public Task<WorkflowDesignSelectorListGto> GetSelectorsAsync()
         {
             var result = StubData<List<WorkflowDesignSelectorGto>>();
             return Task.FromResult(new WorkflowDesignSelectorListGto { List = result, Status = ExecuteStatus.Successful });
         }
 
-        public Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
+        public Task<WorkflowDesignGto> GetByIdAsync(string workflowDesignId)
         {
             return Task.FromResult(StubData<WorkflowDesignGto[]>().FirstOrDefault(m => m.Id == Guid.Parse(workflowDesignId)));
         }
 
-        public Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
+        public Task<WorkflowTemplateGto> DownloadTemplateAsync()
         {
             var resourceName = "Honeywell.GateWay.Incident.ApplicationStub.Template.WorkflowTemplate.en-us.dotx";
             var fileName = "WorkflowTemplate.dotx";
             return ExportTemplate(resourceName, fileName);
         }
 
-        public Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
+        public Task<WorkflowTemplateGto> ExportsAsync(string[] workflowIds)
         {
             var resourceName = "Honeywell.GateWay.Incident.ApplicationStub.Template.Workflows.docx";
             var fileName = "Workflows.docx";
             return ExportTemplate(resourceName, fileName);
         }
 
-        public Task<ApiResponse<GetDetailsResponseGto>> GetDetails(GetDetailsRequestGto request)
+        public Task<ApiResponse<GetDetailsResponseGto>> GetDetailsAsync(GetDetailsRequestGto request)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
         }
 
-        public Task<ApiResponse<GetIdsResponseGto>> GetIds()
+        public Task<ApiResponse<GetIdsResponseGto>> GetIdsAsync()
         {
             try
             {

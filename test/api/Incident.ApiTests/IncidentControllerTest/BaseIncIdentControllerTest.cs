@@ -35,7 +35,7 @@ namespace Incident.ApiTests.IncidentControllerTest
 
         protected async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
         {
-            var workflowDesigns = await WorkflowDesignGateWayApi.GetAllActiveWorkflowDesigns();
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetSummariesAsync();
             return workflowDesigns;
         }
 
@@ -43,22 +43,22 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
             var resourceName = "Incident.ApiTests.Data.TestTemplate.docx";
             var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
-            var result = await WorkflowDesignGateWayApi.ImportWorkflowDesigns(stream);
+            var result = await WorkflowDesignGateWayApi.ImportAsync(stream);
             return result;
         }
 
         protected async Task DeleteWorkflowDesign()
         {
             var workflowDesigns = GetAllWorkflowDesigns();
-            await WorkflowDesignGateWayApi.DeleteWorkflowDesigns(workflowDesigns.Result.Select(m => m.Id.ToString()).ToArray());
+            await WorkflowDesignGateWayApi.DeletesAsync(workflowDesigns.Result.Select(m => m.Id.ToString()).ToArray());
         }
 
         protected async Task DeleteIncident(string incidentId)
         {
-            var respondResult = await IncidentGateWayApi.RespondIncident(incidentId);
+            var respondResult = await IncidentGateWayApi.RespondAsync(incidentId);
             Assert.True(respondResult.Status == ExecuteStatus.Successful);
 
-            var closeResult = await IncidentGateWayApi.CloseIncident(incidentId, "test delete");
+            var closeResult = await IncidentGateWayApi.CloseAsync(incidentId, "test delete");
             Assert.True(closeResult.Status == ExecuteStatus.Successful);
         }
 
@@ -70,7 +70,7 @@ namespace Incident.ApiTests.IncidentControllerTest
                 Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignId,
                 DeviceId = deviceId, DeviceType = deviceType
             };
-            var result = await IncidentGateWayApi.CreateIncident(incident);
+            var result = await IncidentGateWayApi.CreateAsync(incident);
             Assert.NotNull(result);
             return result;
         }

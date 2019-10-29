@@ -29,7 +29,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             _mockWorkflowDesignRepository.Setup(x => x.ImportWorkflowDesigns(It.IsAny<Stream>()))
                 .Returns(MockExecuteResult());
-            var result = _testObj.ImportWorkflowDesigns(It.IsAny<Stream>());
+            var result = _testObj.ImportAsync(It.IsAny<Stream>());
             VerifyResult(result);
         }
 
@@ -38,7 +38,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             _mockWorkflowDesignRepository.Setup(x => x.ValidatorWorkflowDesigns(It.IsAny<Stream>()))
                 .Returns(MockExecuteResult());
-            var result = _testObj.ValidatorWorkflowDesigns(It.IsAny<Stream>());
+            var result = _testObj.ValidatorAsync(It.IsAny<Stream>());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Successful);
         }
@@ -48,7 +48,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             _mockWorkflowDesignRepository.Setup(x => x.DeleteWorkflowDesigns(It.IsAny<string[]>()))
                 .Returns(MockExecuteResult());
-            var result = _testObj.DeleteWorkflowDesigns(It.IsAny<string[]>());
+            var result = _testObj.DeletesAsync(It.IsAny<string[]>());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Successful);
         }
@@ -62,7 +62,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             };
             var allWorkflowDesigns = Task.FromResult(new[] { mockDesign });
             _mockWorkflowDesignRepository.Setup(x => x.GetAllActiveWorkflowDesigns()).Returns(allWorkflowDesigns);
-            var result = _testObj.GetAllActiveWorkflowDesigns();
+            var result = _testObj.GetSummariesAsync();
             Assert.NotNull(result);
             Assert.True(result.Result.Length == 1);
             Assert.True(result.Result[0].Id == mockDesign.Id);
@@ -83,7 +83,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns((Task.FromResult(mockWorkflowDesignSelectorListGto)));
 
             // action
-            var result = _testObj.GetWorkflowDesignSelectors();
+            var result = _testObj.GetSelectorsAsync();
 
             // assert
             Assert.NotNull(result);
@@ -101,7 +101,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var workflowDesigns = Task.FromResult(mockDesign);
             _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignById(It.IsAny<string>()))
                 .Returns(workflowDesigns);
-            var result = _testObj.GetWorkflowDesignById(It.IsAny<string>());
+            var result = _testObj.GetByIdAsync(It.IsAny<string>());
             Assert.NotNull(result);
             Assert.True(result.Result.Id == mockDesign.Id);
         }
@@ -116,7 +116,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockTemplateTask = Task.FromResult(mockTemplate);
             _mockWorkflowDesignRepository.Setup(x => x.DownloadWorkflowTemplate())
                 .Returns(mockTemplateTask);
-            var result = _testObj.DownloadWorkflowTemplate();
+            var result = _testObj.DownloadTemplateAsync();
             Assert.NotNull(result);
             Assert.True(result.Result.FileName == mockTemplate.FileName);
         }
@@ -131,7 +131,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockTemplateTask = Task.FromResult(mockTemplate);
             _mockWorkflowDesignRepository.Setup(x => x.ExportWorkflowDesigns(It.IsAny<string[]>()))
                 .Returns(mockTemplateTask);
-            var result = _testObj.ExportWorkflowDesigns(It.IsAny<string[]>());
+            var result = _testObj.ExportsAsync(It.IsAny<string[]>());
             Assert.NotNull(result);
             Assert.True(result.Result.FileName == mockTemplate.FileName);
         }
@@ -158,7 +158,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockResponse);
 
             //Act
-            var result = _testObj.GetIds();
+            var result = _testObj.GetIdsAsync();
 
             //Assert
             Assert.NotNull(result);
@@ -177,7 +177,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.GetIds();
+            var result = _testObj.GetIdsAsync();
 
             //Assert
             Assert.NotNull(result);
@@ -203,7 +203,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockResponse);
 
             //Act
-            var result = _testObj.GetDetails(It.IsAny<GetDetailsRequestGto>());
+            var result = _testObj.GetDetailsAsync(It.IsAny<GetDetailsRequestGto>());
 
             //Assert
             Assert.NotNull(result);
@@ -221,7 +221,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.GetDetails(It.IsAny<GetDetailsRequestGto>());
+            var result = _testObj.GetDetailsAsync(It.IsAny<GetDetailsRequestGto>());
 
             //Assert
             Assert.NotNull(result);

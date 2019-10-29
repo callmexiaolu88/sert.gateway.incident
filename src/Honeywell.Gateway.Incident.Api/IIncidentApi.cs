@@ -10,25 +10,25 @@ namespace Honeywell.Gateway.Incident.Api
 {
     public interface IIncidentApi : IRemoteService
     {
-        Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
+        Task<ExecuteResult> UpdateWorkflowStepStatusAsync(string workflowStepId, bool isHandled);
 
-        Task<IncidentGto> GetIncidentById(string incidentId);
+        Task<IncidentGto> GetAsync(string incidentId);
 
-        Task<string> CreateIncident(CreateIncidentRequestGto request);
+        Task<string> CreateAsync(CreateIncidentRequestGto request);
 
-        Task<ActiveIncidentListGto> GetActiveIncidentList();
+        Task<ActiveIncidentListGto> GetsAsync();
 
-        Task<SiteDeviceGto[]> GetSiteDevices();
+        Task<SiteDeviceGto[]> GetSiteDevicesAsync();
 
-        Task<ExecuteResult> RespondIncident(string incidentId);
+        Task<ExecuteResult> RespondAsync(string incidentId);
 
-        Task<ExecuteResult> TakeoverIncident(string incidentId);
+        Task<ExecuteResult> TakeoverAsync(string incidentId);
 
-        Task<ExecuteResult> CloseIncident(string incidentId, string reason);
+        Task<ExecuteResult> CloseAsync(string incidentId, string reason);
 
-        Task<ExecuteResult> CompleteIncident(string incidentId);
+        Task<ExecuteResult> CompleteAsync(string incidentId);
 
-        Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
+        Task<ExecuteResult> AddStepCommentAsync(AddStepCommentGto addStepCommentGto);
 
         Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(CreateByAlarmRequestGto request);
 

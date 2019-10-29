@@ -20,7 +20,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             var incidentId = CreateIncident().Result;
 
             //action
-            var activeIncidentList = await IncidentGateWayApi.GetActiveIncidentList();
+            var activeIncidentList = await IncidentGateWayApi.GetsAsync();
 
             //assert
             Assert.True(activeIncidentList.Status == ExecuteStatus.Successful);
