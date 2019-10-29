@@ -106,7 +106,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.GetActiveIncidentList();
         }
 
-        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(
+        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarmAsync(
             CreateByAlarmRequestGto request)
         {
             try
@@ -120,7 +120,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
-        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(
+        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarmAsync(
             GetStatusByAlarmRequestGto request)
         {
             try

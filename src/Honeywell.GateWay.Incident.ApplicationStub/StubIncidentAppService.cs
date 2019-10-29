@@ -89,7 +89,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return Task.FromResult(new ActiveIncidentListGto { List = result, Status = ExecuteStatus.Successful });
         }
 
-        public Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(
+        public Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarmAsync(
             CreateByAlarmRequestGto request)
         {
             try
@@ -113,7 +113,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
         }
 
-        public Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(
+        public Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarmAsync(
             GetStatusByAlarmRequestGto request)
         {
             try

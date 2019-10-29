@@ -219,7 +219,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockResponse);
 
             //Act
-            var result = _testObj.CreateByAlarm(It.IsAny<CreateByAlarmRequestGto>());
+            var result = _testObj.CreateByAlarmAsync(It.IsAny<CreateByAlarmRequestGto>());
 
             //Assert
             Assert.NotNull(result);
@@ -237,7 +237,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.CreateByAlarm(It.IsAny<CreateByAlarmRequestGto>());
+            var result = _testObj.CreateByAlarmAsync(It.IsAny<CreateByAlarmRequestGto>());
 
             //Assert
             Assert.NotNull(result);
@@ -266,7 +266,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockResponse);
 
             //Act
-            var result = _testObj.GetStatusByAlarm(It.IsAny<GetStatusByAlarmRequestGto>());
+            var result = _testObj.GetStatusByAlarmAsync(It.IsAny<GetStatusByAlarmRequestGto>());
 
             //Assert
             Assert.NotNull(result);
@@ -286,7 +286,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.GetStatusByAlarm(It.IsAny<GetStatusByAlarmRequestGto>());
+            var result = _testObj.GetStatusByAlarmAsync(It.IsAny<GetStatusByAlarmRequestGto>());
 
             //Assert
             Assert.NotNull(result);

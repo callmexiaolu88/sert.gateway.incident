@@ -30,8 +30,8 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ExecuteResult> AddStepCommentAsync(AddStepCommentGto addStepCommentGto);
 
-        Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(CreateByAlarmRequestGto request);
+        Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarmAsync(CreateByAlarmRequestGto request);
 
-        Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(GetStatusByAlarmRequestGto request);
+        Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarmAsync(GetStatusByAlarmRequestGto request);
     }
 }

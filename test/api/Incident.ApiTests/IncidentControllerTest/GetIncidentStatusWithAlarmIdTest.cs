@@ -31,7 +31,7 @@ namespace Incident.ApiTests.IncidentControllerTest
                 AlarmIds = new[] {alarmId}
             };
 
-            var incidentStatusResponse = await IncidentGateWayApi.GetStatusByAlarm(request);
+            var incidentStatusResponse = await IncidentGateWayApi.GetStatusByAlarmAsync(request);
 
             Assert.NotNull(incidentStatusResponse);
             Assert.True(incidentStatusResponse.IsSuccess);

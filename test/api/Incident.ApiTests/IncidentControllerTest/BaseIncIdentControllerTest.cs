@@ -99,7 +99,7 @@ namespace Incident.ApiTests.IncidentControllerTest
                     }
                 }
             };
-            var result = await IncidentGateWayApi.CreateByAlarm(request);
+            var result = await IncidentGateWayApi.CreateByAlarmAsync(request);
             Assert.NotNull(result);
             return result;
         }
