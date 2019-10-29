@@ -27,12 +27,12 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             _deviceRepository = deviceRepository;
         }
 
-        public async Task<ExecuteResult> UpdateWorkflowStepStatusAsync(string workflowStepId, bool isHandled)
+        public async Task<ExecuteResult> UpdateStepStatusAsync(string workflowStepId, bool isHandled)
         {
             return await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId, isHandled);
         }
 
-        public async Task<IncidentGto> GetAsync(string incidentId)
+        public async Task<IncidentGto> GetByIdAsync(string incidentId)
         {
             var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
             if (incidentInfo.Status != ExecuteStatus.Successful)
@@ -101,7 +101,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             return await _incidentRepository.CompleteIncident(incidentId);
         }
 
-        public async Task<ActiveIncidentListGto> GetsAsync()
+        public async Task<ActiveIncidentListGto> GetListAsync()
         {
             return await _incidentRepository.GetActiveIncidentList();
         }

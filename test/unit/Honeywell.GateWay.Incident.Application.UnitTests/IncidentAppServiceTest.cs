@@ -51,7 +51,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetAsync(It.IsAny<string>());
+            var result = _testObj.GetByIdAsync(It.IsAny<string>());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Successful);
             Assert.True(result.Result.Description == mockIncident.Description);
@@ -67,7 +67,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockIncidentTask = Task.FromResult(mockIncident);
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .Returns(mockIncidentTask);
-            var result = _testObj.GetAsync(It.IsAny<string>());
+            var result = _testObj.GetByIdAsync(It.IsAny<string>());
             Assert.NotNull(result);
             Assert.True(result.Result.Status == ExecuteStatus.Error);
         }
@@ -90,7 +90,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .Returns(mockIncidentTask);
             _mockDeviceRepository.Setup(x => x.GetDeviceById(It.IsAny<string>())).Returns(Task.FromResult(mockDeviceResult));
 
-            var result = _testObj.GetAsync(It.IsAny<string>());
+            var result = _testObj.GetByIdAsync(It.IsAny<string>());
 
             Assert.NotNull(result);
             Assert.True(result.Result.Description == mockIncident.Description);
@@ -167,7 +167,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             _mockIncidentRepository.Setup(x => x.GetActiveIncidentList())
                 .Returns(Task.FromResult(mockActiveIncidentListGto));
-            var result = _testObj.GetsAsync();
+            var result = _testObj.GetListAsync();
             Assert.NotNull(result);
             Assert.True(result.Result.List.Count == 1);
             Assert.True(result.Result.List[0].WorkflowId == mockActiveIncidentGto.WorkflowId);

@@ -19,7 +19,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
 
-            var incidentDetails = await IncidentGateWayApi.GetAsync(incidentId);
+            var incidentDetails = await IncidentGateWayApi.GetByIdAsync(incidentId);
             var workflowStepId = incidentDetails.IncidentSteps[0].Id;
             string commentRemark = Guid.NewGuid().ToString();
             var addStepCommentGto = new AddStepCommentGto()
@@ -30,7 +30,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             var result = await IncidentGateWayApi.AddStepCommentAsync(addStepCommentGto);
             Assert.True(result.Status == ExecuteStatus.Successful);
 
-            var incidentDetailReponse = await IncidentGateWayApi.GetAsync(incidentId);
+            var incidentDetailReponse = await IncidentGateWayApi.GetByIdAsync(incidentId);
             bool isAddCommentSucess = incidentDetailReponse.IncidentSteps.First(o => o.Id == workflowStepId)
                 .StepComments.Any(x => x.Description.Contains(commentRemark));
             Assert.True(isAddCommentSucess);

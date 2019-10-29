@@ -25,16 +25,16 @@ namespace Honeywell.Gateway.Incident
 
    
         [HttpPost]
-        public async Task<ExecuteResult> UpdateWorkflowStepStatusAsync(string workflowStepId, bool isHandled)
+        public async Task<ExecuteResult> UpdateStepStatusAsync(string workflowStepId, bool isHandled)
         {
-            var result = await _incidentAppService.UpdateWorkflowStepStatusAsync(workflowStepId, isHandled);
+            var result = await _incidentAppService.UpdateStepStatusAsync(workflowStepId, isHandled);
             return result;
         }
 
         [HttpPost]
-        public async Task<IncidentGto> GetAsync(string incidentId)
+        public async Task<IncidentGto> GetByIdAsync(string incidentId)
         {
-            var incident = await _incidentAppService.GetAsync(incidentId);
+            var incident = await _incidentAppService.GetByIdAsync(incidentId);
             return incident;
         }
 
@@ -46,9 +46,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ActiveIncidentListGto> GetsAsync()
+        public async Task<ActiveIncidentListGto> GetListAsync()
         {
-            var activeIncidents = await _incidentAppService.GetsAsync();
+            var activeIncidents = await _incidentAppService.GetListAsync();
             return activeIncidents;
         }
 

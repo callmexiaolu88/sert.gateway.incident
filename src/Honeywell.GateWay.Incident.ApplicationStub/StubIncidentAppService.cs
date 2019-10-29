@@ -16,13 +16,13 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
     public class StubIncidentAppService : BaseIncidentStub, IIncidentAppService
     {
   
-        public Task<ExecuteResult> UpdateWorkflowStepStatusAsync(string workflowStepId, bool isHandled)
+        public Task<ExecuteResult> UpdateStepStatusAsync(string workflowStepId, bool isHandled)
         {
             return ResponseRequest();
         }
 
 
-        public Task<IncidentGto> GetAsync(string incidentId)
+        public Task<IncidentGto> GetByIdAsync(string incidentId)
         {
             var incidentInfo = StubData<IncidentGto[]>().First(m => m.Id == Guid.Parse(incidentId));
             if (string.IsNullOrEmpty(incidentInfo.DeviceId))
@@ -83,7 +83,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return ResponseRequest();
         }
 
-        public Task<ActiveIncidentListGto> GetsAsync()
+        public Task<ActiveIncidentListGto> GetListAsync()
         {
             var result = StubData<List<ActiveIncidentGto>>();
             return Task.FromResult(new ActiveIncidentListGto { List = result, Status = ExecuteStatus.Successful });

@@ -24,7 +24,7 @@ namespace Incident.ApiTests.IncidentControllerTest
 
             var incidentId = await CreateIncident(device.DeviceId, device.DeviceType);
 
-            var incidentDetails = await IncidentGateWayApi.GetAsync(incidentId);
+            var incidentDetails = await IncidentGateWayApi.GetByIdAsync(incidentId);
             Assert.True(incidentDetails.Status == ExecuteStatus.Successful);
             Assert.Equal(incidentDetails.Id.ToString(), incidentId);
             Assert.Equal(incidentDetails.DeviceDisplayName, device.DeviceDisplayName);
