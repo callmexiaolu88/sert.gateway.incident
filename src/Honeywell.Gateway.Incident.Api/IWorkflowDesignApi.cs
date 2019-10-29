@@ -8,8 +8,8 @@ namespace Honeywell.Gateway.Incident.Api
 {
     public interface IWorkflowDesignApi : IRemoteService
     {
-        Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetIds();
+        Task<ApiResponse<GetIdsResponseGto>> GetIds();
 
-        Task<ApiResponse<GetWorkflowDesignDetailsResponseGto>> GetDetails(GetWorkflowDesignDetailsRequestGto request);
+        Task<ApiResponse<GetDetailsResponseGto>> GetDetails(GetDetailsRequestGto request);
     }
 }

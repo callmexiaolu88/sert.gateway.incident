@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
-using Honeywell.GateWay.Incident.Application.Workflow;
+using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.GateWay.Incident.Repository;
 using Moq;
 using Xunit;
@@ -15,12 +15,12 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
     public class WorkflowAppServiceTest : ApplicationServiceTestBase
     {
         private readonly IWorkflowDesignAppService _testObj;
-        private readonly Mock<IIncidentRepository> _mockIncidentRepository;
+        private readonly Mock<IWorkflowDesignRepository> _mockWorkflowDesignRepository;
 
         public WorkflowAppServiceTest()
         {
-            _mockIncidentRepository = new Mock<IIncidentRepository>();
-            _testObj = new WorkflowDesignAppService(_mockIncidentRepository.Object);
+            _mockWorkflowDesignRepository = new Mock<IWorkflowDesignRepository>();
+            _testObj = new WorkflowDesignAppService(_mockWorkflowDesignRepository.Object);
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var id = Guid.NewGuid();
             var name = "name";
 
-            var mockResponse = Task.FromResult(new GetWorkflowDesignIdsResponseGto
+            var mockResponse = Task.FromResult(new GetIdsResponseGto
             {
                 WorkflowDesignIds = new List<WorkflowDesignIdGto>
                 {
@@ -41,7 +41,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                     }
                 }
             });
-            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignIds())
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignIds())
                 .Returns(mockResponse);
 
             //Act
@@ -60,7 +60,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void GetWorkflowDesignIds_ThrowException()
         {
             //Arrange
-            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignIds())
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignIds())
                 .Throws(new Exception());
 
             //Act
@@ -76,7 +76,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             //Arrange
             var id = Guid.NewGuid();
-            var mockResponse = Task.FromResult(new GetWorkflowDesignDetailsResponseGto
+            var mockResponse = Task.FromResult(new GetDetailsResponseGto
             {
                 WorkflowDesigns = new List<WorkflowDesignGto>
                 {
@@ -86,11 +86,11 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                     }
                 }
             });
-            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>()))
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignDetails(It.IsAny<GetDetailsRequestGto>()))
                 .Returns(mockResponse);
 
             //Act
-            var result = _testObj.GetDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>());
+            var result = _testObj.GetDetails(It.IsAny<GetDetailsRequestGto>());
 
             //Assert
             Assert.NotNull(result);
@@ -104,11 +104,11 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void GetWorkflowDesigns_ThrowException()
         {
             //Arrange
-            _mockIncidentRepository.Setup(x => x.GetWorkflowDesignDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>()))
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignDetails(It.IsAny<GetDetailsRequestGto>()))
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.GetDetails(It.IsAny<GetWorkflowDesignDetailsRequestGto>());
+            var result = _testObj.GetDetails(It.IsAny<GetDetailsRequestGto>());
 
             //Assert
             Assert.NotNull(result);

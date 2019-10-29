@@ -383,31 +383,6 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return responseValue;
         }
 
-        public async Task<GetWorkflowDesignIdsResponseGto> GetWorkflowDesignIds()
-        {
-            Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignIds)} Start");
-
-            var response = await _workflowDesignApi.GetSummariesAsync();
-            ApiResponse.ThrowExceptionIfFailed(response);
-
-            var result = HoneyMapper
-                .Map<WorkflowDesignSummaryResponseDto, GetWorkflowDesignIdsResponseGto>(response.Value);
-            return result;
-        }
-
-        public async Task<GetWorkflowDesignDetailsResponseGto> GetWorkflowDesignDetails(GetWorkflowDesignDetailsRequestGto request)
-        {
-            Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignDetails)} Start");
-
-            var workflowDesignRequest =
-                HoneyMapper.Map<GetWorkflowDesignDetailsRequestGto, WorkflowDesignDetailsRequestDto>(request);
-            var response = await _workflowDesignApi.GetDetailsAsync(workflowDesignRequest);
-            ApiResponse.ThrowExceptionIfFailed(response);
-
-            var result = HoneyMapper.Map<WorkflowDesignResponseDto, GetWorkflowDesignDetailsResponseGto>(response.Value);
-            return result;
-        }
-
         public async Task<GetStatusByAlarmResponseGto> GetIncidentStatusByAlarm(
             GetStatusByAlarmRequestGto request)
         {
