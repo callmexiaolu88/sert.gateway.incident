@@ -26,8 +26,8 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds);
 
-        Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetIds();
+        Task<ApiResponse<GetIdsResponseGto>> GetIds();
 
-        Task<ApiResponse<GetWorkflowDesignDetailsResponseGto>> GetDetails(GetWorkflowDesignDetailsRequestGto request);
+        Task<ApiResponse<GetDetailsResponseGto>> GetDetails(GetDetailsRequestGto request);
     }
 }

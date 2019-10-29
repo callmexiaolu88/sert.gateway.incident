@@ -4,18 +4,18 @@ using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
-using Honeywell.GateWay.Incident.Application.Workflow;
+using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.GateWay.Incident.ApplicationStub
 {
     public class StubWorkflowDesignAppService : BaseIncidentStub, IWorkflowDesignAppService
     {
-        public Task<ApiResponse<GetWorkflowDesignDetailsResponseGto>> GetDetails(GetWorkflowDesignDetailsRequestGto request)
+        public Task<ApiResponse<GetDetailsResponseGto>> GetDetails(GetDetailsRequestGto request)
         {
             try
             {
-                var response = new GetWorkflowDesignDetailsResponseGto();
+                var response = new GetDetailsResponseGto();
                 foreach (var id in request.Ids)
                 {
                     var workflowDesigns = StubData<WorkflowDesignGto[]>().FirstOrDefault(m => m.Id == id);
@@ -28,15 +28,15 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ApiResponse.CreateFailed(ex).To<GetWorkflowDesignDetailsResponseGto>());
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To<GetDetailsResponseGto>());
             }
         }
 
-        public Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetIds()
+        public Task<ApiResponse<GetIdsResponseGto>> GetIds()
         {
             try
             {
-                var response = new GetWorkflowDesignIdsResponseGto();
+                var response = new GetIdsResponseGto();
                 var workflowDesigns = StubData<WorkflowDesignGto[]>().Select(w => new WorkflowDesignIdGto
                 {
                     WorkflowDesignReferenceId = w.Id,
@@ -53,7 +53,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ApiResponse.CreateFailed(ex).To<GetWorkflowDesignIdsResponseGto>());
+                return Task.FromResult(ApiResponse.CreateFailed(ex).To<GetIdsResponseGto>());
             }
         }
     }

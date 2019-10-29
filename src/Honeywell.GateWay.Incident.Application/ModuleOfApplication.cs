@@ -1,5 +1,5 @@
 ﻿using Honeywell.GateWay.Incident.Application.Incident;
-using Honeywell.GateWay.Incident.Application.Workflow;
+using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Core.Modular;
 using Honeywell.Infra.HoneyMapper.AutoMapper;

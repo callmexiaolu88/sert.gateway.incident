@@ -1,6 +1,7 @@
 ﻿using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.GateWay.Incident.Repository.Incident;
+using Honeywell.GateWay.Incident.Repository.WorkflowDesign;
 using Honeywell.Infra.Client.WebApi;
 using Honeywell.Infra.Client.WebApi.Config;
 using Honeywell.Infra.Core.Modular;
@@ -20,6 +21,7 @@ namespace Honeywell.GateWay.Incident.Repository
         {
             IocContainer.AddScoped<IDeviceRepository, DeviceRepository>();
             IocContainer.AddScoped<IIncidentRepository, IncidentRepository>();
+            IocContainer.AddScoped<IWorkflowDesignRepository, WorkflowDesignRepository>();
             var config = IocContainer.BuildServiceProvider().GetService<IConfiguration>();
             var assembly = typeof(IDeviceApi).Assembly;
             IocContainer.AddRemoteService(assembly,

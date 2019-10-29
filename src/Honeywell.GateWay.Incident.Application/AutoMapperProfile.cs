@@ -62,16 +62,16 @@ namespace Honeywell.GateWay.Incident.Application
             CreateMap<FacadeApi.CreateIncidentResponseDto, CreateIncidentResponseGto>();
 
             //GetWorkflowDesignIds Response
-            CreateMap<WorkflowDesignSummaryResponseDto, GetWorkflowDesignIdsResponseGto>()
+            CreateMap<WorkflowDesignSummaryResponseDto, GetIdsResponseGto>()
                 .ForMember(dest => dest.WorkflowDesignIds, opt => opt.MapFrom(src => src.Summaries));
             CreateMap<WorkflowDesignSummaryDto, WorkflowDesignIdGto>()
                 .ForMember(dest => dest.WorkflowDesignReferenceId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
             //GetWorkflowDesigns Request
-            CreateMap<GetWorkflowDesignDetailsRequestGto, WorkflowDesignDetailsRequestDto>();
+            CreateMap<GetDetailsRequestGto, WorkflowDesignDetailsRequestDto>();
             //GetWorkflowDesigns Response
-            CreateMap<WorkflowDesignResponseDto, GetWorkflowDesignDetailsResponseGto>()
+            CreateMap<WorkflowDesignResponseDto, GetDetailsResponseGto>()
                 .ForMember(dest => dest.WorkflowDesigns, opt => opt.MapFrom(src => src.Details));
 
             //GetIncidentStatusWithAlarmId Request

@@ -2,10 +2,10 @@
 
 namespace Honeywell.Gateway.Incident.Api.WorkflowDesign.List
 {
-    public class GetWorkflowDesignIdsResponseGto
+    public class GetIdsResponseGto
     {
         public IList<WorkflowDesignIdGto> WorkflowDesignIds { get; set; }
-        public GetWorkflowDesignIdsResponseGto()
+        public GetIdsResponseGto()
         {
             WorkflowDesignIds = new List<WorkflowDesignIdGto>();
         }

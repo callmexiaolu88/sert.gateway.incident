@@ -32,7 +32,7 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
             await ImportWorkflowDesign();
             var workflowDesignId = GetFirstWorkflowDesignId();
-            var request = new GetWorkflowDesignDetailsRequestGto
+            var request = new GetDetailsRequestGto
             {
                 Ids = new[] {new Guid(workflowDesignId)}
             };
