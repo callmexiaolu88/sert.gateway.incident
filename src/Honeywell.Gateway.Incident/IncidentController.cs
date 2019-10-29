@@ -9,7 +9,6 @@ using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.Infra.Api.Abstract;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Honeywell.Gateway.Incident
 {
@@ -18,12 +17,10 @@ namespace Honeywell.Gateway.Incident
     public class IncidentController : ControllerBase, IIncidentApi
     {
         private readonly IIncidentAppService _incidentAppService;
-        private readonly ILogger<IncidentController> _logger;
 
         public IncidentController(ILogger<IncidentController> logger, IIncidentAppService incidentAppService)
         {
             _incidentAppService = incidentAppService;
-            _logger = logger;
         }
 
         [HttpPost]

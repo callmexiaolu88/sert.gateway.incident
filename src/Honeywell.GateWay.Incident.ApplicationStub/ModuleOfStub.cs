@@ -1,6 +1,6 @@
 ﻿using Honeywell.GateWay.Incident.Application;
 using Honeywell.GateWay.Incident.Application.Incident;
-using Honeywell.GateWay.Incident.Application.Workflow;
+using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.Infra.Core.Modular;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
