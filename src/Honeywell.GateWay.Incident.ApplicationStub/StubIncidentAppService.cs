@@ -15,78 +15,12 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 {
     public class StubIncidentAppService : BaseIncidentStub, IIncidentAppService
     {
-        public Task<ExecuteResult> ImportWorkflowDesigns(Stream stream)
-        {
-            return ResponseRequest();
-        }
-
-        public Task<ExecuteResult> ValidatorWorkflowDesigns(Stream stream)
-        {
-            return ResponseRequest();
-        }
-
-        public Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
-        {
-            return ResponseRequest();
-        }
-
-        public Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
-        {
-            return StubDataTask<WorkflowDesignSummaryGto[]>();
-        }
-
-        public Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
-        {
-            var result = StubData<List<WorkflowDesignSelectorGto>>();
-            return Task.FromResult(new WorkflowDesignSelectorListGto { List = result, Status = ExecuteStatus.Successful });
-        }
-
-        public Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
-        {
-            return Task.FromResult(StubData<WorkflowDesignGto[]>().FirstOrDefault(m => m.Id == Guid.Parse(workflowDesignId)));
-        }
-
-        public Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
-        {
-            var resourceName = "Honeywell.GateWay.Incident.ApplicationStub.Template.WorkflowTemplate.en-us.dotx";
-            var fileName = "WorkflowTemplate.dotx";
-            return ExportTemplate(resourceName, fileName);
-        }
-
-        public Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
-        {
-            var resourceName = "Honeywell.GateWay.Incident.ApplicationStub.Template.Workflows.docx";
-            var fileName = "Workflows.docx";
-            return ExportTemplate(resourceName, fileName);
-        }
-
+  
         public Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
         {
             return ResponseRequest();
         }
 
-        private Task<WorkflowTemplateGto> ExportTemplate(string resourceName, string fileName)
-        {
-            var template = new WorkflowTemplateGto();
-            var fs = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
-            if (fs == null)
-            {
-                throw new HoneywellException($"{resourceName} is not found");
-            }
-
-            var buffer = new byte[1024];
-            using var ms = new MemoryStream();
-            int read;
-            while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)
-            {
-                ms.Write(buffer, 0, read);
-            }
-
-            template.FileBytes = ms.ToArray();
-            template.FileName = fileName;
-            template.Status = ExecuteStatus.Successful;
-            return Task.FromResult(template);
-        }
 
         public Task<IncidentGto> GetIncidentById(string incidentId)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Gtos;
@@ -21,6 +22,118 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             _mockWorkflowDesignRepository = new Mock<IWorkflowDesignRepository>();
             _testObj = new WorkflowDesignAppService(_mockWorkflowDesignRepository.Object);
+        }
+
+        [Fact]
+        public void ImportWorkflowDesigns_Test()
+        {
+            _mockWorkflowDesignRepository.Setup(x => x.ImportWorkflowDesigns(It.IsAny<Stream>()))
+                .Returns(MockExecuteResult());
+            var result = _testObj.ImportWorkflowDesigns(It.IsAny<Stream>());
+            VerifyResult(result);
+        }
+
+        [Fact]
+        public void ValidatorWorkflowDesigns_Test()
+        {
+            _mockWorkflowDesignRepository.Setup(x => x.ValidatorWorkflowDesigns(It.IsAny<Stream>()))
+                .Returns(MockExecuteResult());
+            var result = _testObj.ValidatorWorkflowDesigns(It.IsAny<Stream>());
+            Assert.NotNull(result);
+            Assert.True(result.Result.Status == ExecuteStatus.Successful);
+        }
+
+        [Fact]
+        public void DeleteWorkflowDesigns_Test()
+        {
+            _mockWorkflowDesignRepository.Setup(x => x.DeleteWorkflowDesigns(It.IsAny<string[]>()))
+                .Returns(MockExecuteResult());
+            var result = _testObj.DeleteWorkflowDesigns(It.IsAny<string[]>());
+            Assert.NotNull(result);
+            Assert.True(result.Result.Status == ExecuteStatus.Successful);
+        }
+
+        [Fact]
+        public void GetAllActiveWorkflowDesigns_Test()
+        {
+            var mockDesign = new WorkflowDesignSummaryGto
+            {
+                Id = Guid.NewGuid()
+            };
+            var allWorkflowDesigns = Task.FromResult(new[] { mockDesign });
+            _mockWorkflowDesignRepository.Setup(x => x.GetAllActiveWorkflowDesigns()).Returns(allWorkflowDesigns);
+            var result = _testObj.GetAllActiveWorkflowDesigns();
+            Assert.NotNull(result);
+            Assert.True(result.Result.Length == 1);
+            Assert.True(result.Result[0].Id == mockDesign.Id);
+        }
+
+
+        [Fact]
+        public void GetWorkflowDesignSelectors_Test()
+        {
+            // arrange
+            var mockDesign = new WorkflowDesignSelectorGto
+            {
+                Id = Guid.NewGuid()
+            };
+            var mockWorkflowDesignSelectorListGto = new WorkflowDesignSelectorListGto();
+            mockWorkflowDesignSelectorListGto.List.Add(mockDesign);
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignSelectors())
+                .Returns((Task.FromResult(mockWorkflowDesignSelectorListGto)));
+
+            // action
+            var result = _testObj.GetWorkflowDesignSelectors();
+
+            // assert
+            Assert.NotNull(result);
+            Assert.True(result.Result.List.Count == 1);
+            Assert.True(result.Result.List[0].Id == mockDesign.Id);
+        }
+
+        [Fact]
+        public void GetWorkflowDesignById_Test()
+        {
+            var mockDesign = new WorkflowDesignGto
+            {
+                Id = Guid.NewGuid()
+            };
+            var workflowDesigns = Task.FromResult(mockDesign);
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignById(It.IsAny<string>()))
+                .Returns(workflowDesigns);
+            var result = _testObj.GetWorkflowDesignById(It.IsAny<string>());
+            Assert.NotNull(result);
+            Assert.True(result.Result.Id == mockDesign.Id);
+        }
+
+        [Fact]
+        public void DownloadWorkflowTemplate_Test()
+        {
+            var mockTemplate = new WorkflowTemplateGto
+            {
+                FileName = "TestSopTemplate"
+            };
+            var mockTemplateTask = Task.FromResult(mockTemplate);
+            _mockWorkflowDesignRepository.Setup(x => x.DownloadWorkflowTemplate())
+                .Returns(mockTemplateTask);
+            var result = _testObj.DownloadWorkflowTemplate();
+            Assert.NotNull(result);
+            Assert.True(result.Result.FileName == mockTemplate.FileName);
+        }
+
+        [Fact]
+        public void ExportWorkflowDesigns_Test()
+        {
+            var mockTemplate = new WorkflowTemplateGto
+            {
+                FileName = "TestSopTemplate"
+            };
+            var mockTemplateTask = Task.FromResult(mockTemplate);
+            _mockWorkflowDesignRepository.Setup(x => x.ExportWorkflowDesigns(It.IsAny<string[]>()))
+                .Returns(mockTemplateTask);
+            var result = _testObj.ExportWorkflowDesigns(It.IsAny<string[]>());
+            Assert.NotNull(result);
+            Assert.True(result.Result.FileName == mockTemplate.FileName);
         }
 
         [Fact]
@@ -114,6 +227,16 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.NotNull(result);
             Assert.False(result.Result.IsSuccess);
         }
+        private Task<ExecuteResult> MockExecuteResult()
+        {
+            return Task.FromResult(new ExecuteResult { Status = ExecuteStatus.Successful });
+        }
 
+        // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+        private void VerifyResult(Task<ExecuteResult> result)
+        {
+            Assert.NotNull(result);
+            Assert.True(result.Result.Status == ExecuteStatus.Successful);
+        }
     }
 }

@@ -35,7 +35,7 @@ namespace Incident.ApiTests.IncidentControllerTest
 
         protected async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
         {
-            var workflowDesigns = await IncidentGateWayApi.GetAllActiveWorkflowDesigns();
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetAllActiveWorkflowDesigns();
             return workflowDesigns;
         }
 
@@ -43,14 +43,14 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
             var resourceName = "Incident.ApiTests.Data.TestTemplate.docx";
             var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
-            var result = await IncidentGateWayApi.ImportWorkflowDesigns(stream);
+            var result = await WorkflowDesignGateWayApi.ImportWorkflowDesigns(stream);
             return result;
         }
 
         protected async Task DeleteWorkflowDesign()
         {
             var workflowDesigns = GetAllWorkflowDesigns();
-            await IncidentGateWayApi.DeleteWorkflowDesigns(workflowDesigns.Result.Select(m => m.Id.ToString()).ToArray());
+            await WorkflowDesignGateWayApi.DeleteWorkflowDesigns(workflowDesigns.Result.Select(m => m.Id.ToString()).ToArray());
         }
 
         protected async Task DeleteIncident(string incidentId)

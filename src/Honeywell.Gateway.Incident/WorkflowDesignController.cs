@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web;
 using Honeywell.Gateway.Incident.Api;
+using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
@@ -77,7 +78,7 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetIdsResponseGto>> GetIds()
+        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds)
         {
 
             var result = await _workflowDesignAppService.ExportWorkflowDesigns(workflowDesignIds);
@@ -89,7 +90,7 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetWorkflowDesignIdsResponseGto>> GetIds()
+        public async Task<ApiResponse<GetIdsResponseGto>> GetIds()
         {
             var result = await _workflowDesignAppService.GetIds();
             return result;

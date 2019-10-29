@@ -18,7 +18,7 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
             await ImportWorkflowDesign();
             var workflowDesignId = GetFirstWorkflowDesignId();
-            var workflowDesignGto = await IncidentGateWayApi.GetWorkflowDesignById(workflowDesignId);
+            var workflowDesignGto = await WorkflowDesignGateWayApi.GetWorkflowDesignById(workflowDesignId);
             Assert.NotNull(workflowDesignGto);
             Assert.NotNull(workflowDesignGto.Name);
             Assert.NotNull(workflowDesignGto.Description);
