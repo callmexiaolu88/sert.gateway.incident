@@ -27,46 +27,6 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             _deviceRepository = deviceRepository;
         }
 
-        public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
-        {
-            return await _incidentRepository.ImportWorkflowDesigns(workflowDesignStream);
-        }
-
-        public async Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream)
-        {
-            return await _incidentRepository.ValidatorWorkflowDesigns(workflowDesignStream);
-        }
-
-        public async Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
-        {
-            return await _incidentRepository.DeleteWorkflowDesigns(workflowDesignIds);
-        }
-
-        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
-        {
-            return await _incidentRepository.GetAllActiveWorkflowDesigns();
-        }
-
-        public async Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
-        {
-            return await _incidentRepository.GetWorkflowDesignSelectors();
-        }
-
-        public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
-        {
-            return await _incidentRepository.GetWorkflowDesignById(workflowDesignId);
-        }
-
-        public async Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
-        {
-            return await _incidentRepository.DownloadWorkflowTemplate();
-        }
-
-        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds)
-        {
-            return await _incidentRepository.ExportWorkflowDesigns(workflowDesignIds);
-        }
-
         public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
         {
             return await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId, isHandled);
