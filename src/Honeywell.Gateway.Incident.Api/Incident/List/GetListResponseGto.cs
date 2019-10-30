@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Honeywell.Gateway.Incident.Api.Gtos;
 
 namespace Honeywell.Gateway.Incident.Api.Incident.List
 {
-    public class GetListResponseGto : ExecuteResult
+    public class GetListResponseGto
     {
         public IList<IncidentGto> List { get; set; }
 

@@ -1,22 +1,22 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
+using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
     public interface IWorkflowDesignRepository
     {
-        Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream);
+        Task ImportWorkflowDesigns(Stream workflowDesignStream);
 
-        Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream);
+        Task<ApiResponse> ValidatorWorkflowDesigns(Stream workflowDesignStream);
 
-        Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds);
+        Task DeleteWorkflowDesigns(string[] workflowDesignIds);
 
         Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns();
 

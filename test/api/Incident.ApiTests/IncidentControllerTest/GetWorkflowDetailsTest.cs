@@ -19,11 +19,12 @@ namespace Incident.ApiTests.IncidentControllerTest
             await ImportWorkflowDesign();
             var workflowDesignId = GetFirstWorkflowDesignId();
             var workflowDesignGto = await WorkflowDesignGateWayApi.GetByIdAsync(workflowDesignId);
-            Assert.NotNull(workflowDesignGto);
-            Assert.NotNull(workflowDesignGto.Name);
-            Assert.NotNull(workflowDesignGto.Description);
-            Assert.NotNull(workflowDesignGto.Steps);
-            Assert.True(workflowDesignGto.Steps.Length > 0);
+            Assert.True(workflowDesignGto.IsSuccess);
+            Assert.NotNull(workflowDesignGto.Value);
+            Assert.NotNull(workflowDesignGto.Value.Name);
+            Assert.NotNull(workflowDesignGto.Value.Description);
+            Assert.NotNull(workflowDesignGto.Value.Steps);
+            Assert.True(workflowDesignGto.Value.Steps.Length > 0);
             await DeleteWorkflowDesign();
         }
 

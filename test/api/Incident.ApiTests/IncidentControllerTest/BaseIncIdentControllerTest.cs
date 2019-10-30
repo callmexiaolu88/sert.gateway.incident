@@ -3,8 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api;
-using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Incident;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
@@ -39,10 +37,10 @@ namespace Incident.ApiTests.IncidentControllerTest
         protected async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
         {
             var workflowDesigns = await WorkflowDesignGateWayApi.GetSummariesAsync();
-            return workflowDesigns;
+            return workflowDesigns.Value;
         }
 
-        protected async Task<ExecuteResult> ImportWorkflowDesign()
+        protected async Task<ApiResponse> ImportWorkflowDesign()
         {
             var resourceName = "Incident.ApiTests.Data.TestTemplate.docx";
             var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
@@ -59,10 +57,10 @@ namespace Incident.ApiTests.IncidentControllerTest
         protected async Task DeleteIncident(string incidentId)
         {
             var respondResult = await IncidentGateWayApi.RespondAsync(incidentId);
-            Assert.True(respondResult.Status == ExecuteStatus.Successful);
+            Assert.True(respondResult.IsSuccess);
 
             var closeResult = await IncidentGateWayApi.CloseAsync(incidentId, "test delete");
-            Assert.True(closeResult.Status == ExecuteStatus.Successful);
+            Assert.True(closeResult.IsSuccess);
         }
 
         protected async Task<string> CreateIncident(string deviceId = null, string deviceType = null)
@@ -74,8 +72,8 @@ namespace Incident.ApiTests.IncidentControllerTest
                 DeviceId = deviceId, DeviceType = deviceType
             };
             var result = await IncidentGateWayApi.CreateAsync(incident);
-            Assert.NotNull(result);
-            return result;
+            Assert.True(result.IsSuccess);
+            return result.Value;
         }
 
         protected async Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(string alarmId = null)

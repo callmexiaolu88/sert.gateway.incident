@@ -1,5 +1,4 @@
-﻿using Honeywell.Gateway.Incident.Api.Gtos;
-using Xunit;
+﻿using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
 {
@@ -21,8 +20,8 @@ namespace Incident.ApiTests.IncidentControllerTest
             var workflowDesignSelectors = await WorkflowDesignGateWayApi.GetSelectorsAsync();
 
             //assert
-            Assert.True(workflowDesignSelectors.Status == ExecuteStatus.Successful);
-            Assert.True(workflowDesignSelectors.List.Count== workflowDesigns.Result.Length);
+            Assert.True(workflowDesignSelectors.IsSuccess);
+            Assert.True(workflowDesignSelectors.Value.List.Count== workflowDesigns.Result.Length);
             
             //clear
             await DeleteWorkflowDesign();

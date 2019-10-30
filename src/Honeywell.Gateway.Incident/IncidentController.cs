@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using Honeywell.Gateway.Incident.Api;
 using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
@@ -30,63 +29,63 @@ namespace Honeywell.Gateway.Incident
 
    
         [HttpPost]
-        public async Task<ExecuteResult> UpdateStepStatusAsync(string workflowStepId, bool isHandled)
+        public async Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled)
         {
             var result = await _incidentAppService.UpdateStepStatusAsync(workflowStepId, isHandled);
             return result;
         }
 
         [HttpPost]
-        public async Task<GetDetailResponseGto> GetDetailAsync(string incidentId)
+        public async Task<ApiResponse<GetDetailResponseGto>> GetDetailAsync(string incidentId)
         {
             var incident = await _incidentAppService.GetDetailAsync(incidentId);
             return incident;
         }
 
         [HttpPost]
-        public async Task<string> CreateAsync(CreateIncidentRequestGto request)
+        public async Task<ApiResponse<string>> CreateAsync(CreateIncidentRequestGto request)
         {
             var incidentId = await _incidentAppService.CreateAsync(request);
             return incidentId;
         }
 
         [HttpPost]
-        public async Task<GetListResponseGto> GetListAsync()
+        public async Task<ApiResponse<GetListResponseGto>> GetListAsync()
         {
             var activeIncidents = await _incidentAppService.GetListAsync();
             return activeIncidents;
         }
 
         [HttpPost]
-        public async Task<SiteDeviceGto[]> GetSiteDevicesAsync()
+        public async Task<ApiResponse<SiteDeviceGto[]>> GetSiteDevicesAsync()
         {
             var devices = await _incidentAppService.GetSiteDevicesAsync();
             return devices;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> RespondAsync(string incidentId)
+        public async Task<ApiResponse> RespondAsync(string incidentId)
         {
             var result = await _incidentAppService.RespondAsync(incidentId);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> TakeoverAsync(string incidentId)
+        public async Task<ApiResponse> TakeoverAsync(string incidentId)
         {
             var result = await _incidentAppService.TakeoverAsync(incidentId);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> CloseAsync(string incidentId, string reason)
+        public async Task<ApiResponse> CloseAsync(string incidentId, string reason)
         {
             var result = await _incidentAppService.CloseAsync(incidentId, reason);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> CompleteAsync(string incidentId)
+        public async Task<ApiResponse> CompleteAsync(string incidentId)
         {
             var result = await _incidentAppService.CompleteAsync(incidentId);
             return result;
@@ -107,7 +106,7 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> AddStepCommentAsync(AddStepCommentGto addStepCommentGto)
+        public async Task<ApiResponse> AddStepCommentAsync(AddStepCommentGto addStepCommentGto)
         {
             var result = await _incidentAppService.AddStepCommentAsync(addStepCommentGto);
             return result;

@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
-using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Incident;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.Detail;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
@@ -37,7 +35,7 @@ namespace Honeywell.GateWay.Incident.Application
 
             CreateMap<WorkflowDesignSelectorDto, WorkflowDesignSelectorGto>();
 
-            CreateMap<IncidentListItemDto, Gateway.Incident.Api.Incident.List.IncidentGto>();
+            CreateMap<IncidentListItemDto, IncidentGto>();
 
             CreateMap<IncidentDto, GetDetailResponseGto>();
             CreateMap<WorkflowDto, GetDetailResponseGto>()

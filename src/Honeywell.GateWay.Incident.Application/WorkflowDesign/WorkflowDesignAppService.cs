@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
@@ -23,44 +22,103 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
         {
             _workflowDesignRepository = workflowDesignRepository;
         }
-        public async Task<ExecuteResult> ImportAsync(Stream workflowDesignStream)
+
+        public async Task<ApiResponse> ImportAsync(Stream workflowDesignStream)
         {
-            return await _workflowDesignRepository.ImportWorkflowDesigns(workflowDesignStream);
+            try
+            {
+                await _workflowDesignRepository.ImportWorkflowDesigns(workflowDesignStream);
+                return ApiResponse.CreateSuccess();
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.CreateFailed(ex);
+            }
         }
 
-        public async Task<ExecuteResult> ValidatorAsync(Stream workflowDesignStream)
+        public async Task<ApiResponse> ValidateAsync(Stream workflowDesignStream)
         {
-            return await _workflowDesignRepository.ValidatorWorkflowDesigns(workflowDesignStream);
+            try
+            {
+                return await _workflowDesignRepository.ValidatorWorkflowDesigns(workflowDesignStream);
+            }
+            catch(Exception ex)
+            {
+                return ApiResponse.CreateFailed(ex);
+            }
         }
 
-        public async Task<ExecuteResult> DeletesAsync(string[] workflowDesignIds)
+        public async Task<ApiResponse> DeletesAsync(string[] workflowDesignIds)
         {
-            return await _workflowDesignRepository.DeleteWorkflowDesigns(workflowDesignIds);
+            try
+            {
+                await _workflowDesignRepository.DeleteWorkflowDesigns(workflowDesignIds);
+                return ApiResponse.CreateSuccess();
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.CreateFailed(ex);
+            }
         }
 
-        public async Task<WorkflowDesignSummaryGto[]> GetSummariesAsync()
+        public async Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync()
         {
-            return await _workflowDesignRepository.GetAllActiveWorkflowDesigns();
+            try
+            {
+                return await _workflowDesignRepository.GetAllActiveWorkflowDesigns();
+            }
+            catch(Exception ex)
+            {
+                return ApiResponse.CreateFailed(ex).To<WorkflowDesignSummaryGto[]>();
+            }
         }
 
-        public async Task<WorkflowDesignSelectorListGto> GetSelectorsAsync()
+        public async Task<ApiResponse<WorkflowDesignSelectorListGto>> GetSelectorsAsync()
         {
-            return await _workflowDesignRepository.GetWorkflowDesignSelectors();
+            try
+            {
+                return await _workflowDesignRepository.GetWorkflowDesignSelectors();
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.CreateFailed(ex).To<WorkflowDesignSelectorListGto>();
+            }
         }
 
-        public async Task<WorkflowDesignGto> GetByIdAsync(string workflowDesignId)
+        public async Task<ApiResponse<WorkflowDesignGto>> GetByIdAsync(string workflowDesignId)
         {
-            return await _workflowDesignRepository.GetWorkflowDesignById(workflowDesignId);
+            try
+            {
+                return await _workflowDesignRepository.GetWorkflowDesignById(workflowDesignId);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.CreateFailed(ex).To<WorkflowDesignGto>();
+            }
         }
 
-        public async Task<WorkflowTemplateGto> DownloadTemplateAsync()
+        public async Task<ApiResponse<WorkflowTemplateGto>> DownloadTemplateAsync()
         {
-            return await _workflowDesignRepository.DownloadWorkflowTemplate();
+            try
+            {
+                return await _workflowDesignRepository.DownloadWorkflowTemplate();
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.CreateFailed(ex).To<WorkflowTemplateGto>();
+            }
         }
 
-        public async Task<WorkflowTemplateGto> ExportsAsync(string[] workflowDesignIds)
+        public async Task<ApiResponse<WorkflowTemplateGto>> ExportsAsync(string[] workflowDesignIds)
         {
-            return await _workflowDesignRepository.ExportWorkflowDesigns(workflowDesignIds);
+            try
+            {
+                return await _workflowDesignRepository.ExportWorkflowDesigns(workflowDesignIds);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.CreateFailed(ex).To<WorkflowTemplateGto>();
+            }
         }
 
         public async Task<ApiResponse<GetDetailsResponseGto>> GetDetailsAsync(GetDetailsRequestGto request)

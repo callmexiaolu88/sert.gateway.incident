@@ -1,34 +1,29 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Incident;
-using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+﻿using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.Detail;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.Gateway.Incident.Api.Incident.List;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
+using System.Threading.Tasks;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
     public interface IIncidentRepository
     {
-        Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
+        Task UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
 
         Task<GetDetailResponseGto> GetIncidentById(string incidentId);
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);
 
-        Task<ExecuteResult> RespondIncident(string incidentId);
+        Task RespondIncident(string incidentId);
 
-        Task<ExecuteResult> TakeoverIncident(string incidentId);
+        Task TakeoverIncident(string incidentId);
 
-        Task<ExecuteResult> CloseIncident(string incidentId, string reason);
+        Task CloseIncident(string incidentId, string reason);
 
-        Task<ExecuteResult> CompleteIncident(string incidentId);
+        Task CompleteIncident(string incidentId);
 
-        Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
+        Task AddStepComment(AddStepCommentGto addStepCommentGto);
 
         Task<GetListResponseGto> GetActiveIncidentList();
 

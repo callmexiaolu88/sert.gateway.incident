@@ -1,5 +1,4 @@
-﻿using Honeywell.Gateway.Incident.Api.Gtos;
-using Xunit;
+﻿using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
 {
@@ -18,10 +17,10 @@ namespace Incident.ApiTests.IncidentControllerTest
             var incidentId = CreateIncident().Result;
 
             var respondResult = await IncidentGateWayApi.RespondAsync(incidentId);
-            Assert.True(respondResult.Status == ExecuteStatus.Successful);
+            Assert.True(respondResult.IsSuccess);
 
             var completeResult = await IncidentGateWayApi.CompleteAsync(incidentId);
-            Assert.True(completeResult.Status == ExecuteStatus.Successful);
+            Assert.True(completeResult.IsSuccess);
 
             await DeleteWorkflowDesign();
         }
@@ -33,7 +32,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             var incidentId = CreateIncident().Result;
 
             var completeResult = await IncidentGateWayApi.CompleteAsync(incidentId);
-            Assert.False(completeResult.Status == ExecuteStatus.Successful);
+            Assert.False(completeResult.IsSuccess);
 
             await DeleteWorkflowDesign();
         }

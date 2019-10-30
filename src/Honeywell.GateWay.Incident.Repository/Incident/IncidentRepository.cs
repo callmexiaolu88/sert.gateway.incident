@@ -1,34 +1,24 @@
 ﻿using Honeywell.Facade.Services.Incident.Api;
-using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Infra.Core.Ddd.Application;
-using Honeywell.Micro.Services.Incident.Api;
-using Honeywell.Micro.Services.Incident.Api.Incident.List;
-using Honeywell.Micro.Services.Workflow.Api;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
-using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
-using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
-using Honeywell.Infra.Api.Abstract;
-using Honeywell.Micro.Services.Incident.Api.Incident.Status;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.Actions;
-using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
-using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
-using Honeywell.Gateway.Incident.Api.Incident;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.Detail;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.Gateway.Incident.Api.Incident.List;
+using Honeywell.Infra.Api.Abstract;
+using Honeywell.Infra.Core.Ddd.Application;
+using Honeywell.Micro.Services.Incident.Api;
+using Honeywell.Micro.Services.Incident.Api.Incident.List;
+using Honeywell.Micro.Services.Incident.Api.Incident.Status;
+using Honeywell.Micro.Services.Workflow.Api;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Actions;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
+using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 
 #pragma warning disable CS0612 // Type or member is obsolete
 
@@ -53,7 +43,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             _incidentFacadeApi = incidentFacadeApi;
         }
     
-        public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
+        public async Task UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
         {
             Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
             var workflowStepGuid = Guid.Parse(workflowStepId);
@@ -61,15 +51,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var request = new UpdateWorkflowStepStatusRequestDto { WorkflowStepId = workflowStepGuid, IsHandled = isHandled };
 
             var response = await _workflowMicroApi.UpdateStepStatusAsync(request);
-            if (response.IsSuccess)
-            {
-                return ExecuteResult.Success;
-            }
-
-            Logger.LogError("Failed to update workflow stepStatus!");
-            var result = ExecuteResult.Error;
-            result.ErrorList.AddRange(response.Messages.Select(item => item.Message));
-            return result;
+            ApiResponse.ThrowExceptionIfFailed(response);
         }
 
         public async Task<GetDetailResponseGto> GetIncidentById(string incidentId)
@@ -79,17 +61,13 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             {
                 throw new ArgumentException("incidentId is invalid", nameof(incidentId));
             }
+
             var result = new GetDetailResponseGto();
             var requestId = new[] { guid };
             var response = await _incidentFacadeApi.GetDetailsAsync(new GetDetailRequestDto { IncidentIds = requestId });
-            if (!response.IsSuccess)
-            {
-                result.ErrorList.AddRange(response.Messages.Select(item=>item.Message));
-                return result;
-            }
+            ApiResponse.ThrowExceptionIfFailed(response);
 
             HoneyMapper.Map(response.Value.Details[0], result);
-            result.Status = ExecuteStatus.Successful;
             return result;
         }
 
@@ -98,14 +76,16 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             Logger.LogInformation("call Incident api CreateIncident Start");
             if (!Guid.TryParse(request.WorkflowDesignReferenceId, out var workflowDesignReferenceId))
             {
-                Logger.LogError($"wrong WorkflowDesignReferenceId value: {request.WorkflowDesignReferenceId}");
-                return string.Empty;
+                var msg = $"wrong WorkflowDesignReferenceId value: {request.WorkflowDesignReferenceId}";
+                Logger.LogError(msg);
+                throw new ArgumentException(msg);
             }
 
             if (!Enum.TryParse<FacadeApi.Create.IncidentPriority>(request.Priority, true, out var priority))
             {
-                Logger.LogError($"wrong priority value: {request.Priority}");
-                return string.Empty;
+                var msg = $"wrong priority value: {request.Priority}";
+                Logger.LogError(msg);
+                throw new ArgumentException(msg);
             }
 
             var facadeRequest = new FacadeApi.Create.CreateIncidentRequestDto
@@ -125,105 +105,83 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var response = await _incidentFacadeApi.CreateAsync(facadeRequest);
 
-            if (response.IsSuccess)
-            {
-                return response.Value.IncidentIds.First().ToString();
-            }
+            ApiResponse.ThrowExceptionIfFailed(response);
 
-            Logger.LogError("Failed to create incident!");
-            return string.Empty;
+            return response.Value.IncidentIds.First().ToString();
         }
 
-        public async Task<ExecuteResult> RespondIncident(string incidentId)
+        public async Task RespondIncident(string incidentId)
         {
             Logger.LogInformation("call Incident api RespondIncident Start");
             if (!Guid.TryParse(incidentId, out var incidentGuid))
             {
-                Logger.LogError($"wrong incident id: {incidentId}");
-                return ExecuteResult.Error;
+                var msg = $"wrong incident id: {incidentId}";
+                Logger.LogError(msg);
+                throw new ArgumentException(msg);
             }
 
             var request = new FacadeApi.Actions.IncidentActionRequestDto { IncidentId = incidentGuid };
 
             var response = await _incidentFacadeApi.RespondAsync(request);
-            if (response.IsSuccess)
-            {
-                return ExecuteResult.Success;
-            }
-
-            Logger.LogError("Failed to respond incident!");
-            return ExecuteResult.Error;
+            ApiResponse.ThrowExceptionIfFailed(response);
         }
 
-        public async Task<ExecuteResult> TakeoverIncident(string incidentId)
+        public async Task TakeoverIncident(string incidentId)
         {
             Logger.LogInformation("call Incident api TakeoverIncident Start");
             if (!Guid.TryParse(incidentId, out var incidentGuid))
             {
-                Logger.LogError($"wrong incident id: {incidentId}");
-                return ExecuteResult.Error;
+                var msg = $"wrong incident id: {incidentId}";
+                Logger.LogError(msg);
+                throw new ArgumentException(msg);
             }
 
             var request = new FacadeApi.Actions.IncidentActionRequestDto { IncidentId = incidentGuid };
-            var response = await _incidentFacadeApi.TakeoverAsync(request);
-            if (response.IsSuccess)
-            {
-                return ExecuteResult.Success;
-            }
 
-            Logger.LogError("Failed to takeover incident!");
-            return ExecuteResult.Error;
+            var response = await _incidentFacadeApi.TakeoverAsync(request);
+         
+            ApiResponse.ThrowExceptionIfFailed(response);
         }
 
-        public async Task<ExecuteResult> CloseIncident(string incidentId, string reason)
+        public async Task CloseIncident(string incidentId, string reason)
         {
             Logger.LogInformation("call Incident api CloseIncident Start");
             if (!Guid.TryParse(incidentId, out var incidentGuid))
             {
-                Logger.LogError($"wrong incident id: {incidentId}");
-                return ExecuteResult.Error;
+                var msg = $"wrong incident id: {incidentId}";
+                Logger.LogError(msg);
+                throw new ArgumentException(msg);
             }
 
             var request = new FacadeApi.Close.CloseIncidentRequestDto { IncidentId = incidentGuid, Reason = reason };
-            var response = await _incidentFacadeApi.CloseAsync(request);
-            if (response.IsSuccess)
-            {
-                return ExecuteResult.Success;
-            }
 
-            Logger.LogError("Failed to close incident!");
-            return ExecuteResult.Error;
+            var response = await _incidentFacadeApi.CloseAsync(request);
+
+            ApiResponse.ThrowExceptionIfFailed(response);
         }
 
-        public async Task<ExecuteResult> CompleteIncident(string incidentId)
+        public async Task CompleteIncident(string incidentId)
         {
             Logger.LogInformation("call Incident api CompleteIncident Start");
             if (!Guid.TryParse(incidentId, out var incidentGuid))
             {
-                Logger.LogError($"wrong incident id: {incidentId}");
-                return ExecuteResult.Error;
+                var msg = $"wrong incident id: {incidentId}";
+                Logger.LogError(msg);
+                throw new ArgumentException(msg);
             }
 
             var request = new FacadeApi.Actions.IncidentActionRequestDto { IncidentId = incidentGuid };
-            var response = await _incidentFacadeApi.CompleteAsync(request);
-            if (response.IsSuccess)
-            {
-                return ExecuteResult.Success;
-            }
 
-            Logger.LogError("Failed to complete incident!");
-            return ExecuteResult.Error;
+            var response = await _incidentFacadeApi.CompleteAsync(request);
+
+            ApiResponse.ThrowExceptionIfFailed(response);
         }
 
         public async Task<GetListResponseGto> GetActiveIncidentList()
         {
             Logger.LogInformation("call Incident api GetActiveIncidentList Start");
             var result = await _incidentMicroApi.GetListAsync();
-            if (!result.IsSuccess)
-            {
-                Logger.LogError($"call workflow design api GetActiveList error:{result.Messages?.FirstOrDefault()?.Message}");
-                return new GetListResponseGto { Status = ExecuteStatus.Error };
-            }
+            ApiResponse.ThrowExceptionIfFailed(result);
 
             var workflowIds = result.Value.List.Select(x => x.WorkflowId).ToArray();
             var request = new WorkflowSummaryRequestDto
@@ -231,13 +189,9 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 WorkflowIds = workflowIds
             };
             var workflowSummaries = await _workflowMicroApi.GetSummariesAsync(request);
-            if (!workflowSummaries.IsSuccess)
-            {
-                Logger.LogError($"call workflow design api GetWorkflowSummaries error:{result.Messages?.FirstOrDefault()?.Message}");
-                return new GetListResponseGto { Status = ExecuteStatus.Error };
-            }
+            ApiResponse.ThrowExceptionIfFailed(workflowSummaries);
 
-            var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], Gateway.Incident.Api.Incident.List.IncidentGto[]>(result.Value.List.ToArray());
+            var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], IncidentGto[]>(result.Value.List.ToArray());
             foreach (var activeIncident in activeIncidentsGto)
             {
                 foreach (var workflowSummary in workflowSummaries.Value.Summaries)
@@ -253,7 +207,6 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             return new GetListResponseGto
             {
-                Status = ExecuteStatus.Successful,
                 List = activeIncidentsGto.ToList()
             };
         }
@@ -286,7 +239,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return result;
         }
 
-        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        public async Task AddStepComment(AddStepCommentGto addStepCommentGto)
         {
             Logger.LogInformation(
                 $"call Incident api AddStepComment Start,workflowStepId:{addStepCommentGto.WorkflowStepId},comment:{addStepCommentGto.Comment}");
@@ -296,15 +249,10 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 WorkflowStepId = Guid.Parse(addStepCommentGto.WorkflowStepId),
                 Comment = addStepCommentGto.Comment
             };
+
             var response = await _workflowMicroApi.AddStepCommentAsync(requestDto);
 
-            if (response.IsSuccess)
-            {
-                return ExecuteResult.Success;
-            }
-
-            Logger.LogError("Failed to AddStepComment!");
-            return ExecuteResult.Error;
+            ApiResponse.ThrowExceptionIfFailed(response);
         }
     }
 }

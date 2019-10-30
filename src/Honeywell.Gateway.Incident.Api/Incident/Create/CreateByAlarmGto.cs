@@ -1,6 +1,5 @@
-﻿using System;
-using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
+﻿using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using System;
 
 namespace Honeywell.Gateway.Incident.Api.Incident.Create
 {

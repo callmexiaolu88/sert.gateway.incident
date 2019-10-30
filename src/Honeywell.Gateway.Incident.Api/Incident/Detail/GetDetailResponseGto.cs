@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Honeywell.Gateway.Incident.Api.Gtos;
 
 namespace Honeywell.Gateway.Incident.Api.Incident.Detail
 {
-    public class GetDetailResponseGto : ExecuteResult
+    public class GetDetailResponseGto 
     {
         public GetDetailResponseGto()
         {
-            Status = ExecuteStatus.Error;
             IncidentSteps = new List<IncidentStepGto>();
         }
 

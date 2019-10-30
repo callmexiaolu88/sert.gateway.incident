@@ -1,4 +1,4 @@
-﻿using Honeywell.Gateway.Incident.Api.Gtos;
+﻿using Microsoft.AspNetCore.Authentication;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
@@ -15,7 +15,10 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
             await ImportWorkflowDesign();
             
-            var devices = await IncidentGateWayApi.GetSiteDevicesAsync();
+            var getDeviceResponse = await IncidentGateWayApi.GetSiteDevicesAsync();
+            Assert.True(getDeviceResponse.IsSuccess);
+
+            var devices = getDeviceResponse.Value;
             Assert.NotNull(devices);
             Assert.True(devices.Length > 0);
 
@@ -24,11 +27,13 @@ namespace Incident.ApiTests.IncidentControllerTest
 
             var incidentId = await CreateIncident(device.DeviceId, device.DeviceType);
 
-            var incidentDetails = await IncidentGateWayApi.GetDetailAsync(incidentId);
-            Assert.True(incidentDetails.Status == ExecuteStatus.Successful);
-            Assert.Equal(incidentDetails.Id.ToString(), incidentId);
-            Assert.Equal(incidentDetails.DeviceDisplayName, device.DeviceDisplayName);
-            Assert.Equal(incidentDetails.DeviceLocation, device.DeviceLocation);
+            var getDetailResponse = await IncidentGateWayApi.GetDetailAsync(incidentId);
+
+            Assert.True(getDetailResponse.IsSuccess);
+            var detail = getDetailResponse.Value;
+            Assert.Equal(detail.Id.ToString(), incidentId);
+            Assert.Equal(detail.DeviceDisplayName, device.DeviceDisplayName);
+            Assert.Equal(detail.DeviceLocation, device.DeviceLocation);
 
             await DeleteIncident(incidentId);
             await DeleteWorkflowDesign();
