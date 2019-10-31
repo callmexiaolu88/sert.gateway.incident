@@ -2,9 +2,7 @@
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
-using Honeywell.Gateway.Incident.Api.Incident.List;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Incident.Api;
@@ -18,6 +16,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Honeywell.Facade.Services.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 
 #pragma warning disable CS0612 // Type or member is obsolete
@@ -54,7 +55,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             ApiResponse.ThrowExceptionIfFailed(response);
         }
 
-        public async Task<GetDetailResponseGto> GetIncidentById(string incidentId)
+        public async Task<IncidentDetailGto> GetIncidentById(string incidentId)
         {
             Logger.LogInformation("call Incident api GetIncidentById Start");
             if (!Guid.TryParse(incidentId, out var guid))
@@ -62,7 +63,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 throw new ArgumentException("incidentId is invalid", nameof(incidentId));
             }
 
-            var result = new GetDetailResponseGto();
+            var result = new IncidentDetailGto();
             var requestId = new[] { guid };
             var response = await _incidentFacadeApi.GetDetailsAsync(new GetDetailRequestDto { IncidentIds = requestId });
             ApiResponse.ThrowExceptionIfFailed(response);
@@ -177,7 +178,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             ApiResponse.ThrowExceptionIfFailed(response);
         }
 
-        public async Task<GetListResponseGto> GetActiveIncidentList()
+        public async Task<IncidentSummaryGto[]> GetActiveIncidentList()
         {
             Logger.LogInformation("call Incident api GetActiveIncidentList Start");
             var result = await _incidentMicroApi.GetListAsync();
@@ -191,7 +192,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var workflowSummaries = await _workflowMicroApi.GetSummariesAsync(request);
             ApiResponse.ThrowExceptionIfFailed(workflowSummaries);
 
-            var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], IncidentGto[]>(result.Value.List.ToArray());
+            var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], IncidentSummaryGto[]>(result.Value.List.ToArray());
             foreach (var activeIncident in activeIncidentsGto)
             {
                 foreach (var workflowSummary in workflowSummaries.Value.Summaries)
@@ -205,41 +206,33 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 }
             }
 
-            return new GetListResponseGto
-            {
-                List = activeIncidentsGto.ToList()
-            };
+            return activeIncidentsGto;
         }
 
-        public async Task<CreateIncidentResponseGto> CreateIncidentByAlarm(CreateByAlarmRequestGto request)
+        public async Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests)
         {
             Logger.LogInformation($"call Incident api {nameof(CreateIncidentByAlarm)} Start");
             var facadeRequest =
-                HoneyMapper.Map<CreateByAlarmRequestGto, FacadeApi.Create.CreateIncidentByAlarmRequestDto>(
-                    request);
-            var response = await _incidentFacadeApi.CreateByAlarmAsync(facadeRequest);
+                HoneyMapper.Map<CreateIncidentByAlarmRequestGto[], CreateIncidentByAlarmDto[]>(requests);
+
+            var response = await _incidentFacadeApi.CreateByAlarmAsync(new CreateIncidentByAlarmRequestDto{CreateIncidentDatas = facadeRequest});
             ApiResponse.ThrowExceptionIfFailed(response);
 
-            var responseValue = HoneyMapper
-                  .Map<FacadeApi.Create.CreateIncidentResponseDto, CreateIncidentResponseGto>(response.Value);
-            return responseValue;
+            return response.Value.IncidentIds.ToArray();
         }
 
-        public async Task<GetStatusByAlarmResponseGto> GetIncidentStatusByAlarm(
-            GetStatusByAlarmRequestGto request)
+        public async Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds)
         {
             Logger.LogInformation($"call Incident api {nameof(GetIncidentStatusByAlarm)} Start");
 
-            var incidentRequest =
-                HoneyMapper.Map<GetStatusByAlarmRequestGto, GetIncidentStatusRequestDto>(request);
-            var response = await _incidentMicroApi.GetStatusByTriggerAsync(incidentRequest);
+            var response = await _incidentMicroApi.GetStatusByTriggerAsync(new GetIncidentStatusRequestDto{TriggerIds = alarmIds});
             ApiResponse.ThrowExceptionIfFailed(response);
 
-            var result = HoneyMapper.Map<GetIncidentStatusResponseDto, GetStatusByAlarmResponseGto>(response.Value);
+            var result = HoneyMapper.Map<IncidentStatusDto[], IncidentStatusInfoGto[]>(response.Value.IncidentStatusInfos.ToArray());
             return result;
         }
 
-        public async Task AddStepComment(AddStepCommentGto addStepCommentGto)
+        public async Task AddStepComment(AddStepCommentRequestGto addStepCommentGto)
         {
             Logger.LogInformation(
                 $"call Incident api AddStepComment Start,workflowStepId:{addStepCommentGto.WorkflowStepId},comment:{addStepCommentGto.Comment}");

@@ -23,7 +23,7 @@ namespace Incident.ApiTests.IncidentControllerTest
 
             //assert
             Assert.True(activeIncidentList.IsSuccess);
-            Assert.NotNull(activeIncidentList.Value.List.FirstOrDefault(x => x.Id == Guid.Parse(incidentId)));
+            Assert.NotNull(activeIncidentList.Value.FirstOrDefault(x => x.Id == Guid.Parse(incidentId)));
 
             //clear
             await DeleteIncident(incidentId);

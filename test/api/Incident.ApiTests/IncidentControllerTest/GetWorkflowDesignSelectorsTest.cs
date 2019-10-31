@@ -21,7 +21,7 @@ namespace Incident.ApiTests.IncidentControllerTest
 
             //assert
             Assert.True(workflowDesignSelectors.IsSuccess);
-            Assert.True(workflowDesignSelectors.Value.List.Count== workflowDesigns.Result.Length);
+            Assert.True(workflowDesignSelectors.Value.Length == workflowDesigns.Result.Length);
             
             //clear
             await DeleteWorkflowDesign();

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.GateWay.Incident.Repository.WorkflowDesign;
 using Honeywell.Infra.Api.Abstract;
+using Honeywell.Infra.Core.Common.Exceptions;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.DownloadTemplate;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
@@ -57,7 +58,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var act = new Func<Task>(async () => await _incidentRepository.DeleteWorkflowDesigns(new[] {It.IsAny<Guid>().ToString()}));
 
             // assert
-            await Assert.ThrowsAsync<Exception>(act);
+            await Assert.ThrowsAsync<HoneywellException>(act);
         }
 
 
@@ -94,8 +95,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var result = await _incidentRepository.GetWorkflowDesignSelectors();
 
             // assert
-            Assert.True(1 == result.List.Count);
-            foreach (var item in result.List)
+            Assert.True(1 == result.Length);
+            foreach (var item in result)
             {
                 var expectedItem = selectorResponseDto.Selectors.FirstOrDefault(x => x.Id == item.Id);
                 Assert.NotNull(expectedItem);
@@ -111,10 +112,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _workflowDesignMicroApiMock.Setup(x => x.GetSummariesAsync()).ReturnsAsync(mockResponse);
 
             // action
-            var result = await _incidentRepository.GetAllActiveWorkflowDesigns();
+            var act = new Func<Task>(async () => await _incidentRepository.GetAllActiveWorkflowDesigns());
 
             // assert
-            Assert.True(0 == result.Length);
+            await Assert.ThrowsAsync<HoneywellException>(act);
         }
 
         [Fact]
@@ -157,10 +158,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 .ReturnsAsync(mockResponse);
 
             // action
-            var result = await _incidentRepository.GetWorkflowDesignById(Guid.NewGuid().ToString());
+            var act = new Func<Task>(async () => await _incidentRepository.GetWorkflowDesignById(Guid.NewGuid().ToString()));
 
             // assert
-            Assert.Null(result);
+            await Assert.ThrowsAsync<HoneywellException>(act);
         }
 
         [Fact]
@@ -239,10 +240,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
             //assert
             Assert.NotNull(workflowDesignIds.Result);
-            Assert.NotNull(workflowDesignIds.Result.WorkflowDesignIds);
-            Assert.True(workflowDesignIds.Result.WorkflowDesignIds.Any());
-            Assert.Equal(workflowDesignIds.Result.WorkflowDesignIds.First().WorkflowDesignReferenceId, summaryResponseDto.Summaries.First().Id);
-            Assert.Equal(workflowDesignIds.Result.WorkflowDesignIds.First().Name, summaryResponseDto.Summaries.First().Name);
+            Assert.NotNull(workflowDesignIds.Result);
+            Assert.True(workflowDesignIds.Result.Any());
+            Assert.Equal(workflowDesignIds.Result.First().WorkflowDesignReferenceId, summaryResponseDto.Summaries.First().Id);
+            Assert.Equal(workflowDesignIds.Result.First().Name, summaryResponseDto.Summaries.First().Name);
         }
 
         [Fact]
@@ -251,11 +252,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var workflowGuid = Guid.NewGuid();
             var setGuid = Guid.NewGuid();
-
-            var request = new GetDetailsRequestGto
-            {
-                Ids = new[] { workflowGuid }
-            };
 
             var workflowDesignResponseDto = new WorkflowDesignResponseDto
             {
@@ -294,24 +290,24 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 .ReturnsAsync(workflowDesignResponseDto);
 
             //act
-            var workflowDesigns = _incidentRepository.GetWorkflowDesignDetails(request);
+            var workflowDesigns = _incidentRepository.GetWorkflowDesignDetails(new[] { workflowGuid });
 
             //assert
             Assert.NotNull(workflowDesigns.Result);
-            Assert.NotNull(workflowDesigns.Result.WorkflowDesigns);
-            Assert.True(workflowDesigns.Result.WorkflowDesigns.Any());
+            Assert.NotNull(workflowDesigns.Result);
+            Assert.True(workflowDesigns.Result.Any());
             Assert.Equal(workflowGuid, workflowDesignResponseDto.Details.First().Id);
-            Assert.Equal(workflowDesignResponseDto.Details.First().Id, workflowDesigns.Result.WorkflowDesigns.First().Id);
-            Assert.Equal(workflowDesignResponseDto.Details.First().Name, workflowDesigns.Result.WorkflowDesigns.First().Name);
-            Assert.Equal(workflowDesignResponseDto.Details.First().Description, workflowDesigns.Result.WorkflowDesigns.First().Description);
-            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].Id, workflowDesigns.Result.WorkflowDesigns.First().Steps[0].Id);
-            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].HelpText, workflowDesigns.Result.WorkflowDesigns.First().Steps[0].HelpText);
-            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].Instruction, workflowDesigns.Result.WorkflowDesigns.First().Steps[0].Instruction);
-            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].IsOptional, workflowDesigns.Result.WorkflowDesigns.First().Steps[0].IsOptional);
-            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].Id, workflowDesigns.Result.WorkflowDesigns.First().Steps[1].Id);
-            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].HelpText, workflowDesigns.Result.WorkflowDesigns.First().Steps[1].HelpText);
-            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].Instruction, workflowDesigns.Result.WorkflowDesigns.First().Steps[1].Instruction);
-            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].IsOptional, workflowDesigns.Result.WorkflowDesigns.First().Steps[1].IsOptional);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Id, workflowDesigns.Result.First().Id);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Name, workflowDesigns.Result.First().Name);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Description, workflowDesigns.Result.First().Description);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].Id, workflowDesigns.Result.First().Steps[0].Id);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].HelpText, workflowDesigns.Result.First().Steps[0].HelpText);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].Instruction, workflowDesigns.Result.First().Steps[0].Instruction);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[0].IsOptional, workflowDesigns.Result.First().Steps[0].IsOptional);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].Id, workflowDesigns.Result.First().Steps[1].Id);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].HelpText, workflowDesigns.Result.First().Steps[1].HelpText);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].Instruction, workflowDesigns.Result.First().Steps[1].Instruction);
+            Assert.Equal(workflowDesignResponseDto.Details.First().Steps[1].IsOptional, workflowDesigns.Result.First().Steps[1].IsOptional);
         }
 
 

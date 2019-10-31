@@ -1,9 +1,6 @@
-﻿using Honeywell.Gateway.Incident.Api.WorkflowDesign;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
+﻿using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core;
 using Honeywell.Infra.Core.Ddd.Application;
@@ -18,6 +15,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 
 namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 {
@@ -52,6 +51,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
                 {
                     var message = new MessageInfo(error, true);
                     result.Messages.Add(message);
+                    result.MakeFrom();
                 }
             }
 
@@ -75,19 +75,17 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
             return HoneyMapper.Map<WorkflowDesignSummaryDto[], WorkflowDesignSummaryGto[]>(result.Value.Summaries.ToArray());
         }
 
-        public async Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
+        public async Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectors()
         {
             var result = await _workflowDesignApi.GetSelectorAsync();
 
             ApiResponse.ThrowExceptionIfFailed(result);
 
-            return new WorkflowDesignSelectorListGto
-            {
-                List = HoneyMapper.Map<WorkflowDesignSelectorDto[], WorkflowDesignSelectorGto[]>(result.Value.Selectors.ToArray()).ToList()
-            };
+            return HoneyMapper
+                .Map<WorkflowDesignSelectorDto[], WorkflowDesignSelectorGto[]>(result.Value.Selectors.ToArray());
         }
 
-        public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
+        public async Task<WorkflowDesignDetailGto> GetWorkflowDesignById(string workflowDesignId)
         {
             var requestId = new[] { Guid.Parse(workflowDesignId) };
 
@@ -95,7 +93,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 
             ApiResponse.ThrowExceptionIfFailed(result);
 
-            var workflowDesignList = HoneyMapper.Map<WorkflowDesignDto[], WorkflowDesignGto[]>(result.Value.Details.ToArray());
+            var workflowDesignList = HoneyMapper.Map<WorkflowDesignDto[], WorkflowDesignDetailGto[]>(result.Value.Details.ToArray());
 
             return workflowDesignList.FirstOrDefault();
         }
@@ -126,7 +124,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
             return workflowDownloadTemplateGto;
         }
 
-        public async Task<GetIdsResponseGto> GetWorkflowDesignIds()
+        public async Task<WorkflowDesignIdGto[]> GetWorkflowDesignIds()
         {
             Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignIds)} Start");
 
@@ -134,20 +132,19 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
             ApiResponse.ThrowExceptionIfFailed(response);
 
             var result = HoneyMapper
-                .Map<WorkflowDesignSummaryResponseDto, GetIdsResponseGto>(response.Value);
+                .Map<WorkflowDesignSummaryDto[], WorkflowDesignIdGto[]>(response.Value.Summaries.ToArray());
             return result;
         }
 
-        public async Task<GetDetailsResponseGto> GetWorkflowDesignDetails(GetDetailsRequestGto request)
+        public async Task<WorkflowDesignDetailGto[]> GetWorkflowDesignDetails(Guid[] workflowDesignIds)
         {
             Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignDetails)} Start");
 
-            var workflowDesignRequest =
-                HoneyMapper.Map<GetDetailsRequestGto, WorkflowDesignDetailsRequestDto>(request);
+            var workflowDesignRequest = new WorkflowDesignDetailsRequestDto {Ids = workflowDesignIds};
             var response = await _workflowDesignApi.GetDetailsAsync(workflowDesignRequest);
             ApiResponse.ThrowExceptionIfFailed(response);
 
-            var result = HoneyMapper.Map<WorkflowDesignResponseDto, GetDetailsResponseGto>(response.Value);
+            var result = HoneyMapper.Map<WorkflowDesignDto[], WorkflowDesignDetailGto[]>(response.Value.Details.ToArray());
             return result;
         }
     }

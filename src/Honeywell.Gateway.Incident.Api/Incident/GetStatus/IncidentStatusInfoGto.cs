@@ -1,5 +1,5 @@
 ﻿using System;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 
 namespace Honeywell.Gateway.Incident.Api.Incident.GetStatus
 {

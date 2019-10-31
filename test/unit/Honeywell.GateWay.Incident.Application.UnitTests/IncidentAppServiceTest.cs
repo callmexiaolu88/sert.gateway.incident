@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
-using Honeywell.Gateway.Incident.Api.Incident.List;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Api.Abstract;
+using Microsoft.Extensions.Localization.Internal;
 using Moq;
 using Xunit;
 
@@ -34,7 +35,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void GetIncidentById_EmptyDevice_Succeed()
         {
             //arrange
-            var mockIncident = new GetDetailResponseGto
+            var mockIncident = new IncidentDetailGto
             {
                 Description = "Test Incident Description",
             };
@@ -72,7 +73,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //arrange
             var mockDeviceResult = MockDeviceEntities();
             var device = mockDeviceResult.Config[0];
-            var mockIncident = new GetDetailResponseGto
+            var mockIncident = new IncidentDetailGto
             {
                 Description = "Test Incident Description",
                 DeviceId = device.Identifiers.Id,
@@ -150,27 +151,25 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void GetActiveIncidentList_Test()
         {
 
-            var mockActiveIncidentGto = new IncidentGto
+            var mockActiveIncidentGto = new IncidentSummaryGto
             {
                 WorkflowId = Guid.NewGuid(),
                 WorkflowDesignName = "test"
             };
-            var mockActiveIncidentListGto = new GetListResponseGto();
-            mockActiveIncidentListGto.List.Add(mockActiveIncidentGto);
 
             _mockIncidentRepository.Setup(x => x.GetActiveIncidentList())
-                .ReturnsAsync(mockActiveIncidentListGto);
+                .ReturnsAsync(new[] {mockActiveIncidentGto});
             var result = _testObj.GetListAsync();
             Assert.NotNull(result);
-            Assert.True(result.Result.Value.List.Count == 1);
-            Assert.True(result.Result.Value.List[0].WorkflowId == mockActiveIncidentGto.WorkflowId);
-            Assert.True(result.Result.Value.List[0].WorkflowDesignName == mockActiveIncidentGto.WorkflowDesignName);
+            Assert.True(result.Result.Value.Length == 1);
+            Assert.True(result.Result.Value[0].WorkflowId == mockActiveIncidentGto.WorkflowId);
+            Assert.True(result.Result.Value[0].WorkflowDesignName == mockActiveIncidentGto.WorkflowDesignName);
         }
 
         [Fact]
         public void AddStepComment_Successful()
         {
-            AddStepCommentGto addStepComment = new AddStepCommentGto()
+            var addStepComment = new AddStepCommentRequestGto()
                 {WorkflowStepId = It.IsAny<string>(), Comment = It.IsAny<string>()};
 
             _mockIncidentRepository.Setup(x => x.AddStepComment(addStepComment));
@@ -204,33 +203,29 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             //Arrange
             var id = Guid.NewGuid();
-            var mockResponse = new CreateIncidentResponseGto
-            {
-                IncidentIds = new List<Guid>() {id}
-            };
-            _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateByAlarmRequestGto>()))
-                .ReturnsAsync(mockResponse);
+            _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto[]>()))
+                .ReturnsAsync(new []{id});
 
             //Act
-            var result = _testObj.CreateByAlarmAsync(It.IsAny<CreateByAlarmRequestGto>());
+            var result = _testObj.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestGto[]>());
 
             //Assert
             Assert.NotNull(result);
             Assert.NotNull(result.Result.Value);
             Assert.True(result.Result.IsSuccess);
-            Assert.True(result.Result.Value.IncidentIds.Any());
-            Assert.True(result.Result.Value.IncidentIds.First() == id);
+            Assert.True(result.Result.Value.Any());
+            Assert.True(result.Result.Value.First() == id);
         }
 
         [Fact]
         public void CreateByAlarm_ThrowException()
         {
             //Arrange
-            _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateByAlarmRequestGto>()))
+            _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto[]>()))
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.CreateByAlarmAsync(It.IsAny<CreateByAlarmRequestGto>());
+            var result = _testObj.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestGto[]>());
 
             //Assert
             Assert.NotNull(result);
@@ -243,43 +238,41 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //Arrange
             var incidentId = Guid.NewGuid();
             var alarmId = Guid.NewGuid().ToString();
-            var mockResponse = new GetStatusByAlarmResponseGto
+            var mockResponse = new[]
             {
-                IncidentStatusInfos = new List<IncidentStatusInfoGto>
+                new IncidentStatusInfoGto
                 {
-                    new IncidentStatusInfoGto
-                    {
-                        IncidentId = incidentId,
-                        AlarmId = alarmId,
-                        Status = IncidentStatus.Active
-                    }
+                    IncidentId = incidentId,
+                    AlarmId = alarmId,
+                    Status = IncidentStatus.Active
                 }
             };
-            _mockIncidentRepository.Setup(x => x.GetIncidentStatusByAlarm(It.IsAny<GetStatusByAlarmRequestGto>()))
+
+            _mockIncidentRepository.Setup(x => x.GetIncidentStatusByAlarm(It.IsAny<string[]>()))
                 .ReturnsAsync(mockResponse);
 
             //Act
-            var result = _testObj.GetStatusByAlarmAsync(It.IsAny<GetStatusByAlarmRequestGto>());
+            var result = _testObj.GetStatusByAlarmAsync(It.IsAny<string[]>());
 
             //Assert
             Assert.NotNull(result);
             Assert.NotNull(result.Result.Value);
             Assert.True(result.Result.IsSuccess);
-            Assert.True(result.Result.Value.IncidentStatusInfos.Any());
-            Assert.True(result.Result.Value.IncidentStatusInfos.First().IncidentId == incidentId);
-            Assert.True(result.Result.Value.IncidentStatusInfos.First().AlarmId == alarmId);
-            Assert.True(result.Result.Value.IncidentStatusInfos.First().Status == IncidentStatus.Active);
+            Assert.True(result.Result.Value.Any());
+            Assert.True(result.Result.Value.First().IncidentId == incidentId);
+            Assert.True(result.Result.Value.First().AlarmId == alarmId);
+            Assert.True(result.Result.Value.First().Status == IncidentStatus.Active);
         }
 
         [Fact]
         public void GetIncidentStatusWithAlarmId_ThrowException()
         {
             //Arrange
-            _mockIncidentRepository.Setup(x => x.GetIncidentStatusByAlarm(It.IsAny<GetStatusByAlarmRequestGto>()))
+            _mockIncidentRepository.Setup(x => x.GetIncidentStatusByAlarm(It.IsAny<string[]>()))
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.GetStatusByAlarmAsync(It.IsAny<GetStatusByAlarmRequestGto>());
+            var result = _testObj.GetStatusByAlarmAsync(It.IsAny<string[]>());
 
             //Assert
             Assert.NotNull(result);

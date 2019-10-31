@@ -1,9 +1,9 @@
 ﻿using System;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 
-namespace Honeywell.Gateway.Incident.Api.Incident.List
+namespace Honeywell.Gateway.Incident.Api.Incident.GetList
 {
-    public class IncidentGto
+    public class IncidentSummaryGto
     {
         public Guid Id { get; set; }
 

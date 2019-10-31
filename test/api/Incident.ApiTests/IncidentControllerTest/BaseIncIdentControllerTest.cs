@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
 using Honeywell.Infra.Api.Abstract;
 using Microsoft.Extensions.DependencyInjection;
@@ -76,31 +76,26 @@ namespace Incident.ApiTests.IncidentControllerTest
             return result.Value;
         }
 
-        protected async Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(string alarmId = null)
+        protected async Task<ApiResponse<Guid[]>> CreateIncidentByAlarm(string alarmId = null)
         {
             alarmId = string.IsNullOrEmpty(alarmId) ? Guid.NewGuid().ToString() : alarmId;
             var workflowDesignId = GetFirstWorkflowDesignId();
-            var request = new CreateByAlarmRequestGto
+            var request = new CreateIncidentByAlarmRequestGto
             {
-                CreateDatas = new[]
+                WorkflowDesignReferenceId = new Guid(workflowDesignId),
+                Priority = IncidentPriority.High,
+                Description = "incident description",
+                DeviceId = Guid.NewGuid().ToString(),
+                DeviceType = "Door",
+                AlarmId = alarmId,
+                AlarmData = new AlarmData
                 {
-                    new CreateByAlarmGto
-                    {
-                        WorkflowDesignReferenceId = new Guid(workflowDesignId),
-                        Priority = IncidentPriority.High,
-                        Description = "incident description",
-                        DeviceId = Guid.NewGuid().ToString(),
-                        DeviceType = "Door",
-                        AlarmId = alarmId,
-                        AlarmData = new AlarmData
-                        {
-                            AlarmType = "AlarmType",
-                            Description = "alarm description"
-                        }
-                    }
+                    AlarmType = "AlarmType",
+                    Description = "alarm description"
                 }
             };
-            var result = await IncidentGateWayApi.CreateByAlarmAsync(request);
+
+            var result = await IncidentGateWayApi.CreateByAlarmAsync(new[] {request});
             Assert.NotNull(result);
             return result;
         }

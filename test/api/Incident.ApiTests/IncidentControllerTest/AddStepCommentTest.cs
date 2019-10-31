@@ -22,7 +22,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             var incidentDetails = await IncidentGateWayApi.GetDetailAsync(incidentId);
             var workflowStepId = incidentDetails.Value.IncidentSteps[0].Id;
             string commentRemark = Guid.NewGuid().ToString();
-            var addStepCommentGto = new AddStepCommentGto()
+            var addStepCommentGto = new AddStepCommentRequestGto()
             {
                 WorkflowStepId = workflowStepId.ToString(),
                 Comment = $"this is comment.|{commentRemark}"

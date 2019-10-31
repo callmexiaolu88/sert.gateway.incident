@@ -3,7 +3,6 @@ using Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.GateWay.Incident.Repository.Incident;
 using Honeywell.Infra.Api.Abstract;
@@ -23,10 +22,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Infra.Core.Common.Exceptions;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
+using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
 
 #pragma warning disable CS0612 // Type or member is obsolete
 
@@ -84,7 +86,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var act = new Func<Task>(async () => await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId.ToString(), true));
 
             //assert
-            await Assert.ThrowsAsync<Exception>(act);
+            await Assert.ThrowsAsync<HoneywellException>(act);
         }
 
         [Fact]
@@ -141,7 +143,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var act = new Func<Task>(async () => await _incidentRepository.GetIncidentById(incidentId));
 
             //assert
-            await Assert.ThrowsAsync<Exception>(act);
+            await Assert.ThrowsAsync<HoneywellException>(act);
         }
 
         [Fact]
@@ -228,7 +230,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var act = new Func<Task>(async () => await _incidentRepository.RespondIncident(incidentId.ToString()));
 
             //assert
-            await Assert.ThrowsAsync<Exception>(act);
+            await Assert.ThrowsAsync<HoneywellException>(act);
         }
 
         [Fact]
@@ -279,7 +281,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var act = new Func<Task>(async () => await _incidentRepository.TakeoverIncident(incidentId.ToString()));
 
             //assert
-            await Assert.ThrowsAsync<Exception>(act);
+            await Assert.ThrowsAsync<HoneywellException>(act);
         }
 
         [Fact]
@@ -331,7 +333,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var act = new Func<Task>(async () => await _incidentRepository.CloseIncident(incidentId.ToString(), reason));
 
             //assert
-            await Assert.ThrowsAsync<Exception>(act);
+            await Assert.ThrowsAsync<HoneywellException>(act);
         }
 
         [Fact]
@@ -385,8 +387,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //assert
             Assert.NotNull(response);
             Assert.NotNull(response.Result);
-            Assert.True(1 == response.Result.List.Count);
-            var activeIncidentGto = response.Result.List[0];
+            Assert.True(1 == response.Result.Length);
+            var activeIncidentGto = response.Result[0];
             Assert.Equal(workflowId, activeIncidentGto.WorkflowId);
             Assert.Equal(mockWorkflowSummary.WorkflowDesignName, activeIncidentGto.WorkflowDesignName);
             Assert.Equal(mockWorkflowSummary.TotalSteps, activeIncidentGto.TotalSteps);
@@ -408,7 +410,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var act = new Func<Task>(async () => await _incidentRepository.GetActiveIncidentList());
 
             //assert
-            await Assert.ThrowsAsync<Exception>(act);
+            await Assert.ThrowsAsync<HoneywellException>(act);
         }
 
         [Fact]
@@ -417,24 +419,18 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var workflowDesignReferenceId = Guid.NewGuid();
 
-            var request = new CreateByAlarmRequestGto
+            var request = new CreateIncidentByAlarmRequestGto
             {
-                CreateDatas = new[]
+                WorkflowDesignReferenceId = workflowDesignReferenceId,
+                Priority = IncidentPriority.High,
+                Description = "incident description",
+                DeviceId = Guid.NewGuid().ToString(),
+                DeviceType = "Door",
+                AlarmId = Guid.NewGuid().ToString(),
+                AlarmData = new IncidentGTO.Create.AlarmData
                 {
-                    new CreateByAlarmGto
-                    {
-                        WorkflowDesignReferenceId = workflowDesignReferenceId,
-                        Priority =  IncidentGTO.Detail.IncidentPriority.High,
-                        Description = "incident description",
-                        DeviceId = Guid.NewGuid().ToString(),
-                        DeviceType = "Door",
-                        AlarmId = Guid.NewGuid().ToString(),
-                        AlarmData = new IncidentGTO.Create.AlarmData
-                        {
-                            AlarmType = "AlarmType",
-                            Description = "alarm description"
-                        }
-                    }
+                    AlarmType = "AlarmType",
+                    Description = "alarm description"
                 }
             };
 
@@ -450,13 +446,12 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 .ReturnsAsync(createIncidentResponse);
 
             //act
-            var incidentIds = await _incidentRepository.CreateIncidentByAlarm(request);
+            var incidentIds = await _incidentRepository.CreateIncidentByAlarm(new[] {request});
 
             //assert
             Assert.NotNull(incidentIds);
-            Assert.NotNull(incidentIds.IncidentIds);
-            Assert.True(incidentIds.IncidentIds.Any());
-            Assert.Equal(createIncidentResponse.IncidentIds.First(), incidentIds.IncidentIds.First());
+            Assert.True(incidentIds.Any());
+            Assert.Equal(createIncidentResponse.IncidentIds.First(), incidentIds.First());
         }
 
         [Fact]
@@ -465,11 +460,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var alarmId = Guid.NewGuid().ToString();
             var incidentId = Guid.NewGuid();
-
-            var request = new GetStatusByAlarmRequestGto
-            {
-                AlarmIds = new[] { alarmId }
-            };
 
             var getIncidentStatusResponse = new GetIncidentStatusResponseDto
             {
@@ -488,15 +478,15 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 .ReturnsAsync(getIncidentStatusResponse);
 
             //act
-            var statusWithAlarmId = await _incidentRepository.GetIncidentStatusByAlarm(request);
+            var statusWithAlarmId = await _incidentRepository.GetIncidentStatusByAlarm(new[] { alarmId });
 
             //assert
             Assert.NotNull(statusWithAlarmId);
-            Assert.NotNull(statusWithAlarmId.IncidentStatusInfos);
-            Assert.True(statusWithAlarmId.IncidentStatusInfos.Any());
-            Assert.Equal(getIncidentStatusResponse.IncidentStatusInfos.First().TriggerId, statusWithAlarmId.IncidentStatusInfos.First().AlarmId);
-            Assert.Equal(IncidentStatus.Active, statusWithAlarmId.IncidentStatusInfos.First().Status);
-            Assert.Equal(incidentId, statusWithAlarmId.IncidentStatusInfos.First().IncidentId);
+            Assert.NotNull(statusWithAlarmId);
+            Assert.True(statusWithAlarmId.Any());
+            Assert.Equal(getIncidentStatusResponse.IncidentStatusInfos.First().TriggerId, statusWithAlarmId.First().AlarmId);
+            Assert.Equal(IncidentStatus.Active, statusWithAlarmId.First().Status);
+            Assert.Equal(incidentId, statusWithAlarmId.First().IncidentId);
         }
 
         [Fact]
@@ -509,7 +499,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 .ReturnsAsync(response);
 
             //act
-            var addStepCommentGto = new AddStepCommentGto()
+            var addStepCommentGto = new AddStepCommentRequestGto()
             {
                 WorkflowStepId = Guid.NewGuid().ToString(),
                 Comment = "this is comment"

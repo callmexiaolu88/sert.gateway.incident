@@ -1,11 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.GateWay.Incident.Repository
@@ -20,16 +21,16 @@ namespace Honeywell.GateWay.Incident.Repository
 
         Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns();
 
-        Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors();
+        Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectors();
 
-        Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
+        Task<WorkflowDesignDetailGto> GetWorkflowDesignById(string workflowDesignId);
 
         Task<WorkflowTemplateGto> DownloadWorkflowTemplate();
 
         Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds);
 
-        Task<GetIdsResponseGto> GetWorkflowDesignIds();
+        Task<WorkflowDesignIdGto[]> GetWorkflowDesignIds();
 
-        Task<GetDetailsResponseGto> GetWorkflowDesignDetails(GetDetailsRequestGto request);
+        Task<WorkflowDesignDetailGto[]> GetWorkflowDesignDetails(Guid[] workflowDesignIds);
     }
 }

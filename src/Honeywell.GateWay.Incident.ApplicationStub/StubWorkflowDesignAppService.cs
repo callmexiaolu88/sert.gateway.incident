@@ -5,11 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Common.Exceptions;
@@ -38,15 +38,15 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return await StubDataAsync<WorkflowDesignSummaryGto[]>();
         }
 
-        public async Task<ApiResponse<WorkflowDesignSelectorListGto>> GetSelectorsAsync()
+        public async Task<ApiResponse<WorkflowDesignSelectorGto[]>> GetSelectorsAsync()
         {
             var result = await StubDataAsync<List<WorkflowDesignSelectorGto>>();
-            return new WorkflowDesignSelectorListGto { List = result};
+            return result.ToArray();
         }
 
-        public async Task<ApiResponse<WorkflowDesignGto>> GetByIdAsync(string workflowDesignId)
+        public async Task<ApiResponse<WorkflowDesignDetailGto>> GetDetailByIdAsync(string workflowDesignId)
         {
-            return (await StubDataAsync<WorkflowDesignGto[]>()).FirstOrDefault(
+            return (await StubDataAsync<WorkflowDesignDetailGto[]>()).FirstOrDefault(
                 m => m.Id == Guid.Parse(workflowDesignId));
         }
 
@@ -64,33 +64,39 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return ExportTemplate(resourceName, fileName);
         }
 
-        public async Task<ApiResponse<GetDetailsResponseGto>> GetDetailsAsync(GetDetailsRequestGto request)
+        public async Task<ApiResponse<WorkflowDesignDetailGto[]>> GetDetailsAsync(Guid[] workflowDesignIds)
         {
             try
             {
-                var response = new GetDetailsResponseGto();
-                foreach (var id in request.Ids)
+                var result = new List<WorkflowDesignDetailGto>();
+                foreach (var id in workflowDesignIds)
                 {
-                    var workflowDesigns = (await StubDataAsync<WorkflowDesignGto[]>()).FirstOrDefault(m => m.Id == id);
-                    if (workflowDesigns != null) { response.WorkflowDesigns.Add(workflowDesigns); }
+                    var workflowDesigns = (await StubDataAsync<WorkflowDesignDetailGto[]>()).FirstOrDefault(m => m.Id == id);
+                    if (workflowDesigns != null)
+                    {
+                        result.Add(workflowDesigns);
+                    }
+                    else
+                    {
+                        throw new Exception($"cannot found the workflow design by id:{id}");
+                    }
 
-                    throw new Exception($"cannot found the workflow design by id:{id}");
                 }
 
-                return response;
+                return result.ToArray();
             }
             catch (Exception ex)
             {
-                return ApiResponse.CreateFailed(ex).To<GetDetailsResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<WorkflowDesignDetailGto[]>();
             }
         }
 
-        public async Task<ApiResponse<GetIdsResponseGto>> GetIdsAsync()
+        public async Task<ApiResponse<WorkflowDesignIdGto[]>> GetIdsAsync()
         {
             try
             {
-                var response = new GetIdsResponseGto();
-                var workflowDesigns = (await StubDataAsync<WorkflowDesignGto[]>()).Select(w => new WorkflowDesignIdGto
+                var result = new List<WorkflowDesignIdGto>();
+                var workflowDesigns = (await StubDataAsync<WorkflowDesignDetailGto[]>()).Select(w => new WorkflowDesignIdGto
                 {
                     WorkflowDesignReferenceId = w.Id,
                     Name = w.Name
@@ -98,15 +104,15 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 
                 if (workflowDesigns.Any())
                 {
-                    response.WorkflowDesignIds = workflowDesigns;
-                    return response;
+                    result.AddRange(workflowDesigns);
+                    return result.ToArray();
                 }
 
                 throw new Exception("cannot found any workflow design");
             }
             catch (Exception ex)
             {
-                return ApiResponse.CreateFailed(ex).To<GetIdsResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<WorkflowDesignIdGto[]>();
             }
         }
 

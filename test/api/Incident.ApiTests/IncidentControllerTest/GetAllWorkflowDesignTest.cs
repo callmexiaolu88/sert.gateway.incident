@@ -29,8 +29,8 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.NotNull(workflowDesigns);
             Assert.True(workflowDesigns.IsSuccess);
             Assert.NotNull(workflowDesigns.Value);
-            Assert.NotNull(workflowDesigns.Value.WorkflowDesignIds);
-            Assert.True(workflowDesigns.Value.WorkflowDesignIds.Any());
+            Assert.NotNull(workflowDesigns.Value);
+            Assert.True(workflowDesigns.Value.Any());
             await DeleteWorkflowDesign();
         }
     }

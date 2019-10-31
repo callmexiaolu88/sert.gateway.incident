@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Honeywell.Gateway.Incident.Api.Incident.Detail
+namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
 {
-    public class GetDetailResponseGto 
+    public class IncidentDetailGto 
     {
-        public GetDetailResponseGto()
+        public IncidentDetailGto()
         {
             IncidentSteps = new List<IncidentStepGto>();
         }

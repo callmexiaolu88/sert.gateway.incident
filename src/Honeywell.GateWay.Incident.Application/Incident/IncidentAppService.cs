@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
-using Honeywell.Gateway.Incident.Api.Incident.List;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Api.Abstract;
@@ -44,7 +44,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
-        public async Task<ApiResponse<GetDetailResponseGto>> GetDetailAsync(string incidentId)
+        public async Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<GetDetailResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<IncidentDetailGto>();
             }
         }
 
@@ -169,7 +169,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
-        public async Task<ApiResponse<GetListResponseGto>> GetListAsync()
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync()
         {
             try
             {
@@ -178,39 +178,37 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<GetListResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<IncidentSummaryGto[]>();
             }
         }
 
-        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarmAsync(
-            CreateByAlarmRequestGto request)
+        public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests)
         {
             try
             {
-                return await _incidentRepository.CreateIncidentByAlarm(request);
+                return await _incidentRepository.CreateIncidentByAlarm(requests);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<CreateIncidentResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<Guid[]>();
             }
         }
 
-        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarmAsync(
-            GetStatusByAlarmRequestGto request)
+        public async Task<ApiResponse<IncidentStatusInfoGto[]>> GetStatusByAlarmAsync(string[] alarmIds)
         {
             try
             {
-                return await _incidentRepository.GetIncidentStatusByAlarm(request);
+                return await _incidentRepository.GetIncidentStatusByAlarm(alarmIds);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<GetStatusByAlarmResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<IncidentStatusInfoGto[]>();
             }
         }
 
-        public async Task<ApiResponse> AddStepCommentAsync(AddStepCommentGto addStepCommentGto)
+        public async Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto)
         {
             try
             {

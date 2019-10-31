@@ -1,13 +1,14 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.Infra.Api.Abstract;
 using Microsoft.AspNetCore.Mvc;
@@ -54,16 +55,16 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<WorkflowDesignSelectorListGto>> GetSelectorsAsync()
+        public async Task<ApiResponse<WorkflowDesignSelectorGto[]>> GetSelectorsAsync()
         {
             var workflowDesignSelectorList = await _workflowDesignAppService.GetSelectorsAsync();
             return workflowDesignSelectorList;
         }
 
         [HttpPost]
-        public async Task<ApiResponse<WorkflowDesignGto>> GetByIdAsync(string workflowDesignId)
+        public async Task<ApiResponse<WorkflowDesignDetailGto>> GetDetailByIdAsync(string workflowDesignId)
         {
-            var workflowDetail = await _workflowDesignAppService.GetByIdAsync(workflowDesignId);
+            var workflowDetail = await _workflowDesignAppService.GetDetailByIdAsync(workflowDesignId);
             return workflowDetail;
         }
 
@@ -93,16 +94,16 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetIdsResponseGto>> GetIdsAsync()
+        public async Task<ApiResponse<WorkflowDesignIdGto[]>> GetIdsAsync()
         {
             var result = await _workflowDesignAppService.GetIdsAsync();
             return result;
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetDetailsResponseGto>> GetDetailsAsync(GetDetailsRequestGto request)
+        public async Task<ApiResponse<WorkflowDesignDetailGto[]>> GetDetailsAsync(Guid[] workflowDesignIds)
         {
-            var result = await _workflowDesignAppService.GetDetailsAsync(request);
+            var result = await _workflowDesignAppService.GetDetailsAsync(workflowDesignIds);
             return result;
         }
     }

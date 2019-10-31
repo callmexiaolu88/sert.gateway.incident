@@ -4,13 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Castle.Components.DictionaryAdapter;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
-using Honeywell.Gateway.Incident.Api.Incident.List;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Common.Exceptions;
@@ -26,9 +28,9 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         }
 
 
-        public async Task<ApiResponse<GetDetailResponseGto>> GetDetailAsync(string incidentId)
+        public async Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId)
         {
-            var incidentInfo = (await StubDataAsync<GetDetailResponseGto[]>()).First(m => m.Id == Guid.Parse(incidentId));
+            var incidentInfo = (await StubDataAsync<IncidentDetailGto[]>()).First(m => m.Id == Guid.Parse(incidentId));
             if (string.IsNullOrEmpty(incidentInfo.DeviceId))
             {
                 return incidentInfo;
@@ -48,10 +50,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 
         public async Task<ApiResponse<string>> CreateAsync(CreateIncidentRequestGto request)
         {
-            var workflowName = (await StubDataAsync<WorkflowDesignGto[]>())
+            var workflowName = (await StubDataAsync<WorkflowDesignDetailGto[]>())
                 .FirstOrDefault(m => m.Id == Guid.Parse(request.WorkflowDesignReferenceId))
                 ?.Name;
-            var incident = StubData<GetDetailResponseGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
+            var incident = StubData<IncidentDetailGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
             if (incident != null) return incident.Id.ToString();
             throw new Exception("cannot found the incident");
         }
@@ -87,45 +89,51 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return ResponseRequest();
         }
 
-        public async Task<ApiResponse<GetListResponseGto>> GetListAsync()
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync()
         {
-            var result = await StubDataAsync<List<IncidentGto>>();
-            return new GetListResponseGto {List = result};
+            var result = await StubDataAsync<List<IncidentSummaryGto>>();
+            return result.ToArray();
         }
 
-        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarmAsync(
-            CreateByAlarmRequestGto request)
+        public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(
+            CreateIncidentByAlarmRequestGto[] requests)
         {
             try
             {
-                var response = new CreateIncidentResponseGto();
-                foreach (var incidentData in request.CreateDatas)
+                var result = new List<Guid>();
+                foreach (var request in requests)
                 {
-                    var workflowName = (await StubDataAsync<WorkflowDesignGto[]>())
-                        .FirstOrDefault(m => m.Id == incidentData.WorkflowDesignReferenceId)?.Name;
+                    var workflowName = (await StubDataAsync<WorkflowDesignDetailGto[]>())
+                        .FirstOrDefault(m => m.Id == request.WorkflowDesignReferenceId)?.Name;
 
-                    var incident = (await StubDataAsync<GetDetailResponseGto[]>()).FirstOrDefault(m => m.WorkflowName == workflowName);
-                    if (incident != null) response.IncidentIds.Add(incident.Id);
-                    throw new Exception("cannot found the incident");
+                    var incident = (await StubDataAsync<IncidentDetailGto[]>()).FirstOrDefault(m => m.WorkflowName == workflowName);
+
+                    if (incident != null)
+                    {
+                        result.Add(incident.Id);
+                    }
+                    else
+                    {
+                        throw new Exception("cannot found the incident");
+                    }
                 }
 
-                return response;
+                return result.ToArray();
             }
             catch (Exception ex)
             {
-                return ApiResponse.CreateFailed(ex).To<CreateIncidentResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<Guid[]>();
             }
         }
 
-        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarmAsync(
-            GetStatusByAlarmRequestGto request)
+        public async Task<ApiResponse<IncidentStatusInfoGto[]>> GetStatusByAlarmAsync(string[] alarmIds)
         {
             try
             {
-                var response = new GetStatusByAlarmResponseGto();
-                foreach (var id in request.AlarmIds)
+                var result = new List<IncidentStatusInfoGto>();
+                foreach (var id in alarmIds)
                 {
-                    var incident = (await StubDataAsync<GetDetailResponseGto[]>()).FirstOrDefault((m => m.DeviceId == id));
+                    var incident = (await StubDataAsync<IncidentDetailGto[]>()).FirstOrDefault((m => m.DeviceId == id));
                     if (incident == null)
                     {
                         throw new Exception($"cannot found the incident associates with alarm id {id}");
@@ -138,18 +146,18 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                         Status = incident.State
                     };
 
-                    response.IncidentStatusInfos.Add(statusInfoGto);
+                    result.Add(statusInfoGto);
                 }
 
-                return response;
+                return result.ToArray();
             }
             catch (Exception ex)
             {
-                return ApiResponse.CreateFailed(ex).To<GetStatusByAlarmResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<IncidentStatusInfoGto[]>();
             }
         }
 
-        public Task<ApiResponse> AddStepCommentAsync(AddStepCommentGto addStepCommentGto)
+        public Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto)
         {
             return ResponseRequest();
         }

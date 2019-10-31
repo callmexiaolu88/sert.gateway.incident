@@ -1,12 +1,13 @@
-﻿using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+﻿using System;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
-using Honeywell.Gateway.Incident.Api.Incident.List;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
 
 namespace Honeywell.Gateway.Incident.Api
 {
@@ -14,11 +15,11 @@ namespace Honeywell.Gateway.Incident.Api
     {
         Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled);
 
-        Task<ApiResponse<GetDetailResponseGto>> GetDetailAsync(string incidentId);
+        Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId);
 
         Task<ApiResponse<string>> CreateAsync(CreateIncidentRequestGto request);
 
-        Task<ApiResponse<GetListResponseGto>> GetListAsync();
+        Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync();
 
         Task<ApiResponse<SiteDeviceGto[]>> GetSiteDevicesAsync();
 
@@ -30,10 +31,10 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ApiResponse> CompleteAsync(string incidentId);
 
-        Task<ApiResponse> AddStepCommentAsync(AddStepCommentGto addStepCommentGto);
+        Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto);
 
-        Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarmAsync(CreateByAlarmRequestGto request);
+        Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests);
 
-        Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarmAsync(GetStatusByAlarmRequestGto request);
+        Task<ApiResponse<IncidentStatusInfoGto[]>> GetStatusByAlarmAsync(string[] alarmIds);
     }
 }

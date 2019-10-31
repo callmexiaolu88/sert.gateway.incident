@@ -2,11 +2,11 @@
 using System.IO;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
@@ -73,7 +73,7 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             }
         }
 
-        public async Task<ApiResponse<WorkflowDesignSelectorListGto>> GetSelectorsAsync()
+        public async Task<ApiResponse<WorkflowDesignSelectorGto[]>> GetSelectorsAsync()
         {
             try
             {
@@ -81,11 +81,11 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             }
             catch (Exception ex)
             {
-                return ApiResponse.CreateFailed(ex).To<WorkflowDesignSelectorListGto>();
+                return ApiResponse.CreateFailed(ex).To<WorkflowDesignSelectorGto[]>();
             }
         }
 
-        public async Task<ApiResponse<WorkflowDesignGto>> GetByIdAsync(string workflowDesignId)
+        public async Task<ApiResponse<WorkflowDesignDetailGto>> GetDetailByIdAsync(string workflowDesignId)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             }
             catch (Exception ex)
             {
-                return ApiResponse.CreateFailed(ex).To<WorkflowDesignGto>();
+                return ApiResponse.CreateFailed(ex).To<WorkflowDesignDetailGto>();
             }
         }
 
@@ -121,20 +121,20 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             }
         }
 
-        public async Task<ApiResponse<GetDetailsResponseGto>> GetDetailsAsync(GetDetailsRequestGto request)
+        public async Task<ApiResponse<WorkflowDesignDetailGto[]>> GetDetailsAsync(Guid[] workflowDesignIds)
         {
             try
             {
-                return await _workflowDesignRepository.GetWorkflowDesignDetails(request);
+                return await _workflowDesignRepository.GetWorkflowDesignDetails(workflowDesignIds);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<GetDetailsResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<WorkflowDesignDetailGto[]>();
             }
         }
 
-        public async Task<ApiResponse<GetIdsResponseGto>> GetIdsAsync()
+        public async Task<ApiResponse<WorkflowDesignIdGto[]>> GetIdsAsync()
         {
             try
             {
@@ -143,7 +143,7 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<GetIdsResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<WorkflowDesignIdGto[]>();
             }
         }
     }

@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Api.Abstract;
@@ -79,10 +79,9 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             {
                 Id = Guid.NewGuid()
             };
-            var mockWorkflowDesignSelectorListGto = new WorkflowDesignSelectorListGto();
-            mockWorkflowDesignSelectorListGto.List.Add(mockDesign);
+
             _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignSelectors())
-                .ReturnsAsync(mockWorkflowDesignSelectorListGto);
+                .ReturnsAsync(new[] {mockDesign});
 
             // action
             var result = _testObj.GetSelectorsAsync();
@@ -90,20 +89,20 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             // assert
             Assert.NotNull(result);
             Assert.True(result.Result.IsSuccess);
-            Assert.True(result.Result.Value.List.Count == 1);
-            Assert.True(result.Result.Value.List[0].Id == mockDesign.Id);
+            Assert.True(result.Result.Value.Length == 1);
+            Assert.True(result.Result.Value[0].Id == mockDesign.Id);
         }
 
         [Fact]
         public void GetWorkflowDesignById_Test()
         {
-            var mockDesign = new WorkflowDesignGto
+            var mockDesign = new WorkflowDesignDetailGto
             {
                 Id = Guid.NewGuid()
             };
             _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignById(It.IsAny<string>()))
                 .ReturnsAsync(mockDesign);
-            var result = _testObj.GetByIdAsync(It.IsAny<string>());
+            var result = _testObj.GetDetailByIdAsync(It.IsAny<string>());
             Assert.NotNull(result);
             Assert.True(result.Result.IsSuccess);
             Assert.True(result.Result.Value.Id == mockDesign.Id);
@@ -146,19 +145,14 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var id = Guid.NewGuid();
             var name = "name";
 
-            var mockResponse = new GetIdsResponseGto
+            var mockResponse = new WorkflowDesignIdGto
             {
-                WorkflowDesignIds = new List<WorkflowDesignIdGto>
-                {
-                    new WorkflowDesignIdGto
-                    {
-                        Name = name,
-                        WorkflowDesignReferenceId = id,
-                    }
-                }
+                Name = name,
+                WorkflowDesignReferenceId = id,
             };
+
             _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignIds())
-                .ReturnsAsync(mockResponse);
+                .ReturnsAsync(new[] {mockResponse});
 
             //Act
             var result = _testObj.GetIdsAsync();
@@ -167,9 +161,9 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.NotNull(result);
             Assert.NotNull(result.Result.Value);
             Assert.True(result.Result.IsSuccess);
-            Assert.True(result.Result.Value.WorkflowDesignIds.Any());
-            Assert.True(result.Result.Value.WorkflowDesignIds.First().WorkflowDesignReferenceId == id);
-            Assert.True(result.Result.Value.WorkflowDesignIds.First().Name == name);
+            Assert.True(result.Result.Value.Any());
+            Assert.True(result.Result.Value.First().WorkflowDesignReferenceId == id);
+            Assert.True(result.Result.Value.First().Name == name);
         }
 
         [Fact]
@@ -192,39 +186,34 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             //Arrange
             var id = Guid.NewGuid();
-            var mockResponse = new GetDetailsResponseGto
+            var mockResponse = new WorkflowDesignDetailGto
             {
-                WorkflowDesigns = new List<WorkflowDesignGto>
-                {
-                    new WorkflowDesignGto
-                    {
-                        Id = id
-                    }
-                }
+                Id = id
             };
-            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignDetails(It.IsAny<GetDetailsRequestGto>()))
-                .ReturnsAsync(mockResponse);
+
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignDetails(It.IsAny<Guid[]>()))
+                .ReturnsAsync(new[] {mockResponse});
 
             //Act
-            var result = _testObj.GetDetailsAsync(It.IsAny<GetDetailsRequestGto>());
+            var result = _testObj.GetDetailsAsync(It.IsAny<Guid[]>());
 
             //Assert
             Assert.NotNull(result);
             Assert.NotNull(result.Result.Value);
             Assert.True(result.Result.IsSuccess);
-            Assert.True(result.Result.Value.WorkflowDesigns.Any());
-            Assert.True(result.Result.Value.WorkflowDesigns.First().Id == id);
+            Assert.True(result.Result.Value.Any());
+            Assert.True(result.Result.Value.First().Id == id);
         }
 
         [Fact]
         public void GetWorkflowDesigns_ThrowException()
         {
             //Arrange
-            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignDetails(It.IsAny<GetDetailsRequestGto>()))
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignDetails(It.IsAny<Guid[]>()))
                 .Throws(new Exception());
 
             //Act
-            var result = _testObj.GetDetailsAsync(It.IsAny<GetDetailsRequestGto>());
+            var result = _testObj.GetDetailsAsync(It.IsAny<Guid[]>());
 
             //Assert
             Assert.NotNull(result);

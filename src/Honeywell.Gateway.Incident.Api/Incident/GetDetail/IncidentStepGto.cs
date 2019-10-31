@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Honeywell.Gateway.Incident.Api.Incident.Detail
+namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
 {
     public class IncidentStepGto
     {

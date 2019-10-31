@@ -1,13 +1,14 @@
-﻿using Honeywell.Gateway.Incident.Api.WorkflowDesign;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
+﻿using System;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core;
 using System.IO;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 
 namespace Honeywell.Gateway.Incident.Api
 {
@@ -21,16 +22,16 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync();
 
-        Task<ApiResponse<WorkflowDesignSelectorListGto>> GetSelectorsAsync();
+        Task<ApiResponse<WorkflowDesignSelectorGto[]>> GetSelectorsAsync();
 
-        Task<ApiResponse<WorkflowDesignGto>> GetByIdAsync(string workflowDesignId);
+        Task<ApiResponse<WorkflowDesignDetailGto>> GetDetailByIdAsync(string workflowDesignId);
 
         Task<ApiResponse<WorkflowTemplateGto>> DownloadTemplateAsync();
 
         Task<ApiResponse<WorkflowTemplateGto>> ExportsAsync(string[] workflowDesignIds);
 
-        Task<ApiResponse<GetIdsResponseGto>> GetIdsAsync();
+        Task<ApiResponse<WorkflowDesignIdGto[]>> GetIdsAsync();
 
-        Task<ApiResponse<GetDetailsResponseGto>> GetDetailsAsync(GetDetailsRequestGto request);
+        Task<ApiResponse<WorkflowDesignDetailGto[]>> GetDetailsAsync(Guid[] workflowDesignIds);
     }
 }

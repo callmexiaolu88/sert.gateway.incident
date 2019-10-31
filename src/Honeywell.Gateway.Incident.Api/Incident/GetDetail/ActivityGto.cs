@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Honeywell.Gateway.Incident.Api.Incident.Detail
+namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
 {
     public class ActivityGto
     {

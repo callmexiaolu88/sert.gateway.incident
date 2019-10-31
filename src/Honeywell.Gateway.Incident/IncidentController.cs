@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Honeywell.Gateway.Incident.Api;
 using System.Threading.Tasks;
 using Honeywell.GateWay.Incident.Application.Incident;
@@ -9,10 +10,10 @@ using Honeywell.Infra.Api.Abstract;
 using Microsoft.Extensions.Logging;
 using Honeywell.Gateway.Incident.Api.Incident;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
-using Honeywell.Gateway.Incident.Api.Incident.List;
 
 namespace Honeywell.Gateway.Incident
 {
@@ -36,7 +37,7 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetDetailResponseGto>> GetDetailAsync(string incidentId)
+        public async Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId)
         {
             var incident = await _incidentAppService.GetDetailAsync(incidentId);
             return incident;
@@ -50,7 +51,7 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetListResponseGto>> GetListAsync()
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync()
         {
             var activeIncidents = await _incidentAppService.GetListAsync();
             return activeIncidents;
@@ -92,21 +93,21 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarmAsync(CreateByAlarmRequestGto request)
+        public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests)
         {
-            var result = await _incidentAppService.CreateByAlarmAsync(request);
+            var result = await _incidentAppService.CreateByAlarmAsync(requests);
             return result;
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarmAsync(GetStatusByAlarmRequestGto request)
+        public async Task<ApiResponse<IncidentStatusInfoGto[]>> GetStatusByAlarmAsync(string[] alarmIds)
         {
-            var result = await _incidentAppService.GetStatusByAlarmAsync(request);
+            var result = await _incidentAppService.GetStatusByAlarmAsync(alarmIds);
             return result;
         }
 
         [HttpPost]
-        public async Task<ApiResponse> AddStepCommentAsync(AddStepCommentGto addStepCommentGto)
+        public async Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto)
         {
             var result = await _incidentAppService.AddStepCommentAsync(addStepCommentGto);
             return result;

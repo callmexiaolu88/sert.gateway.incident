@@ -1,9 +1,10 @@
-﻿using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+﻿using System;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Detail;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
-using Honeywell.Gateway.Incident.Api.Incident.List;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
@@ -11,7 +12,7 @@ namespace Honeywell.GateWay.Incident.Repository
     {
         Task UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
 
-        Task<GetDetailResponseGto> GetIncidentById(string incidentId);
+        Task<IncidentDetailGto> GetIncidentById(string incidentId);
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);
 
@@ -23,12 +24,12 @@ namespace Honeywell.GateWay.Incident.Repository
 
         Task CompleteIncident(string incidentId);
 
-        Task AddStepComment(AddStepCommentGto addStepCommentGto);
+        Task AddStepComment(AddStepCommentRequestGto addStepCommentGto);
 
-        Task<GetListResponseGto> GetActiveIncidentList();
+        Task<IncidentSummaryGto[]> GetActiveIncidentList();
 
-        Task<CreateIncidentResponseGto> CreateIncidentByAlarm(CreateByAlarmRequestGto request);
+        Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] request);
 
-        Task<GetStatusByAlarmResponseGto> GetIncidentStatusByAlarm(GetStatusByAlarmRequestGto request);
+        Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds);
     }
 }
