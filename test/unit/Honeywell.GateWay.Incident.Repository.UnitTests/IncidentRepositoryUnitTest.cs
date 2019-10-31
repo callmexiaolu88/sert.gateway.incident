@@ -211,7 +211,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var act = new Func<Task>(async () => await _incidentRepository.RespondIncident(incidentId));
 
             //assert
-            await Assert.ThrowsAsync<ArgumentException>(act);
+            await Assert.ThrowsAsync<HoneywellException>(act);
         }
 
         [Fact]

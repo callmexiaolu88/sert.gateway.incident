@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Infra.Core.Common.Exceptions;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 
 #pragma warning disable CS0612 // Type or member is obsolete
@@ -118,7 +119,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             {
                 var msg = $"wrong incident id: {incidentId}";
                 Logger.LogError(msg);
-                throw new ArgumentException(msg);
+                throw new HoneywellException(msg);
             }
 
             var request = new FacadeApi.Actions.IncidentActionRequestDto { IncidentId = incidentGuid };

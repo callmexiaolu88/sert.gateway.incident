@@ -11,6 +11,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Api.Abstract;
+using Honeywell.Infra.Core.Common.Exceptions;
 using Honeywell.Infra.Core.Ddd.Application;
 using Microsoft.Extensions.Logging;
 
@@ -119,7 +120,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             {
                 await _incidentRepository.RespondIncident(incidentId);
                 return ApiResponse.CreateSuccess();
-            }
+            } 
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
