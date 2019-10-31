@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
 
 namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
 {
@@ -41,5 +42,9 @@ namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
         public string DeviceLocation { get; set; }
 
         public string DeviceId { get; set; }
+
+        public IncidentTriggerType TriggerType { get; set; }
+
+        public AlarmData AlarmData { get; set; }
     }
 }
