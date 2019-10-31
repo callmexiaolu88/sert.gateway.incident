@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version></Version>
     <PackageReleaseNotes></PackageReleaseNotes>
@@ -15,10 +15,6 @@
     <EmbeddedResource Remove="WorkflowDesignActivity\**" />
     <None Remove="Enum\**" />
     <None Remove="WorkflowDesignActivity\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
