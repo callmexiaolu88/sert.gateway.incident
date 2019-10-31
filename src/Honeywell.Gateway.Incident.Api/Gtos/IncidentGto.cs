@@ -44,7 +44,7 @@ namespace Honeywell.Gateway.Incident.Api.Gtos
 
         public string DeviceId { get; set; }
 
-        public byte TriggerType { get; set; }
+        public IncidentTriggerType TriggerType { get; set; }
 
         public AlarmData AlarmData { get; set; }
     }
