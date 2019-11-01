@@ -24,20 +24,24 @@ namespace Incident.ApiTests
                     ServerCertificateCustomValidationCallback = (httpRequestMessage, x509Certificate2, x509Chain, sslPolicyErrors) => true
                 });
 
-            serviceCollection.AddRemoteService(typeof(IIncidentApi).Assembly);
+            serviceCollection.AddRemoteService(typeof(IIncidentApi).Assembly, o =>
+            {
+                var proWatchClient = serviceCollection.BuildServiceProvider().GetRequiredService<ProWatchClient>();
+                o.DefaultTokenRetriever = proWatchClient.GetDefaultToken;
+                config.GetSection("RemoteServicesConfig").Bind(o);
+            });
+
             serviceCollection.AddHttpClient(typeof(IIncidentApi).GUID.ToString())
                 .ConfigureHttpClient((provider, client) =>
                 {
                     var service = provider.GetRequiredService<ProWatchClient>();
                     client.DefaultRequestHeaders.AcceptLanguage.Add(service.LoginLanaugeSetting());
-                    client.DefaultRequestHeaders.Authorization = service.GenerateTokenAsync();
                 });
             serviceCollection.AddHttpClient(typeof(IWorkflowDesignApi).GUID.ToString())
                 .ConfigureHttpClient((provider, client) =>
                 {
                     var service = provider.GetRequiredService<ProWatchClient>();
                     client.DefaultRequestHeaders.AcceptLanguage.Add(service.LoginLanaugeSetting());
-                    client.DefaultRequestHeaders.Authorization = service.GenerateTokenAsync();
                 });
             ServiceProvider = serviceCollection.BuildServiceProvider();
         }
