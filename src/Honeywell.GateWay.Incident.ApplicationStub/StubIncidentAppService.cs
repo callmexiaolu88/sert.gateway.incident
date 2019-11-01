@@ -98,10 +98,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 
             var devices = StubData<SiteDeviceGto[]>();
             var deviceList = (from site in devices
-                select site.Devices.FirstOrDefault(x => x.DeviceId == incidentInfo.DeviceId)
+                              select site.Devices.FirstOrDefault(x => x.DeviceId == incidentInfo.DeviceId)
                 into item
-                where item != null
-                select item).ToList();
+                              where item != null
+                              select item).ToList();
             var device = deviceList.First();
             incidentInfo.DeviceDisplayName = device.DeviceDisplayName;
             incidentInfo.DeviceLocation = device.DeviceLocation;
@@ -167,8 +167,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                         .FirstOrDefault(m => m.Id == incidentData.WorkflowDesignReferenceId)?.Name;
 
                     var incident = StubData<IncidentGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
-                    if (incident != null) response.IncidentIds.Add(incident.Id);
-                    throw new Exception("cannot found the incident");
+                    if (incident == null)
+                    {
+                        throw new Exception("cannot found the incident");
+                    }
+                    response.IncidentIds.Add(incident.Id);
                 }
 
                 return Task.FromResult(ApiResponse.CreateSuccess().To(response));

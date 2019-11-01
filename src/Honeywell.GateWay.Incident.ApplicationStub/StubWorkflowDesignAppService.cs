@@ -19,9 +19,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                 foreach (var id in request.Ids)
                 {
                     var workflowDesigns = StubData<WorkflowDesignGto[]>().FirstOrDefault(m => m.Id == id);
-                    if (workflowDesigns != null) { response.WorkflowDesigns.Add(workflowDesigns); }
-
-                    throw new Exception($"cannot found the workflow design by id:{id}");
+                    if (workflowDesigns == null)
+                    {
+                        throw new Exception($"cannot found the workflow design by id:{id}");
+                    }
+                    response.WorkflowDesigns.Add(workflowDesigns);
                 }
 
                 return Task.FromResult(ApiResponse.CreateSuccess().To(response));
