@@ -18,8 +18,6 @@ using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.Status;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Actions;
@@ -53,7 +51,13 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var result = new ExecuteResult();
             var responseDtoList = await _workflowDesignApi.ImportsAsync(workflowDesignStream);
             responseDtoList.Value.ImportResponseList.ForEach(x => result.ErrorList.AddRange(x.Errors));
-            result.Status = responseDtoList.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error;
+            if (responseDtoList.IsSuccess)
+            {
+                result.Status = ExecuteStatus.Successful;
+                return result;
+            }
+
+            result.Status = ExecuteStatus.Error;
             Logger.LogError($"call workflow design api Imports error:{string.Join(",", result.ErrorList)}");
             return result;
         }
@@ -63,7 +67,13 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var result = new ExecuteResult();
             var responseDtoList = await _workflowDesignApi.ValidateAsync(workflowDesignStream);
             responseDtoList.Value.ImportResponseList.ForEach(x => result.ErrorList.AddRange(x.Errors));
-            result.Status = responseDtoList.IsSuccess ? ExecuteStatus.Successful : ExecuteStatus.Error;
+            if (responseDtoList.IsSuccess)
+            {
+                result.Status = ExecuteStatus.Successful;
+                return result;
+            }
+
+            result.Status = ExecuteStatus.Error;
             Logger.LogError($"call workflow design api Imports error:{string.Join(",", result.ErrorList)}");
             return result;
         }
