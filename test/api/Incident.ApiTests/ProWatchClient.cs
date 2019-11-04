@@ -34,12 +34,16 @@ namespace Incident.ApiTests
 
         internal AuthenticationHeaderValue GenerateTokenAsync()
         {
+            var token = GetDefaultToken();
+            return new AuthenticationHeaderValue("Bearer", token);
+        }
+
+        internal string GetDefaultToken()
+        {
             var host = _configuration.GetValue<string>("ProWatchIsomUrl");
             var userName = _configuration.GetValue<string>("UserName");
             var password = _configuration.GetValue<string>("Password");
-            var token = GetTokens(host, userName, password);
-            return new AuthenticationHeaderValue("Bearer", token);
-
+            return GetTokens(host, userName, password);
         }
 
         internal StringWithQualityHeaderValue LoginLanaugeSetting()

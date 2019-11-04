@@ -38,10 +38,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 
             var devices = StubData<SiteDeviceGto[]>();
             var deviceList = (from site in devices
-                select site.Devices.FirstOrDefault(x => x.DeviceId == incidentInfo.DeviceId)
+                              select site.Devices.FirstOrDefault(x => x.DeviceId == incidentInfo.DeviceId)
                 into item
-                where item != null
-                select item).ToList();
+                              where item != null
+                              select item).ToList();
             var device = deviceList.First();
             incidentInfo.DeviceDisplayName = device.DeviceDisplayName;
             incidentInfo.DeviceLocation = device.DeviceLocation;
