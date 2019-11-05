@@ -1,4 +1,4 @@
-﻿namespace Honeywell.Gateway.Incident.Api.Gtos
+﻿namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
 {
     public enum IncidentStatus
     {

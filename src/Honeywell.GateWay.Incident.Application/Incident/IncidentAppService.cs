@@ -1,13 +1,17 @@
 ﻿using System;
- using System.IO;
- using System.Linq;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Api.Abstract;
+using Honeywell.Infra.Core.Common.Exceptions;
 using Honeywell.Infra.Core.Ddd.Application;
 using Microsoft.Extensions.Logging;
 
@@ -27,156 +31,196 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             _deviceRepository = deviceRepository;
         }
 
-        public async Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream)
+        public async Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled)
         {
-            return await _incidentRepository.ImportWorkflowDesigns(workflowDesignStream);
-        }
-
-        public async Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream)
-        {
-            return await _incidentRepository.ValidatorWorkflowDesigns(workflowDesignStream);
-        }
-
-        public async Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
-        {
-            return await _incidentRepository.DeleteWorkflowDesigns(workflowDesignIds);
-        }
-
-        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
-        {
-            return await _incidentRepository.GetAllActiveWorkflowDesigns();
-        }
-
-        public async Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
-        {
-            return await _incidentRepository.GetWorkflowDesignSelectors();
-        }
-
-        public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
-        {
-            return await _incidentRepository.GetWorkflowDesignById(workflowDesignId);
-        }
-
-        public async Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
-        {
-            return await _incidentRepository.DownloadWorkflowTemplate();
-        }
-
-        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds)
-        {
-            return await _incidentRepository.ExportWorkflowDesigns(workflowDesignIds);
-        }
-
-        public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
-        {
-            return await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId, isHandled);
-        }
-
-        public async Task<IncidentGto> GetIncidentById(string incidentId)
-        {
-            var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
-            if (incidentInfo.Status != ExecuteStatus.Successful)
+            try
             {
-                return incidentInfo;
+                await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId, isHandled);
+                return ApiResponse.CreateSuccess();
             }
-
-            if (string.IsNullOrEmpty(incidentInfo.DeviceId))
+            catch (Exception ex)
             {
-                return incidentInfo;
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex);
             }
-
-            var deviceInfo = await _deviceRepository.GetDeviceById(incidentInfo.DeviceId);
-            incidentInfo.DeviceDisplayName = deviceInfo.Config[0].Identifiers.Name;
-            incidentInfo.DeviceLocation = deviceInfo.Config[0].Identifiers.Tag[0];
-
-            return incidentInfo;
         }
 
-        public async Task<string> CreateIncident(CreateIncidentRequestGto request)
+        public async Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId)
         {
-            return await _incidentRepository.CreateIncident(request);
-        }
-
-        public async Task<SiteDeviceGto[]> GetSiteDevices()
-        {
-            Logger.LogInformation("call Incident api GetDeviceList Start");
-            var result = await _deviceRepository.GetDevices();
-
-            var devices = result.Config.GroupBy(item => new {item.Relation[0].Id, item.Relation[0].EntityId})
-                .Select(group => new SiteDeviceGto
+            try
+            {
+                var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
+              
+                if (string.IsNullOrEmpty(incidentInfo.DeviceId))
                 {
-                    SiteId = group.Key.Id,
-                    SiteDisplayName = group.Key.EntityId,
-                    Devices = group.Select(x => new DeviceGto
-                        {
-                            DeviceDisplayName = x.Identifiers.Name,
-                            DeviceId = x.Identifiers.Id,
-                            DeviceType = x.Type,
-                            DeviceLocation = x.Identifiers.Tag[0]
-                        })
-                        .ToArray()
-                });
+                    return incidentInfo;
+                }
 
-            Logger.LogInformation("call Incident api GetDeviceList end");
-            return devices.ToArray();
-        }
+                var deviceInfo = await _deviceRepository.GetDeviceById(incidentInfo.DeviceId);
+                incidentInfo.DeviceDisplayName = deviceInfo.Config[0].Identifiers.Name;
+                incidentInfo.DeviceLocation = deviceInfo.Config[0].Identifiers.Tag[0];
 
-        public async Task<ExecuteResult> RespondIncident(string incidentId)
-        {
-            return await _incidentRepository.RespondIncident(incidentId);
-        }
-
-        public async Task<ExecuteResult> TakeoverIncident(string incidentId)
-        {
-            return await _incidentRepository.TakeoverIncident(incidentId);
-        }
-
-        public async Task<ExecuteResult> CloseIncident(string incidentId, string reason)
-        {
-            return await _incidentRepository.CloseIncident(incidentId, reason);
-        }
-
-        public async Task<ExecuteResult> CompleteIncident(string incidentId)
-        {
-            return await _incidentRepository.CompleteIncident(incidentId);
-        }
-
-        public async Task<ActiveIncidentListGto> GetActiveIncidentList()
-        {
-            return await _incidentRepository.GetActiveIncidentList();
-        }
-
-        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(
-            CreateByAlarmRequestGto request)
-        {
-            try
-            {
-                return await _incidentRepository.CreateIncidentByAlarm(request);
+                return incidentInfo;
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<CreateIncidentResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<IncidentDetailGto>();
             }
         }
 
-        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(
-            GetStatusByAlarmRequestGto request)
+        public async Task<ApiResponse<string>> CreateAsync(CreateIncidentRequestGto request)
         {
             try
             {
-                return await _incidentRepository.GetIncidentStatusByAlarm(request);
+                return await _incidentRepository.CreateIncident(request);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<GetStatusByAlarmResponseGto>();
+                return ApiResponse.CreateFailed(ex).To<string>();
             }
         }
 
-        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        public async Task<ApiResponse<SiteDeviceGto[]>> GetSiteDevicesAsync()
         {
-            return await _incidentRepository.AddStepComment(addStepCommentGto);
+            try
+            {
+                Logger.LogInformation("call Incident api GetDeviceList Start");
+                var result = await _deviceRepository.GetDevices();
+
+                var devices = result.Config.GroupBy(item => new {item.Relation[0].Id, item.Relation[0].EntityId})
+                    .Select(group => new SiteDeviceGto
+                    {
+                        SiteId = group.Key.Id,
+                        SiteDisplayName = group.Key.EntityId,
+                        Devices = group.Select(x => new DeviceGto
+                            {
+                                DeviceDisplayName = x.Identifiers.Name,
+                                DeviceId = x.Identifiers.Id,
+                                DeviceType = x.Type,
+                                DeviceLocation = x.Identifiers.Tag[0]
+                            })
+                            .ToArray()
+                    });
+
+                Logger.LogInformation("call Incident api GetDeviceList end");
+                return devices.ToArray();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<SiteDeviceGto[]>();
+            }
+        }
+
+        public async Task<ApiResponse> RespondAsync(string incidentId)
+        {
+            try
+            {
+                await _incidentRepository.RespondIncident(incidentId);
+                return ApiResponse.CreateSuccess();
+            } 
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex);
+            }
+        }
+
+        public async Task<ApiResponse> TakeoverAsync(string incidentId)
+        {
+            try
+            {
+                await _incidentRepository.TakeoverIncident(incidentId);
+                return ApiResponse.CreateSuccess();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex);
+            }
+        }
+
+        public async Task<ApiResponse> CloseAsync(string incidentId, string reason)
+        {
+            try
+            {
+                await _incidentRepository.CloseIncident(incidentId, reason);
+                return ApiResponse.CreateSuccess();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex);
+            }
+        }
+
+        public async Task<ApiResponse> CompleteAsync(string incidentId)
+        {
+            try
+            {
+                await _incidentRepository.CompleteIncident(incidentId);
+                return ApiResponse.CreateSuccess();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex);
+            }
+        }
+
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync()
+        {
+            try
+            {
+                return await _incidentRepository.GetActiveIncidentList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<IncidentSummaryGto[]>();
+            }
+        }
+
+        public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests)
+        {
+            try
+            {
+                return await _incidentRepository.CreateIncidentByAlarm(requests);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<Guid[]>();
+            }
+        }
+
+        public async Task<ApiResponse<IncidentStatusInfoGto[]>> GetStatusByAlarmAsync(string[] alarmIds)
+        {
+            try
+            {
+                return await _incidentRepository.GetIncidentStatusByAlarm(alarmIds);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<IncidentStatusInfoGto[]>();
+            }
+        }
+
+        public async Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto)
+        {
+            try
+            {
+                await _incidentRepository.AddStepComment(addStepCommentGto);
+                return ApiResponse.CreateSuccess();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex);
+            }
         }
     }
 }

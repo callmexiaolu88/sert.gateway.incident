@@ -1,15 +1,37 @@
-﻿using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
+﻿using System;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core;
+using System.IO;
+using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 
 namespace Honeywell.Gateway.Incident.Api
 {
     public interface IWorkflowDesignApi : IRemoteService
     {
-        Task<ApiResponse<GetIdsResponseGto>> GetIds();
+        Task<ApiResponse> ImportAsync(Stream workflowDesignStream);
 
-        Task<ApiResponse<GetDetailsResponseGto>> GetDetails(GetDetailsRequestGto request);
+        Task<ApiResponse> ValidateAsync(Stream workflowDesignStream);
+
+        Task<ApiResponse> DeletesAsync(string[] workflowDesignIds);
+
+        Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync();
+
+        Task<ApiResponse<WorkflowDesignSelectorGto[]>> GetSelectorsAsync();
+
+        Task<ApiResponse<WorkflowDesignDetailGto>> GetDetailByIdAsync(string workflowDesignId);
+
+        Task<ApiResponse<WorkflowTemplateGto>> DownloadTemplateAsync();
+
+        Task<ApiResponse<WorkflowTemplateGto>> ExportsAsync(string[] workflowDesignIds);
+
+        Task<ApiResponse<WorkflowDesignIdGto[]>> GetIdsAsync();
+
+        Task<ApiResponse<WorkflowDesignDetailGto[]>> GetDetailsAsync(Guid[] workflowDesignIds);
     }
 }

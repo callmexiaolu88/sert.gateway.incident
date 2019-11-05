@@ -3,8 +3,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api;
-using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
 using Honeywell.Infra.Api.Abstract;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -35,31 +36,31 @@ namespace Incident.ApiTests.IncidentControllerTest
 
         protected async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
         {
-            var workflowDesigns = await IncidentGateWayApi.GetAllActiveWorkflowDesigns();
-            return workflowDesigns;
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetSummariesAsync();
+            return workflowDesigns.Value;
         }
 
-        protected async Task<ExecuteResult> ImportWorkflowDesign()
+        protected async Task<ApiResponse> ImportWorkflowDesign()
         {
             var resourceName = "Incident.ApiTests.Data.TestTemplate.docx";
             var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
-            var result = await IncidentGateWayApi.ImportWorkflowDesigns(stream);
+            var result = await WorkflowDesignGateWayApi.ImportAsync(stream);
             return result;
         }
 
         protected async Task DeleteWorkflowDesign()
         {
             var workflowDesigns = GetAllWorkflowDesigns();
-            await IncidentGateWayApi.DeleteWorkflowDesigns(workflowDesigns.Result.Select(m => m.Id.ToString()).ToArray());
+            await WorkflowDesignGateWayApi.DeletesAsync(workflowDesigns.Result.Select(m => m.Id.ToString()).ToArray());
         }
 
         protected async Task DeleteIncident(string incidentId)
         {
-            var respondResult = await IncidentGateWayApi.RespondIncident(incidentId);
-            Assert.True(respondResult.Status == ExecuteStatus.Successful);
+            var respondResult = await IncidentGateWayApi.RespondAsync(incidentId);
+            Assert.True(respondResult.IsSuccess);
 
-            var closeResult = await IncidentGateWayApi.CloseIncident(incidentId, "test delete");
-            Assert.True(closeResult.Status == ExecuteStatus.Successful);
+            var closeResult = await IncidentGateWayApi.CloseAsync(incidentId, "test delete");
+            Assert.True(closeResult.IsSuccess);
         }
 
         protected async Task<string> CreateIncident(string deviceId = null, string deviceType = null)
@@ -70,36 +71,31 @@ namespace Incident.ApiTests.IncidentControllerTest
                 Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignId,
                 DeviceId = deviceId, DeviceType = deviceType
             };
-            var result = await IncidentGateWayApi.CreateIncident(incident);
-            Assert.NotNull(result);
-            return result;
+            var result = await IncidentGateWayApi.CreateAsync(incident);
+            Assert.True(result.IsSuccess);
+            return result.Value;
         }
 
-        protected async Task<ApiResponse<CreateIncidentResponseGto>> CreateIncidentByAlarm(string alarmId = null)
+        protected async Task<ApiResponse<Guid[]>> CreateIncidentByAlarm(string alarmId = null)
         {
             alarmId = string.IsNullOrEmpty(alarmId) ? Guid.NewGuid().ToString() : alarmId;
             var workflowDesignId = GetFirstWorkflowDesignId();
-            var request = new CreateByAlarmRequestGto
+            var request = new CreateIncidentByAlarmRequestGto
             {
-                CreateDatas = new[]
+                WorkflowDesignReferenceId = new Guid(workflowDesignId),
+                Priority = IncidentPriority.High,
+                Description = "incident description",
+                DeviceId = Guid.NewGuid().ToString(),
+                DeviceType = "Door",
+                AlarmId = alarmId,
+                AlarmData = new AlarmData
                 {
-                    new CreateByAlarmGto
-                    {
-                        WorkflowDesignReferenceId = new Guid(workflowDesignId),
-                        Priority = IncidentPriority.High,
-                        Description = "incident description",
-                        DeviceId = Guid.NewGuid().ToString(),
-                        DeviceType = "Door",
-                        AlarmId = alarmId,
-                        AlarmData = new AlarmData
-                        {
-                            AlarmType = "AlarmType",
-                            Description = "alarm description"
-                        }
-                    }
+                    AlarmType = "AlarmType",
+                    Description = "alarm description"
                 }
             };
-            var result = await IncidentGateWayApi.CreateByAlarm(request);
+
+            var result = await IncidentGateWayApi.CreateByAlarmAsync(new[] {request});
             Assert.NotNull(result);
             return result;
         }

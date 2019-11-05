@@ -1,14 +1,19 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Honeywell.Gateway.Incident.Api;
 using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
 using Honeywell.Infra.Api.Abstract;
 using Microsoft.Extensions.Logging;
+using Honeywell.Gateway.Incident.Api.Incident;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 
 namespace Honeywell.Gateway.Incident
 {
@@ -23,154 +28,88 @@ namespace Honeywell.Gateway.Incident
             _incidentAppService = incidentAppService;
         }
 
+   
         [HttpPost]
-        public async Task<ExecuteResult> ImportWorkflowDesigns([FromBody] Stream workflowDesignStream)
+        public async Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled)
         {
-            var result = await _incidentAppService.ImportWorkflowDesigns(workflowDesignStream);
+            var result = await _incidentAppService.UpdateStepStatusAsync(workflowStepId, isHandled);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> ValidatorWorkflowDesigns([FromBody] Stream workflowDesignStream)
+        public async Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId)
         {
-            var result = await _incidentAppService.ValidatorWorkflowDesigns(workflowDesignStream);
-            return result;
-        }
-
-        [HttpPost]
-        public async Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
-        {
-            var result = await _incidentAppService.DeleteWorkflowDesigns(workflowDesignIds);
-            return result;
-        }
-
-        [HttpPost]
-        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
-        {
-            var workflowDesignList = await _incidentAppService.GetAllActiveWorkflowDesigns();
-            return workflowDesignList;
-        }
-
-        [HttpPost]
-        public async Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
-        {
-            var workflowDesignSelectorList = await _incidentAppService.GetWorkflowDesignSelectors();
-            return workflowDesignSelectorList;
-        }
-
-        [HttpPost]
-        public async Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
-        {
-            var workflowDetail = await _incidentAppService.GetWorkflowDesignById(workflowDesignId);
-            return workflowDetail;
-        }
-
-        [HttpPost]
-        public async Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
-        {
-            var result = await _incidentAppService.DownloadWorkflowTemplate();
-            Response.ContentType = "application/octet-stream";
-            Response.Headers.Add("Content-Disposition",
-                "attachment; filename=" + HttpUtility.UrlEncode(result.FileName, System.Text.Encoding.UTF8));
-            await Response.Body.WriteAsync(result.FileBytes);
-            Response.Body.Flush();
-            Response.Body.Close();
-            return result;
-        }
-
-        [HttpPost]
-        public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds)
-        {
-
-            var result = await _incidentAppService.ExportWorkflowDesigns(workflowDesignIds);
-            Response.ContentType = "application/octet-stream";
-            await Response.Body.WriteAsync(result.FileBytes);
-            Response.Body.Flush();
-            Response.Body.Close();
-            return result;
-        }
-
-        [HttpPost]
-        public async Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
-        {
-            var result = await _incidentAppService.UpdateWorkflowStepStatus(workflowStepId, isHandled);
-            return result;
-        }
-
-        [HttpPost]
-        public async Task<IncidentGto> GetIncidentById(string incidentId)
-        {
-            var incident = await _incidentAppService.GetIncidentById(incidentId);
+            var incident = await _incidentAppService.GetDetailAsync(incidentId);
             return incident;
         }
 
         [HttpPost]
-        public async Task<string> CreateIncident(CreateIncidentRequestGto request)
+        public async Task<ApiResponse<string>> CreateAsync(CreateIncidentRequestGto request)
         {
-            var incidentId = await _incidentAppService.CreateIncident(request);
+            var incidentId = await _incidentAppService.CreateAsync(request);
             return incidentId;
         }
 
         [HttpPost]
-        public async Task<ActiveIncidentListGto> GetActiveIncidentList()
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync()
         {
-            var activeIncidents = await _incidentAppService.GetActiveIncidentList();
+            var activeIncidents = await _incidentAppService.GetListAsync();
             return activeIncidents;
         }
 
         [HttpPost]
-        public async Task<SiteDeviceGto[]> GetSiteDevices()
+        public async Task<ApiResponse<SiteDeviceGto[]>> GetSiteDevicesAsync()
         {
-            var devices = await _incidentAppService.GetSiteDevices();
+            var devices = await _incidentAppService.GetSiteDevicesAsync();
             return devices;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> RespondIncident(string incidentId)
+        public async Task<ApiResponse> RespondAsync(string incidentId)
         {
-            var result = await _incidentAppService.RespondIncident(incidentId);
+            var result = await _incidentAppService.RespondAsync(incidentId);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> TakeoverIncident(string incidentId)
+        public async Task<ApiResponse> TakeoverAsync(string incidentId)
         {
-            var result = await _incidentAppService.TakeoverIncident(incidentId);
+            var result = await _incidentAppService.TakeoverAsync(incidentId);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> CloseIncident(string incidentId, string reason)
+        public async Task<ApiResponse> CloseAsync(string incidentId, string reason)
         {
-            var result = await _incidentAppService.CloseIncident(incidentId, reason);
+            var result = await _incidentAppService.CloseAsync(incidentId, reason);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> CompleteIncident(string incidentId)
+        public async Task<ApiResponse> CompleteAsync(string incidentId)
         {
-            var result = await _incidentAppService.CompleteIncident(incidentId);
+            var result = await _incidentAppService.CompleteAsync(incidentId);
             return result;
         }
 
         [HttpPost]
-        public async Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(CreateByAlarmRequestGto request)
+        public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests)
         {
-            var result = await _incidentAppService.CreateByAlarm(request);
+            var result = await _incidentAppService.CreateByAlarmAsync(requests);
             return result;
         }
 
         [HttpPost]
-        public async Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(GetStatusByAlarmRequestGto request)
+        public async Task<ApiResponse<IncidentStatusInfoGto[]>> GetStatusByAlarmAsync(string[] alarmIds)
         {
-            var result = await _incidentAppService.GetStatusByAlarm(request);
+            var result = await _incidentAppService.GetStatusByAlarmAsync(alarmIds);
             return result;
         }
 
         [HttpPost]
-        public async Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        public async Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto)
         {
-            var result = await _incidentAppService.AddStepComment(addStepCommentGto);
+            var result = await _incidentAppService.AddStepCommentAsync(addStepCommentGto);
             return result;
         }
     }

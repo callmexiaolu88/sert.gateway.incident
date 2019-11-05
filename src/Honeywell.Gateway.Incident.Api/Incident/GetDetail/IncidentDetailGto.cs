@@ -1,14 +1,13 @@
-﻿using Honeywell.Gateway.Incident.Api.Incident.Create;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
 
-namespace Honeywell.Gateway.Incident.Api.Gtos
+namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
 {
-    public class IncidentGto : ExecuteResult
+    public class IncidentDetailGto 
     {
-        public IncidentGto()
+        public IncidentDetailGto()
         {
-            Status = ExecuteStatus.Error;
             IncidentSteps = new List<IncidentStepGto>();
         }
 

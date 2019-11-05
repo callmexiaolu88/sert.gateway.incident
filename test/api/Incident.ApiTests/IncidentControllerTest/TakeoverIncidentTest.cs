@@ -1,5 +1,4 @@
-﻿using Honeywell.Gateway.Incident.Api.Gtos;
-using Xunit;
+﻿using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
 {
@@ -17,8 +16,8 @@ namespace Incident.ApiTests.IncidentControllerTest
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
 
-            var takeoverResult = await IncidentGateWayApi.TakeoverIncident(incidentId);
-            Assert.False(takeoverResult.Status == ExecuteStatus.Successful);
+            var takeoverResult = await IncidentGateWayApi.TakeoverAsync(incidentId);
+            Assert.False(takeoverResult.IsSuccess);
 
             await DeleteWorkflowDesign();
         }

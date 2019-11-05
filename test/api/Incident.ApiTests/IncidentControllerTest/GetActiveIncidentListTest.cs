@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Honeywell.Gateway.Incident.Api.Gtos;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
@@ -20,11 +19,11 @@ namespace Incident.ApiTests.IncidentControllerTest
             var incidentId = CreateIncident().Result;
 
             //action
-            var activeIncidentList = await IncidentGateWayApi.GetActiveIncidentList();
+            var activeIncidentList = await IncidentGateWayApi.GetListAsync();
 
             //assert
-            Assert.True(activeIncidentList.Status == ExecuteStatus.Successful);
-            Assert.NotNull(activeIncidentList.List.FirstOrDefault(x => x.Id == Guid.Parse(incidentId)));
+            Assert.True(activeIncidentList.IsSuccess);
+            Assert.NotNull(activeIncidentList.Value.FirstOrDefault(x => x.Id == Guid.Parse(incidentId)));
 
             //clear
             await DeleteIncident(incidentId);

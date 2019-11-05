@@ -1,51 +1,35 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.Gtos;
+﻿using System;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
     public interface IIncidentRepository
     {
-        Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream);
+        Task UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
 
-        Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream);
-
-        Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds);
-
-        Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns();
-
-        Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors();
-
-        Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
-
-        Task<WorkflowTemplateGto> DownloadWorkflowTemplate();
-
-        Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds);
-
-        Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
-
-        Task<IncidentGto> GetIncidentById(string incidentId);
+        Task<IncidentDetailGto> GetIncidentById(string incidentId);
 
         Task<string> CreateIncident(CreateIncidentRequestGto request);
 
-        Task<ExecuteResult> RespondIncident(string incidentId);
+        Task RespondIncident(string incidentId);
 
-        Task<ExecuteResult> TakeoverIncident(string incidentId);
+        Task TakeoverIncident(string incidentId);
 
-        Task<ExecuteResult> CloseIncident(string incidentId, string reason);
+        Task CloseIncident(string incidentId, string reason);
 
-        Task<ExecuteResult> CompleteIncident(string incidentId);
+        Task CompleteIncident(string incidentId);
 
-        Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
+        Task AddStepComment(AddStepCommentRequestGto addStepCommentGto);
 
-        Task<ActiveIncidentListGto> GetActiveIncidentList();
+        Task<IncidentSummaryGto[]> GetActiveIncidentList();
 
-        Task<CreateIncidentResponseGto> CreateIncidentByAlarm(CreateByAlarmRequestGto request);
+        Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] request);
 
-        Task<GetStatusByAlarmResponseGto> GetIncidentStatusByAlarm(GetStatusByAlarmRequestGto request);
+        Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds);
     }
 }

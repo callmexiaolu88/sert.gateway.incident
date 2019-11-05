@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Honeywell.Gateway.Incident.Api.Gtos
+namespace Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail
 {
-    public class WorkflowDesignGto
+    public class WorkflowDesignDetailGto
     {
         [Required]
         public Guid Id { get; set; }

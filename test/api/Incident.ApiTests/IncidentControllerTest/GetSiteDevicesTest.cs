@@ -12,7 +12,7 @@ namespace Incident.ApiTests.IncidentControllerTest
         [Fact]
         public async void GetSiteDevices_Success()
         {
-            var result = await IncidentGateWayApi.GetSiteDevices();
+            var result = await IncidentGateWayApi.GetSiteDevicesAsync();
             Assert.NotNull(result);
         }
     }

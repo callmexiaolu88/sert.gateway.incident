@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
@@ -19,19 +19,19 @@ namespace Incident.ApiTests.IncidentControllerTest
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
 
-            var incidentDetails = await IncidentGateWayApi.GetIncidentById(incidentId);
-            var workflowStepId = incidentDetails.IncidentSteps[0].Id;
+            var incidentDetails = await IncidentGateWayApi.GetDetailAsync(incidentId);
+            var workflowStepId = incidentDetails.Value.IncidentSteps[0].Id;
             string commentRemark = Guid.NewGuid().ToString();
-            var addStepCommentGto = new AddStepCommentGto()
+            var addStepCommentGto = new AddStepCommentRequestGto()
             {
                 WorkflowStepId = workflowStepId.ToString(),
                 Comment = $"this is comment.|{commentRemark}"
             };
-            var result = await IncidentGateWayApi.AddStepComment(addStepCommentGto);
-            Assert.True(result.Status == ExecuteStatus.Successful);
+            var result = await IncidentGateWayApi.AddStepCommentAsync(addStepCommentGto);
+            Assert.True(result.IsSuccess);
 
-            var incidentDetailReponse = await IncidentGateWayApi.GetIncidentById(incidentId);
-            bool isAddCommentSucess = incidentDetailReponse.IncidentSteps.First(o => o.Id == workflowStepId)
+            var incidentDetailResponse = await IncidentGateWayApi.GetDetailAsync(incidentId);
+            bool isAddCommentSucess = incidentDetailResponse.Value.IncidentSteps.First(o => o.Id == workflowStepId)
                 .StepComments.Any(x => x.Description.Contains(commentRemark));
             Assert.True(isAddCommentSucess);
 

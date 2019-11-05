@@ -4,9 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.Gtos;
+using Castle.Components.DictionaryAdapter;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Common.Exceptions;
@@ -15,85 +21,19 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 {
     public class StubIncidentAppService : BaseIncidentStub, IIncidentAppService
     {
-        public Task<ExecuteResult> ImportWorkflowDesigns(Stream stream)
+  
+        public Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled)
         {
             return ResponseRequest();
         }
 
-        public Task<ExecuteResult> ValidatorWorkflowDesigns(Stream stream)
+
+        public async Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId)
         {
-            return ResponseRequest();
-        }
-
-        public Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds)
-        {
-            return ResponseRequest();
-        }
-
-        public Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
-        {
-            return StubDataTask<WorkflowDesignSummaryGto[]>();
-        }
-
-        public Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors()
-        {
-            var result = StubData<List<WorkflowDesignSelectorGto>>();
-            return Task.FromResult(new WorkflowDesignSelectorListGto { List = result, Status = ExecuteStatus.Successful });
-        }
-
-        public Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId)
-        {
-            return Task.FromResult(StubData<WorkflowDesignGto[]>().FirstOrDefault(m => m.Id == Guid.Parse(workflowDesignId)));
-        }
-
-        public Task<WorkflowTemplateGto> DownloadWorkflowTemplate()
-        {
-            var resourceName = "Honeywell.GateWay.Incident.ApplicationStub.Template.WorkflowTemplate.en-us.dotx";
-            var fileName = "WorkflowTemplate.dotx";
-            return ExportTemplate(resourceName, fileName);
-        }
-
-        public Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
-        {
-            var resourceName = "Honeywell.GateWay.Incident.ApplicationStub.Template.Workflows.docx";
-            var fileName = "Workflows.docx";
-            return ExportTemplate(resourceName, fileName);
-        }
-
-        public Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
-        {
-            return ResponseRequest();
-        }
-
-        private Task<WorkflowTemplateGto> ExportTemplate(string resourceName, string fileName)
-        {
-            var template = new WorkflowTemplateGto();
-            var fs = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
-            if (fs == null)
-            {
-                throw new HoneywellException($"{resourceName} is not found");
-            }
-
-            var buffer = new byte[1024];
-            using var ms = new MemoryStream();
-            int read;
-            while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)
-            {
-                ms.Write(buffer, 0, read);
-            }
-
-            template.FileBytes = ms.ToArray();
-            template.FileName = fileName;
-            template.Status = ExecuteStatus.Successful;
-            return Task.FromResult(template);
-        }
-
-        public Task<IncidentGto> GetIncidentById(string incidentId)
-        {
-            var incidentInfo = StubData<IncidentGto[]>().First(m => m.Id == Guid.Parse(incidentId));
+            var incidentInfo = (await StubDataAsync<IncidentDetailGto[]>()).First(m => m.Id == Guid.Parse(incidentId));
             if (string.IsNullOrEmpty(incidentInfo.DeviceId))
             {
-                return Task.FromResult(incidentInfo);
+                return incidentInfo;
             }
 
             var devices = StubData<SiteDeviceGto[]>();
@@ -105,92 +45,95 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             var device = deviceList.First();
             incidentInfo.DeviceDisplayName = device.DeviceDisplayName;
             incidentInfo.DeviceLocation = device.DeviceLocation;
-            return Task.FromResult(incidentInfo);
+            return incidentInfo;
         }
 
-        public Task<string> CreateIncident(CreateIncidentRequestGto request)
+        public async Task<ApiResponse<string>> CreateAsync(CreateIncidentRequestGto request)
         {
-            var workflowName = StubData<WorkflowDesignGto[]>()
+            var workflowName = (await StubDataAsync<WorkflowDesignDetailGto[]>())
                 .FirstOrDefault(m => m.Id == Guid.Parse(request.WorkflowDesignReferenceId))
                 ?.Name;
-            var incident = StubData<IncidentGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
-            if (incident != null) return Task.FromResult(incident.Id.ToString());
+            var incident = StubData<IncidentDetailGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
+            if (incident != null) return incident.Id.ToString();
             throw new Exception("cannot found the incident");
         }
 
-        public Task<SiteDeviceGto[]> GetSiteDevices()
+        public async Task<ApiResponse<SiteDeviceGto[]>> GetSiteDevicesAsync()
         {
-            return StubDataTask<SiteDeviceGto[]>();
+            return await StubDataAsync<SiteDeviceGto[]>();
         }
 
-        public Task<ExecuteResult> RespondIncident(string incidentId)
-        {
-            return ResponseRequest();
-        }
-
-        private static Task<ExecuteResult> ResponseRequest()
-        {
-            var result = new ExecuteResult { Status = ExecuteStatus.Successful };
-            return Task.FromResult(result);
-        }
-
-        public Task<ExecuteResult> TakeoverIncident(string incidentId)
+        public Task<ApiResponse> RespondAsync(string incidentId)
         {
             return ResponseRequest();
         }
 
-        public Task<ExecuteResult> CloseIncident(string incidentId, string reason)
+        private static Task<ApiResponse> ResponseRequest()
+        {
+            var response = ApiResponse.CreateSuccess();
+            return Task.FromResult(response);
+        }
+
+        public Task<ApiResponse> TakeoverAsync(string incidentId)
         {
             return ResponseRequest();
         }
 
-        public Task<ExecuteResult> CompleteIncident(string incidentId)
+        public Task<ApiResponse> CloseAsync(string incidentId, string reason)
         {
             return ResponseRequest();
         }
 
-        public Task<ActiveIncidentListGto> GetActiveIncidentList()
+        public Task<ApiResponse> CompleteAsync(string incidentId)
         {
-            var result = StubData<List<ActiveIncidentGto>>();
-            return Task.FromResult(new ActiveIncidentListGto { List = result, Status = ExecuteStatus.Successful });
+            return ResponseRequest();
         }
 
-        public Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(
-            CreateByAlarmRequestGto request)
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync()
+        {
+            var result = await StubDataAsync<List<IncidentSummaryGto>>();
+            return result.ToArray();
+        }
+
+        public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(
+            CreateIncidentByAlarmRequestGto[] requests)
         {
             try
             {
-                var response = new CreateIncidentResponseGto();
-                foreach (var incidentData in request.CreateDatas)
+                var result = new List<Guid>();
+                foreach (var request in requests)
                 {
-                    var workflowName = StubData<WorkflowDesignGto[]>()
-                        .FirstOrDefault(m => m.Id == incidentData.WorkflowDesignReferenceId)?.Name;
+                    var workflowName = (await StubDataAsync<WorkflowDesignDetailGto[]>())
+                        .FirstOrDefault(m => m.Id == request.WorkflowDesignReferenceId)?.Name;
 
-                    var incident = StubData<IncidentGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
-                    if (incident == null)
+                    var incident = (await StubDataAsync<IncidentDetailGto[]>()).FirstOrDefault(m => m.WorkflowName == workflowName);
+
+                    if (incident != null)
+                    {
+                        result.Add(incident.Id);
+                    }
+                    else
                     {
                         throw new Exception("cannot found the incident");
                     }
-                    response.IncidentIds.Add(incident.Id);
                 }
 
-                return Task.FromResult(ApiResponse.CreateSuccess().To(response));
+                return result.ToArray();
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ApiResponse.CreateFailed(ex).To<CreateIncidentResponseGto>());
+                return ApiResponse.CreateFailed(ex).To<Guid[]>();
             }
         }
 
-        public Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(
-            GetStatusByAlarmRequestGto request)
+        public async Task<ApiResponse<IncidentStatusInfoGto[]>> GetStatusByAlarmAsync(string[] alarmIds)
         {
             try
             {
-                var response = new GetStatusByAlarmResponseGto();
-                foreach (var id in request.AlarmIds)
+                var result = new List<IncidentStatusInfoGto>();
+                foreach (var id in alarmIds)
                 {
-                    var incident = StubData<IncidentGto[]>().FirstOrDefault((m => m.DeviceId == id));
+                    var incident = (await StubDataAsync<IncidentDetailGto[]>()).FirstOrDefault((m => m.DeviceId == id));
                     if (incident == null)
                     {
                         throw new Exception($"cannot found the incident associates with alarm id {id}");
@@ -202,18 +145,19 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                         IncidentId = incident.Id,
                         Status = incident.State
                     };
-                    response.IncidentStatusInfos.Add(statusInfoGto);
+
+                    result.Add(statusInfoGto);
                 }
 
-                return Task.FromResult(ApiResponse.CreateSuccess().To(response));
+                return result.ToArray();
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ApiResponse.CreateFailed(ex).To<GetStatusByAlarmResponseGto>());
+                return ApiResponse.CreateFailed(ex).To<IncidentStatusInfoGto[]>();
             }
         }
 
-        public Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto)
+        public Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto)
         {
             return ResponseRequest();
         }

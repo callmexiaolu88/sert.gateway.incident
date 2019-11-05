@@ -25,7 +25,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             // arrange
             var mockResult = MockDevicesEntity();
             _mockDeviceApi.Setup(x => x.GetDevices())
-                .Returns(Task.FromResult(mockResult));
+                .ReturnsAsync(mockResult);
 
             // action
             var result = await _deviceRepository.GetDevices();
@@ -50,7 +50,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             // arrange
             var mockResult = MockDevicesEntity();
             _mockDeviceApi.Setup(x => x.GetDeviceById(It.IsAny<string>()))
-                .Returns(Task.FromResult(mockResult));
+                .ReturnsAsync(mockResult);
 
             // action
             var result = await _deviceRepository.GetDeviceById(It.IsAny<string>());

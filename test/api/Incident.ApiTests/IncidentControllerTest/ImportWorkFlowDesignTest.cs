@@ -1,5 +1,4 @@
-﻿using Honeywell.Gateway.Incident.Api.Gtos;
-using Xunit;
+﻿using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
 {
@@ -14,7 +13,7 @@ namespace Incident.ApiTests.IncidentControllerTest
         public async void ImportWorkFlowDesign_Success()
         {
             var result = ImportWorkflowDesign();
-            Assert.True(result.Result.Status == ExecuteStatus.Successful);
+            Assert.True(result.Result.IsSuccess);
             await DeleteWorkflowDesign();
         }
     }

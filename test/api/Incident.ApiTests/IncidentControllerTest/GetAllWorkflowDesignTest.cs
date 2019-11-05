@@ -25,12 +25,12 @@ namespace Incident.ApiTests.IncidentControllerTest
         public async void GetWorkflowDesignIds_Success()
         {
             await ImportWorkflowDesign();
-            var workflowDesigns = await WorkflowDesignGateWayApi.GetIds();
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetIdsAsync();
             Assert.NotNull(workflowDesigns);
             Assert.True(workflowDesigns.IsSuccess);
             Assert.NotNull(workflowDesigns.Value);
-            Assert.NotNull(workflowDesigns.Value.WorkflowDesignIds);
-            Assert.True(workflowDesigns.Value.WorkflowDesignIds.Any());
+            Assert.NotNull(workflowDesigns.Value);
+            Assert.True(workflowDesigns.Value.Any());
             await DeleteWorkflowDesign();
         }
     }

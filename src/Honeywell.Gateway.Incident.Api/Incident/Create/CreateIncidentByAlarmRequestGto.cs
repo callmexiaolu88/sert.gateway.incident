@@ -1,9 +1,9 @@
 ﻿using System;
-using Honeywell.Gateway.Incident.Api.Gtos;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 
 namespace Honeywell.Gateway.Incident.Api.Incident.Create
 {
-    public class CreateByAlarmGto
+    public class CreateIncidentByAlarmRequestGto
     {
         public Guid WorkflowDesignReferenceId { get; set; }
 

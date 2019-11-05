@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
@@ -18,12 +18,13 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
             await ImportWorkflowDesign();
             var workflowDesignId = GetFirstWorkflowDesignId();
-            var workflowDesignGto = await IncidentGateWayApi.GetWorkflowDesignById(workflowDesignId);
-            Assert.NotNull(workflowDesignGto);
-            Assert.NotNull(workflowDesignGto.Name);
-            Assert.NotNull(workflowDesignGto.Description);
-            Assert.NotNull(workflowDesignGto.Steps);
-            Assert.True(workflowDesignGto.Steps.Length > 0);
+            var workflowDesignGto = await WorkflowDesignGateWayApi.GetDetailByIdAsync(workflowDesignId);
+            Assert.True(workflowDesignGto.IsSuccess);
+            Assert.NotNull(workflowDesignGto.Value);
+            Assert.NotNull(workflowDesignGto.Value.Name);
+            Assert.NotNull(workflowDesignGto.Value.Description);
+            Assert.NotNull(workflowDesignGto.Value.Steps);
+            Assert.True(workflowDesignGto.Value.Steps.Length > 0);
             await DeleteWorkflowDesign();
         }
 
@@ -32,17 +33,14 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
             await ImportWorkflowDesign();
             var workflowDesignId = GetFirstWorkflowDesignId();
-            var request = new GetDetailsRequestGto
-            {
-                Ids = new[] {new Guid(workflowDesignId)}
-            };
-            var workflowDesigns = await WorkflowDesignGateWayApi.GetDetails(request);
+           
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetDetailsAsync(new[] { new Guid(workflowDesignId) });
 
             Assert.NotNull(workflowDesigns);
             Assert.True(workflowDesigns.IsSuccess);
             Assert.NotNull(workflowDesigns.Value);
-            Assert.NotNull(workflowDesigns.Value.WorkflowDesigns);
-            Assert.True(workflowDesigns.Value.WorkflowDesigns.Any());
+            Assert.NotNull(workflowDesigns.Value);
+            Assert.True(workflowDesigns.Value.Any());
             await DeleteWorkflowDesign();
         }
     }

@@ -31,10 +31,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             throw new HoneywellException($"can not identity the type {typeof(T).FullName}");
         }
 
-        protected Task<T> StubDataTask<T>()
+        protected async Task<T> StubDataAsync<T>()
         {
             var result = StubData<T>();
-            return Task.FromResult(result);
+            return await Task.FromResult(result);
         }
     }
 }

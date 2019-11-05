@@ -1,53 +1,40 @@
-﻿using System.IO;
+﻿using System;
+using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+using Honeywell.Gateway.Incident.Api.Incident.Create;
+using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core;
 using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.Gtos;
-using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
-using Honeywell.Infra.Api.Abstract;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
 
 namespace Honeywell.Gateway.Incident.Api
 {
     public interface IIncidentApi : IRemoteService
     {
-        Task<ExecuteResult> ImportWorkflowDesigns(Stream workflowDesignStream);
+        Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled);
 
-        Task<ExecuteResult> ValidatorWorkflowDesigns(Stream workflowDesignStream);
+        Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId);
 
-        Task<ExecuteResult> DeleteWorkflowDesigns(string[] workflowDesignIds);
+        Task<ApiResponse<string>> CreateAsync(CreateIncidentRequestGto request);
 
-        Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns();
+        Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync();
 
-        Task<WorkflowDesignSelectorListGto> GetWorkflowDesignSelectors();
+        Task<ApiResponse<SiteDeviceGto[]>> GetSiteDevicesAsync();
 
-        Task<WorkflowDesignGto> GetWorkflowDesignById(string workflowDesignId);
+        Task<ApiResponse> RespondAsync(string incidentId);
 
-        Task<WorkflowTemplateGto> DownloadWorkflowTemplate();
+        Task<ApiResponse> TakeoverAsync(string incidentId);
 
-        Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowDesignIds);
+        Task<ApiResponse> CloseAsync(string incidentId, string reason);
 
-        Task<ExecuteResult> UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
+        Task<ApiResponse> CompleteAsync(string incidentId);
 
-        Task<IncidentGto> GetIncidentById(string incidentId);
+        Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto);
 
-        Task<string> CreateIncident(CreateIncidentRequestGto request);
+        Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests);
 
-        Task<ActiveIncidentListGto> GetActiveIncidentList();
-
-        Task<SiteDeviceGto[]> GetSiteDevices();
-
-        Task<ExecuteResult> RespondIncident(string incidentId);
-
-        Task<ExecuteResult> TakeoverIncident(string incidentId);
-
-        Task<ExecuteResult> CloseIncident(string incidentId, string reason);
-
-        Task<ExecuteResult> CompleteIncident(string incidentId);
-
-        Task<ExecuteResult> AddStepComment(AddStepCommentGto addStepCommentGto);
-
-        Task<ApiResponse<CreateIncidentResponseGto>> CreateByAlarm(CreateByAlarmRequestGto request);
-
-        Task<ApiResponse<GetStatusByAlarmResponseGto>> GetStatusByAlarm(GetStatusByAlarmRequestGto request);
+        Task<ApiResponse<IncidentStatusInfoGto[]>> GetStatusByAlarmAsync(string[] alarmIds);
     }
 }
