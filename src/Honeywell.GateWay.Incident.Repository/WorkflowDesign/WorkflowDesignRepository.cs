@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
+using Honeywell.Infra.Core.Common.Exceptions;
 
 namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 {
@@ -28,6 +29,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
         {
             _workflowDesignApi = workflowDesignApi;
         }
+
         public async Task ImportWorkflowDesigns(Stream workflowDesignStream)
         {
             var responseDtoList = await _workflowDesignApi.ImportsAsync(workflowDesignStream);
@@ -42,20 +44,10 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
                 return ApiResponse.CreateSuccess(responseDtoList.Value.ImportResponseList[0].Errors[0]);
             }
 
-            var errors = responseDtoList.Value.ImportResponseList.SelectMany(x => x.Errors).Select(x => new MessageInfo(x, true));
-            var result = ApiResponse.CreateFailed();
-            result.Messages.Clear();
-            foreach(var importResponse in responseDtoList.Value.ImportResponseList)
-            {
-                foreach(var error in importResponse.Errors)
-                {
-                    var message = new MessageInfo(error, true);
-                    result.Messages.Add(message);
-                    result.MakeFrom();
-                }
-            }
+            var result = ApiResponse.CreateFailed().MakeFrom(responseDtoList);
 
             Logger.LogError($"call workflow design api Imports error:{string.Join(",", result.Messages.Select(x => x.Message))}");
+
             return result;
         }
 

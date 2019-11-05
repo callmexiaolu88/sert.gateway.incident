@@ -38,12 +38,14 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
 
         public async Task<ApiResponse> ValidateAsync(Stream workflowDesignStream)
         {
+            Logger.LogInformation("WorkflowDesignAppService.ValidateAsync entry.");
             try
             {
                 return await _workflowDesignRepository.ValidatorWorkflowDesigns(workflowDesignStream);
             }
             catch(Exception ex)
             {
+                Logger.LogError($"WorkflowDesignAppService.ValidateAsync exception: {ex}", ex);
                 return ApiResponse.CreateFailed(ex);
             }
         }
