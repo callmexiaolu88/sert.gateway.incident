@@ -42,7 +42,12 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
                 return ApiResponse.CreateSuccess(responseDtoList.Value.ImportResponseList[0].Errors[0]);
             }
 
-            var result = ApiResponse.CreateFailed().MakeFrom(responseDtoList);
+            var result = ApiResponse.CreateFailed();
+            var messages = responseDtoList.Value.ImportResponseList.SelectMany(responseDto => responseDto.Errors);
+            foreach (var message in messages)
+            {
+                result.MakeFrom(message, true);
+            }
 
             Logger.LogError($"call workflow design api Imports error:{string.Join(",", result.Messages.Select(x => x.Message))}");
 

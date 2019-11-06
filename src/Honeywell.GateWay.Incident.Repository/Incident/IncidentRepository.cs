@@ -20,6 +20,8 @@ using Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Infra.Core.Common.Exceptions;
+using Honeywell.Micro.Services.Incident.Api.Incident.Actions;
+using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 
 
@@ -65,7 +67,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var result = new IncidentDetailGto();
             var requestId = new[] { guid };
-            var response = await _incidentFacadeApi.GetDetailsAsync(new GetDetailRequestDto { IncidentIds = requestId });
+            var response = await _incidentFacadeApi.GetDetailsAsync(new GetIncidentDetailsRequestDto { Ids = requestId });
             ApiResponse.ThrowExceptionIfFailed(response);
 
             HoneyMapper.Map(response.Value.Details[0], result);
@@ -91,9 +93,9 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var facadeRequest = new CreateIncidentRequestDto
             {
-                CreateIncidentDatas = new[]
+                CreateIncidentDtos = new[]
                 {
-                    new CreateIncidentDataDto
+                    new CreateIncidentDto
                     {
                         WorkflowDesignReferenceId = workflowDesignReferenceId,
                         Priority = priority,
@@ -121,7 +123,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 throw new HoneywellException(msg);
             }
 
-            var request = new FacadeApi.Actions.IncidentActionRequestDto { IncidentId = incidentGuid };
+            var request = new IncidentActionRequestDto { IncidentId = incidentGuid };
 
             var response = await _incidentFacadeApi.RespondAsync(request);
             ApiResponse.ThrowExceptionIfFailed(response);
@@ -137,7 +139,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 throw new ArgumentException(msg);
             }
 
-            var request = new FacadeApi.Actions.IncidentActionRequestDto { IncidentId = incidentGuid };
+            var request = new IncidentActionRequestDto { IncidentId = incidentGuid };
 
             var response = await _incidentFacadeApi.TakeoverAsync(request);
          
@@ -154,7 +156,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 throw new ArgumentException(msg);
             }
 
-            var request = new FacadeApi.Close.CloseIncidentRequestDto { IncidentId = incidentGuid, Reason = reason };
+            var request = new CloseIncidentRequestDto { IncidentId = incidentGuid, Reason = reason };
 
             var response = await _incidentFacadeApi.CloseAsync(request);
 
@@ -171,7 +173,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 throw new ArgumentException(msg);
             }
 
-            var request = new FacadeApi.Actions.IncidentActionRequestDto { IncidentId = incidentGuid };
+            var request = new IncidentActionRequestDto { IncidentId = incidentGuid };
 
             var response = await _incidentFacadeApi.CompleteAsync(request);
 
