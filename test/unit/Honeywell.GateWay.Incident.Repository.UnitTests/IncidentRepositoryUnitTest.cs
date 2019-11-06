@@ -292,14 +292,14 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var reason = "close reason";
             _mockIncidentFacadeApi
                 .Setup(api =>
-                    api.CloseAsync(It.Is<FacadeApi.Close.CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                    api.CloseAsync(It.Is<FacadeApi.Action.CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
                 .ReturnsAsync(new FacadeApi.IncidentActionResponseDto());
 
             //act
             _incidentRepository.CloseIncident(incidentId.ToString(), reason).Wait();
 
             //assert
-            _mockIncidentFacadeApi.Verify(api => api.CloseAsync(It.IsAny<FacadeApi.Close.CloseIncidentRequestDto>()), Times.Once);
+            _mockIncidentFacadeApi.Verify(api => api.CloseAsync(It.IsAny<FacadeApi.Action.CloseIncidentRequestDto>()), Times.Once);
         }
 
         [Fact]
@@ -326,7 +326,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockIncidentFacadeApi
                 .Setup(api =>
                     api.CloseAsync(
-                        It.Is<FacadeApi.Close.CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
+                        It.Is<FacadeApi.Action.CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
                 .ReturnsAsync(mockResponse);
 
             //act

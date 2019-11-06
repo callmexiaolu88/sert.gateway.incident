@@ -155,7 +155,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 throw new ArgumentException(msg);
             }
 
-            var request = new FacadeApi.Close.CloseIncidentRequestDto { IncidentId = incidentGuid, Reason = reason };
+            var request = new FacadeApi.Actions.CloseIncidentRequestDto { IncidentId = incidentGuid, Reason = reason };
 
             var response = await _incidentFacadeApi.CloseAsync(request);
 
