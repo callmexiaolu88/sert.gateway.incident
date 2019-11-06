@@ -2,7 +2,6 @@
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
 using Honeywell.Infra.Api.Abstract;
-using Honeywell.Infra.Core;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
@@ -17,7 +16,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
-using Honeywell.Infra.Core.Common.Exceptions;
 
 namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 {
@@ -108,7 +106,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
             Logger.LogInformation(
                 $"call workflow design api ExportWorkflows Start|workflowId.Length:{workflowIds.Length},guids:{string.Join(",", workflowIds.ToArray())}");
             Guid[] guidWorkflowIds = workflowIds.Select(o => Guid.Parse(o)).ToArray();
-            var exportWorkflowRequestDto = new ExportWorkflowRequestDto() { WorkflowIds = guidWorkflowIds };
+            var exportWorkflowRequestDto = new ExportWorkflowRequestDto { WorkflowIds = guidWorkflowIds };
             var result = await _workflowDesignApi.ExportAsync(exportWorkflowRequestDto);
 
             ApiResponse.ThrowExceptionIfFailed(result);

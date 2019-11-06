@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Xunit;
+﻿using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
 {

@@ -3,7 +3,6 @@ using Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.GateWay.Incident.Repository.Incident;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Micro.Services.Incident.Api;
@@ -24,13 +23,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Infra.Core.Common.Exceptions;
-using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
 using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
 
-#pragma warning disable CS0612 // Type or member is obsolete
 
 namespace Honeywell.GateWay.Incident.Repository.UnitTests
 {

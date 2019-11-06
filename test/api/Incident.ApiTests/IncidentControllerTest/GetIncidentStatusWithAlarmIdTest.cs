@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
