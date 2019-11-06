@@ -1,14 +1,11 @@
 ﻿using System;
-using System.IO;
 using Honeywell.Gateway.Incident.Api;
 using System.Threading.Tasks;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Microsoft.AspNetCore.Mvc;
-using System.Web;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Infra.Api.Abstract;
 using Microsoft.Extensions.Logging;
-using Honeywell.Gateway.Incident.Api.Incident;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;

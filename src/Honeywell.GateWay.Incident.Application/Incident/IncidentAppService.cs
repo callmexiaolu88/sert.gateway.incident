@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
@@ -11,7 +10,6 @@ using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Api.Abstract;
-using Honeywell.Infra.Core.Common.Exceptions;
 using Honeywell.Infra.Core.Ddd.Application;
 using Microsoft.Extensions.Logging;
 

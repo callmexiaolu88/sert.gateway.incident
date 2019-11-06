@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
@@ -10,8 +9,6 @@ using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
-using Honeywell.Infra.Api.Abstract;
-using Microsoft.Extensions.Localization.Internal;
 using Moq;
 using Xunit;
 
