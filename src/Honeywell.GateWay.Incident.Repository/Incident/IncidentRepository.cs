@@ -22,7 +22,6 @@ using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Infra.Core.Common.Exceptions;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 
-#pragma warning disable CS0612 // Type or member is obsolete
 
 namespace Honeywell.GateWay.Incident.Repository.Incident
 {
@@ -90,11 +89,11 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 throw new ArgumentException(msg);
             }
 
-            var facadeRequest = new FacadeApi.Create.CreateIncidentRequestDto
+            var facadeRequest = new CreateIncidentRequestDto
             {
                 CreateIncidentDatas = new[]
                 {
-                    new FacadeApi.Create.CreateIncidentDataDto
+                    new CreateIncidentDataDto
                     {
                         WorkflowDesignReferenceId = workflowDesignReferenceId,
                         Priority = priority,

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
@@ -52,15 +51,15 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 
         public Task<ApiResponse<WorkflowTemplateGto>> DownloadTemplateAsync()
         {
-            var resourceName = "Honeywell.GateWay.Incident.ApplicationStub.Template.WorkflowTemplate.en-us.dotx";
-            var fileName = "WorkflowTemplate.dotx";
+            const string resourceName = "Honeywell.GateWay.Incident.ApplicationStub.Template.WorkflowTemplate.en-us.dotx";
+            const string fileName = "WorkflowTemplate.dotx";
             return ExportTemplate(resourceName, fileName);
         }
 
-        public Task<ApiResponse<WorkflowTemplateGto>> ExportsAsync(string[] workflowIds)
+        public Task<ApiResponse<WorkflowTemplateGto>> ExportsAsync(string[] workflowDesignIds)
         {
-            var resourceName = "Honeywell.GateWay.Incident.ApplicationStub.Template.Workflows.docx";
-            var fileName = "Workflows.docx";
+            const string resourceName = "Honeywell.GateWay.Incident.ApplicationStub.Template.Workflows.docx";
+            const string fileName = "Workflows.docx";
             return ExportTemplate(resourceName, fileName);
         }
 
