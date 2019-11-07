@@ -1,9 +1,9 @@
 ﻿using System;
-using Honeywell.Gateway.Incident.Api.Gtos;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.Status;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.Detail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.List;
+using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
+using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Infra.Api.Abstract;
 using Newtonsoft.Json;
 
@@ -22,33 +22,30 @@ namespace CustomApiDemo
         {
             try
             {
-                var request = new CreateByAlarmRequestGto
+                var request = new[]
                 {
-                    CreateDatas = new[]
+                    new CreateIncidentByAlarmRequestGto
                     {
-                        new CreateByAlarmGto
+                        //you can get the id from GetWorkflowDesignIds method
+                        WorkflowDesignReferenceId = new Guid(),
+                        Priority = IncidentPriority.High,
+                        Description = "Demo description",
+                        //the device id is that associates with alarm
+                        DeviceId = new Guid().ToString(),
+                        DeviceType = "Door",
+                        //the trigger id is alarm id
+                        AlarmId = new Guid().ToString(),
+                        AlarmData = new AlarmData
                         {
-                            //you can get the id from GetWorkflowDesignIds method
-                            WorkflowDesignReferenceId = new Guid(),
-                            Priority = IncidentPriority.High,
-                            Description = "Demo description",
-                            //the device id is that associates with alarm
-                            DeviceId = new Guid().ToString(),
-                            DeviceType = "Door",
-                            //the trigger id is alarm id
-                            AlarmId = new Guid().ToString(),
-                            AlarmData = new AlarmData
-                            {
-                                AlarmType = "Void badge",
-                                Description = "alarm description"
+                            AlarmType = "Void badge",
+                            Description = "alarm description"
 
-                            }
                         }
                     }
                 };
 
-                var designs = _httpHelper.PostAsync<CreateByAlarmRequestGto,
-                    ApiResponse<CreateIncidentResponseGto>>("api/Incident/CreateByAlarm", request);
+                var designs = _httpHelper.PostAsync<CreateIncidentByAlarmRequestGto[],
+                    ApiResponse<Guid[]>>("api/Incident/CreateByAlarm", request);
                 Console.WriteLine(JsonConvert.SerializeObject(designs.Result));
             }
             catch (Exception ex)
@@ -61,16 +58,13 @@ namespace CustomApiDemo
         {
             try
             {
-                var request = new GetStatusByAlarmRequestGto
+                var request = new[]
                 {
-                    AlarmIds = new[]
-                    {
-                        new Guid().ToString(),
-                    }
+                    new Guid().ToString(),
                 };
 
                 var workflowDesigns =
-                    _httpHelper.PostAsync<GetStatusByAlarmRequestGto, ApiResponse<GetStatusByAlarmResponseGto>>(
+                    _httpHelper.PostAsync<string[], ApiResponse<IncidentStatusInfoGto[]>>(
                         "api/Incident/GetStatusByAlarm", request);
                 Console.WriteLine(JsonConvert.SerializeObject(workflowDesigns.Result));
             }
@@ -84,16 +78,13 @@ namespace CustomApiDemo
         {
             try
             {
-                var request = new GetDetailsRequestGto
+                var request = new[]
                 {
-                    Ids = new[]
-                    {
-                        new Guid(),
-                    }
+                    new Guid(),
                 };
 
                 var workflowDesigns =
-                    _httpHelper.PostAsync<GetDetailsRequestGto, ApiResponse<GetDetailsResponseGto>>(
+                    _httpHelper.PostAsync<Guid[], ApiResponse<WorkflowDesignDetailGto[]>>(
                         "api/WorkflowDesign/GetDetails", request);
                 Console.WriteLine(JsonConvert.SerializeObject(workflowDesigns.Result));
             }
@@ -109,7 +100,7 @@ namespace CustomApiDemo
             try
             {
                 var summaries =
-                    _httpHelper.PostAsync<ApiResponse<GetIdsResponseGto>>("api/WorkflowDesign/GetIds");
+                    _httpHelper.PostAsync<ApiResponse<WorkflowDesignIdGto[]>>("api/WorkflowDesign/GetIds");
 
                 Console.WriteLine(JsonConvert.SerializeObject(summaries.Result));
             }

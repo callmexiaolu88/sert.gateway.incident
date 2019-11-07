@@ -37,13 +37,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Honeywell.Gateway.Incident.Api, Version=0.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Packages\Honeywell.Gateway.Incident.Api.0.0.2.159\lib\netstandard2.0\Honeywell.Gateway.Incident.Api.dll</HintPath>
+      <HintPath>..\Packages\Honeywell.Gateway.Incident.Api.0.0.2.179\lib\netstandard2.0\Honeywell.Gateway.Incident.Api.dll</HintPath>
     </Reference>
     <Reference Include="Honeywell.Infra.Api.Abstract, Version=0.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Packages\Honeywell.Infra.Api.Abstract.0.0.2.222\lib\netstandard2.0\Honeywell.Infra.Api.Abstract.dll</HintPath>
+      <HintPath>..\Packages\Honeywell.Infra.Api.Abstract.0.0.2.240\lib\netstandard2.0\Honeywell.Infra.Api.Abstract.dll</HintPath>
     </Reference>
     <Reference Include="Honeywell.Infra.Core, Version=0.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Packages\Honeywell.Infra.Core.0.0.2.222\lib\netstandard2.0\Honeywell.Infra.Core.dll</HintPath>
+      <HintPath>..\Packages\Honeywell.Infra.Core.0.0.2.240\lib\netstandard2.0\Honeywell.Infra.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\Packages\Microsoft.Bcl.AsyncInterfaces.1.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
