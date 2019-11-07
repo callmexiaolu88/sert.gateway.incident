@@ -25,7 +25,7 @@ namespace Incident.ApiTests.IncidentControllerTest
                 .ToArray()), Encoding.UTF8, "application/json");
 
             var response =
-                await httpClient.PostAsync($"/api/Incident/ExportWorkflowDesigns", content, httpClient.InitHeader());
+                await httpClient.PostAsync($"/api/WorkflowDesign/Exports", content, httpClient.InitHeader());
             var resultData = await response.Content.ReadAsStreamAsync();
             Assert.True(resultData.Length > 100);
 
