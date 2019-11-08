@@ -10,7 +10,7 @@
     <PackageReference Include="Honeywell.Infra.Core" Version="0.0.2.*" />
     <PackageReference Include="Honeywell.Infra.HoneyMapper.AutoMapper" Version="0.0.2.*" />
     <PackageReference Include="Honeywell.Micro.Services.Incident.Api" Version="0.0.2.*" />
-    <PackageReference Include="Honeywell.Micro.Services.LiveData.Api" Version="0.0.1.13" />
+    <PackageReference Include="Honeywell.Micro.Services.LiveData.Api" Version="0.0.1.*" />
     <PackageReference Include="Honeywell.Micro.Services.Workflow.Api" Version="0.0.2.*" />
   </ItemGroup>
 
