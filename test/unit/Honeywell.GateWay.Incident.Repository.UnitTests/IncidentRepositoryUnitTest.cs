@@ -3,7 +3,6 @@ using Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
-using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.GateWay.Incident.Repository.Incident;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Common.Exceptions;
@@ -25,9 +24,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.LiveData.Api;
 using Xunit;
 using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
 using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
+using IncidentStatus = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentStatus;
 
 
 namespace Honeywell.GateWay.Incident.Repository.UnitTests
@@ -38,6 +39,9 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         private readonly Mock<IIncidentMicroApi> _mockIncidentMicroApi;
         private readonly Mock<IWorkflowMicroApi> _mockWorkflowMicroApi;
         private readonly Mock<IIncidentFacadeApi> _mockIncidentFacadeApi;
+        private readonly Mock<IIncidentLiveData> _mockIncidentLiveDataApi;
+
+         
 
         private readonly IIncidentRepository _incidentRepository;
 
@@ -47,11 +51,13 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
             _mockWorkflowMicroApi = new Mock<IWorkflowMicroApi>();
             _mockIncidentFacadeApi = new Mock<IIncidentFacadeApi>();
+            _mockIncidentLiveDataApi = new Mock<IIncidentLiveData>();
             _incidentRepository = new IncidentRepository(
                 _workflowDesignMicroApiMock.Object,
                 _mockIncidentMicroApi.Object,
                 _mockWorkflowMicroApi.Object,
-                _mockIncidentFacadeApi.Object);
+                _mockIncidentFacadeApi.Object,
+                _mockIncidentLiveDataApi.Object);
         }
 
         [Fact]

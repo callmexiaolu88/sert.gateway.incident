@@ -207,6 +207,19 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
+        public async Task<ApiResponse<ActivityGto[]>> GetActivitysAsync(string incidentId)
+        {
+            try
+            {
+                return await _incidentRepository.GetActivitysAsync(incidentId);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<ActivityGto[]>();
+            }
+        }
+
         public async Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto)
         {
             try

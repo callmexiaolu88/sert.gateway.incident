@@ -1,5 +1,4 @@
 ﻿using Honeywell.Facade.Services.Incident.Api;
-using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
@@ -22,6 +21,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Infra.Core.Common.Exceptions;
 using Honeywell.Micro.Services.Incident.Api.Incident.Actions;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.LiveData.Api;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 
 
@@ -34,18 +34,21 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         private readonly IIncidentMicroApi _incidentMicroApi;
         private readonly IWorkflowMicroApi _workflowMicroApi;
         private readonly IIncidentFacadeApi _incidentFacadeApi;
+        private readonly IIncidentLiveData _incidentLiveDataApi;
 
         public IncidentRepository(IWorkflowDesignMicroApi workflowDesignApi,
             IIncidentMicroApi incidentMicroApi,
             IWorkflowMicroApi workflowMicroApi,
-            IIncidentFacadeApi incidentFacadeApi)
+            IIncidentFacadeApi incidentFacadeApi,
+            IIncidentLiveData incidentLiveDataApi)
         {
             _workflowDesignApi = workflowDesignApi;
             _incidentMicroApi = incidentMicroApi;
             _workflowMicroApi = workflowMicroApi;
             _incidentFacadeApi = incidentFacadeApi;
+            _incidentLiveDataApi = incidentLiveDataApi;
         }
-    
+
         public async Task UpdateWorkflowStepStatus(string workflowStepId, bool isHandled)
         {
             Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
@@ -127,6 +130,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var response = await _incidentFacadeApi.RespondAsync(request);
             ApiResponse.ThrowExceptionIfFailed(response);
+
+            await NotificationActivity(incidentId);
         }
 
         public async Task TakeoverIncident(string incidentId)
@@ -142,8 +147,10 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var request = new IncidentActionRequestDto { IncidentId = incidentGuid };
 
             var response = await _incidentFacadeApi.TakeoverAsync(request);
-         
+
             ApiResponse.ThrowExceptionIfFailed(response);
+
+            await NotificationActivity(incidentId);
         }
 
         public async Task CloseIncident(string incidentId, string reason)
@@ -161,6 +168,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var response = await _incidentFacadeApi.CloseAsync(request);
 
             ApiResponse.ThrowExceptionIfFailed(response);
+
+            await NotificationActivity(incidentId);
         }
 
         public async Task CompleteIncident(string incidentId)
@@ -178,6 +187,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var response = await _incidentFacadeApi.CompleteAsync(request);
 
             ApiResponse.ThrowExceptionIfFailed(response);
+
+            await NotificationActivity(incidentId);
         }
 
         public async Task<IncidentSummaryGto[]> GetActiveIncidentList()
@@ -217,7 +228,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var facadeRequest =
                 HoneyMapper.Map<CreateIncidentByAlarmRequestGto[], CreateIncidentByAlarmDto[]>(requests);
 
-            var response = await _incidentFacadeApi.CreateByAlarmAsync(new CreateIncidentByAlarmRequestDto{CreateIncidentDatas = facadeRequest});
+            var response = await _incidentFacadeApi.CreateByAlarmAsync(new CreateIncidentByAlarmRequestDto { CreateIncidentDatas = facadeRequest });
             ApiResponse.ThrowExceptionIfFailed(response);
 
             return response.Value.IncidentIds.ToArray();
@@ -227,11 +238,25 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         {
             Logger.LogInformation($"call Incident api {nameof(GetIncidentStatusByAlarm)} Start");
 
-            var response = await _incidentMicroApi.GetStatusByTriggerAsync(new GetIncidentStatusRequestDto{TriggerIds = alarmIds});
+            var response = await _incidentMicroApi.GetStatusByTriggerAsync(new GetIncidentStatusRequestDto { TriggerIds = alarmIds });
             ApiResponse.ThrowExceptionIfFailed(response);
 
             var result = HoneyMapper.Map<IncidentStatusDto[], IncidentStatusInfoGto[]>(response.Value.IncidentStatusInfos.ToArray());
             return result;
+        }
+
+        public Task<ApiResponse<ActivityGto[]>> GetActivitysAsync(string incidentId)
+        {
+            throw new NotImplementedException();
+            //Logger.LogInformation($"call Incident api {nameof(GetActivitysAsync)} Start");
+
+            //var response = await _incidentMicroApi
+
+
+            //ApiResponse.ThrowExceptionIfFailed(response);
+
+            //var result = HoneyMapper.Map<IncidentActivityDto[], ActivityGto[]>(response.Activitys);
+            //return result;
         }
 
         public async Task AddStepComment(AddStepCommentRequestGto addStepCommentGto)
@@ -248,6 +273,19 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var response = await _workflowMicroApi.AddStepCommentAsync(requestDto);
 
             ApiResponse.ThrowExceptionIfFailed(response);
+
+
+        }
+
+        private async Task NotificationActivity(string incidentId)
+        {
+            await SendLiveData(new IncidentActivities(incidentId));
+        }
+
+
+        private async Task SendLiveData(EventData eventData)
+        {
+            await _incidentLiveDataApi.SendEventData(eventData);
         }
     }
 }

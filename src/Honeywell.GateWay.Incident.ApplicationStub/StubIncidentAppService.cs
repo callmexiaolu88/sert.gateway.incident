@@ -152,6 +152,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             }
         }
 
+        public async Task<ApiResponse<ActivityGto[]>> GetActivitysAsync(string incidentId)
+        {
+            return await StubDataAsync<ActivityGto[]>();
+        }
+
         public Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto)
         {
             return ResponseRequest();
