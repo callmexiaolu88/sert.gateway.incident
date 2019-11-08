@@ -39,7 +39,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         private readonly Mock<IIncidentMicroApi> _mockIncidentMicroApi;
         private readonly Mock<IWorkflowMicroApi> _mockWorkflowMicroApi;
         private readonly Mock<IIncidentFacadeApi> _mockIncidentFacadeApi;
-        private readonly Mock<IIncidentLiveData> _mockIncidentLiveDataApi;
+        private readonly Mock<ILiveDataApi> _mockLiveDataApi;
 
          
 
@@ -51,13 +51,18 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
             _mockWorkflowMicroApi = new Mock<IWorkflowMicroApi>();
             _mockIncidentFacadeApi = new Mock<IIncidentFacadeApi>();
-            _mockIncidentLiveDataApi = new Mock<IIncidentLiveData>();
+            _mockLiveDataApi = new Mock<ILiveDataApi>();
             _incidentRepository = new IncidentRepository(
                 _workflowDesignMicroApiMock.Object,
                 _mockIncidentMicroApi.Object,
                 _mockWorkflowMicroApi.Object,
                 _mockIncidentFacadeApi.Object,
-                _mockIncidentLiveDataApi.Object);
+                _mockLiveDataApi.Object);
+        }
+
+        private void MockLiveData()
+        {
+            _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<EventData>()));
         }
 
         [Fact]
@@ -65,12 +70,13 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var workflowStepId = Guid.NewGuid();
+            MockLiveData();
             _mockWorkflowMicroApi
                 .Setup(api => api.UpdateStepStatusAsync(It.IsAny<UpdateWorkflowStepStatusRequestDto>()))
                 .ReturnsAsync(new WorkflowActionResponseDto());
 
             //act
-            await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId.ToString(), true);
+            await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId.ToString(), true,Guid.NewGuid().ToString());
 
             //assert
             _mockWorkflowMicroApi.Verify(api => api.UpdateStepStatusAsync(It.IsAny<UpdateWorkflowStepStatusRequestDto>()), Times.Once);
@@ -87,7 +93,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 .ReturnsAsync(mockResponse);
 
             //act
-            var act = new Func<Task>(async () => await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId.ToString(), true));
+            var act = new Func<Task>(async () => await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId.ToString(), true,It.IsAny<string>()));
 
             //assert
             await Assert.ThrowsAsync<HoneywellException>(act);
@@ -241,6 +247,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         public void TakeoverIncident_Success()
         {
             //arrange
+            MockLiveData();
             var incidentId = Guid.NewGuid();
             _mockIncidentFacadeApi
                 .Setup(api =>
@@ -292,6 +299,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         public void CloseIncident_Success()
         {
             //arrange
+            MockLiveData();
             var incidentId = Guid.NewGuid();
             var reason = "close reason";
             _mockIncidentFacadeApi
@@ -497,6 +505,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         public async Task AddStepComment_Success()
         {
             //arrange
+            MockLiveData();
             var response = new WorkflowActionResponseDto();
 
             _mockWorkflowMicroApi.Setup(api => api.AddStepCommentAsync(It.IsAny<AddStepCommentRequestDto>()))
@@ -506,7 +515,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var addStepCommentGto = new AddStepCommentRequestGto()
             {
                 WorkflowStepId = Guid.NewGuid().ToString(),
-                Comment = "this is comment"
+                Comment = "this is comment",
+                IncidentId = Guid.NewGuid().ToString()
             };
             await _incidentRepository.AddStepComment(addStepCommentGto);
 

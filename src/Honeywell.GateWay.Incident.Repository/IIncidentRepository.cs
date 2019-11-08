@@ -11,7 +11,7 @@ namespace Honeywell.GateWay.Incident.Repository
 {
     public interface IIncidentRepository
     {
-        Task UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
+        Task UpdateWorkflowStepStatus(string workflowStepId, bool isHandled,string incidentId);
 
         Task<IncidentDetailGto> GetIncidentById(string incidentId);
 

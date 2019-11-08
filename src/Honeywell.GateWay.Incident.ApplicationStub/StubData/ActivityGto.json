@@ -1,15 +1,5 @@
 ﻿[
   {
-    "id": "F0AC3B6E-D61C-4CF5-B67A-A6D02DBBA49A",
-    "workflowId": "17320F8C-52E5-4AAE-A2A2-B50A2F1F77D8",
-    "workflowDesignName": "Event Prep Master 1",
-    "createAtUtc": "2019-09-27 21:03:33",
-    "owner": "admin1",
-    "completedSteps": 0,
-    "totalSteps": 2,
-    "number": 237,
-    "priority": 0,
-    "deviceId": "",
-    "deviceType": ""
+    
   }
 ]

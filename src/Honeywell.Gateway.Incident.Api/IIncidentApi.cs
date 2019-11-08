@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
@@ -14,7 +13,7 @@ namespace Honeywell.Gateway.Incident.Api
 {
     public interface IIncidentApi : IRemoteService
     {
-        Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled);
+        Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled,string incidentId);
 
         Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId);
 

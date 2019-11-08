@@ -29,11 +29,11 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             _deviceRepository = deviceRepository;
         }
 
-        public async Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled)
+        public async Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled,string incidentId)
         {
             try
             {
-                await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId, isHandled);
+                await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId, isHandled, incidentId);
                 return ApiResponse.CreateSuccess();
             }
             catch (Exception ex)

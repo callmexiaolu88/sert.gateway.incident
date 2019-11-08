@@ -17,11 +17,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
     public class StubIncidentAppService : BaseIncidentStub, IIncidentAppService
     {
   
-        public Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled)
+        public Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled, string incidentId)
         {
             return ResponseRequest();
         }
-
 
         public async Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId)
         {

@@ -9,15 +9,17 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
 
         }
+
         [Fact]
         public async void UpdateWorkflowStepStatus_Success()
         {
+            
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
 
             var incidentDetails = await IncidentGateWayApi.GetDetailAsync(incidentId);
             var workflowStepId = incidentDetails.Value.IncidentSteps[0].Id;
-            var result = await IncidentGateWayApi.UpdateStepStatusAsync(workflowStepId.ToString(), true);
+            var result = await IncidentGateWayApi.UpdateStepStatusAsync(workflowStepId.ToString(), true, incidentId);
             Assert.True(result.IsSuccess);
 
             await DeleteIncident(incidentId);

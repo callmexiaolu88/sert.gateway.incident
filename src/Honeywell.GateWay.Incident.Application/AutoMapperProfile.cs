@@ -76,6 +76,9 @@ namespace Honeywell.GateWay.Incident.Application
             CreateMap<IncidentState, IncidentStatus>();
 
             CreateMap<Honeywell.Facade.Services.Incident.Api.Incident.Create.AlarmData, AlarmData>();
+
+            CreateMap<IncidentActivityDto, ActivityGto>()
+                .ForMember(dest => dest.Operator, opt => opt.MapFrom(src => src.Manipulator));
         }
     }
 }
