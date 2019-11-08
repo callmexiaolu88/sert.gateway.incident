@@ -248,7 +248,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return result;
         }
 
-        public async Task<ApiResponse<ActivityGto[]>> GetActivitysAsync(string incidentId)
+        public async Task<ActivityGto[]> GetActivitysAsync(string incidentId)
         {
 
             Logger.LogInformation($"call Incident api {nameof(GetActivitysAsync)} Start");
