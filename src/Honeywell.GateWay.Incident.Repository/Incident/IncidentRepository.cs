@@ -275,7 +275,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
         private async Task NotificationActivity(string incidentId)
         {
-            if (!Guid.TryParse(incidentId, out var incidentGuid))
+            if (!Guid.TryParse(incidentId, out _))
             {
                 Logger.LogError($"wrong incident id: {incidentId}");
                 return;
