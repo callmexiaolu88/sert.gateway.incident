@@ -104,6 +104,7 @@ namespace Honeywell.Gateway.Incident
             return result;
         }
 
+        [HttpPost]
         public async Task<ApiResponse<ActivityGto[]>> GetActivitysAsync(string incidentId)
         {
             var result = await _incidentAppService.GetActivitysAsync(incidentId);
