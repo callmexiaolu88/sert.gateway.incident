@@ -66,9 +66,9 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<EventData>()));
         }
 
-        private UpdateWorkflowStepStatusGto MockStepStatusGto()
+        private UpdateStepStatusRequestGto MockStepStatusGto()
         {
-            var gto = new UpdateWorkflowStepStatusGto
+            var gto = new UpdateStepStatusRequestGto
             {
                 IncidentId = Guid.NewGuid().ToString(), IsHandled = true, WorkflowStepId = Guid.NewGuid().ToString()
             };

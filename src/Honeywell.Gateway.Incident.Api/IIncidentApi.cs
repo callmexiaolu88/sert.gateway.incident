@@ -14,7 +14,7 @@ namespace Honeywell.Gateway.Incident.Api
 {
     public interface IIncidentApi : IRemoteService
     {
-        Task<ApiResponse> UpdateStepStatusAsync(UpdateWorkflowStepStatusGto updatewrokflowStepStatusGto);
+        Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updatewrokflowStepStatusGto);
 
         Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId);
 

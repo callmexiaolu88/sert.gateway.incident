@@ -50,7 +50,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             _liveDataApi = liveDataApi;
         }
 
-        public async Task UpdateWorkflowStepStatus(UpdateWorkflowStepStatusGto updateWorflowStepStatusGto)
+        public async Task UpdateWorkflowStepStatus(UpdateStepStatusRequestGto updateWorflowStepStatusGto)
         {
             Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
             var workflowStepGuid = Guid.Parse(updateWorflowStepStatusGto.WorkflowStepId);

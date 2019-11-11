@@ -1,6 +1,6 @@
 ﻿namespace Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus
 {
-    public class UpdateWorkflowStepStatusGto
+    public class UpdateStepStatusRequestGto
     {
         public string WorkflowStepId { get; set; }
 
