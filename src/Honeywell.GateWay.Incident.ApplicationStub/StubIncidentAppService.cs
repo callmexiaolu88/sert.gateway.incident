@@ -8,6 +8,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
@@ -17,7 +18,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
     public class StubIncidentAppService : BaseIncidentStub, IIncidentAppService
     {
   
-        public Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled, string incidentId)
+        public Task<ApiResponse> UpdateStepStatusAsync(UpdateWorkflowStepStatusGto updateWorkflowStepStatusGto)
         {
             return ResponseRequest();
         }

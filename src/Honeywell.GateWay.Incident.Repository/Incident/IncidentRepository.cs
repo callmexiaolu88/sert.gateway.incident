@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Infra.Core.Common.Exceptions;
 using Honeywell.Micro.Services.Incident.Api.Incident.Actions;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
@@ -49,18 +50,18 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             _liveDataApi = liveDataApi;
         }
 
-        public async Task UpdateWorkflowStepStatus(string workflowStepId, bool isHandled,string incidentId)
+        public async Task UpdateWorkflowStepStatus(UpdateWorkflowStepStatusGto updateWorflowStepStatusGto)
         {
             Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
-            var workflowStepGuid = Guid.Parse(workflowStepId);
+            var workflowStepGuid = Guid.Parse(updateWorflowStepStatusGto.WorkflowStepId);
 
-            var request = new UpdateWorkflowStepStatusRequestDto { WorkflowStepId = workflowStepGuid, IsHandled = isHandled };
+            var request = new UpdateWorkflowStepStatusRequestDto { WorkflowStepId = workflowStepGuid, IsHandled = updateWorflowStepStatusGto.IsHandled };
 
             var response = await _workflowMicroApi.UpdateStepStatusAsync(request);
 
             ApiResponse.ThrowExceptionIfFailed(response);
 
-            await NotificationActivity(incidentId);
+            await NotificationActivity(updateWorflowStepStatusGto.IncidentId);
         }
 
         public async Task<IncidentDetailGto> GetIncidentById(string incidentId)

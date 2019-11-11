@@ -7,6 +7,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Api.Abstract;
@@ -29,11 +30,11 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             _deviceRepository = deviceRepository;
         }
 
-        public async Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled,string incidentId)
+        public async Task<ApiResponse> UpdateStepStatusAsync(UpdateWorkflowStepStatusGto updateWorkflowStepStatusGto)
         {
             try
             {
-                await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId, isHandled, incidentId);
+                await _incidentRepository.UpdateWorkflowStepStatus(updateWorkflowStepStatusGto);
                 return ApiResponse.CreateSuccess();
             }
             catch (Exception ex)

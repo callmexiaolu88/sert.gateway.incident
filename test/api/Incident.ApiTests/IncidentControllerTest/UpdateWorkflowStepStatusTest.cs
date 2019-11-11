@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
+using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
 {
@@ -19,7 +20,11 @@ namespace Incident.ApiTests.IncidentControllerTest
 
             var incidentDetails = await IncidentGateWayApi.GetDetailAsync(incidentId);
             var workflowStepId = incidentDetails.Value.IncidentSteps[0].Id;
-            var result = await IncidentGateWayApi.UpdateStepStatusAsync(workflowStepId.ToString(), true, incidentId);
+            var updateWorkflowStepStatusGto = new UpdateWorkflowStepStatusGto
+            {
+                IncidentId = incidentId, IsHandled = true, WorkflowStepId = workflowStepId.ToString()
+            };
+            var result = await IncidentGateWayApi.UpdateStepStatusAsync(updateWorkflowStepStatusGto);
             Assert.True(result.IsSuccess);
 
             await DeleteIncident(incidentId);

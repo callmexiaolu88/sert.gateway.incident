@@ -5,12 +5,13 @@ using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
     public interface IIncidentRepository
     {
-        Task UpdateWorkflowStepStatus(string workflowStepId, bool isHandled,string incidentId);
+        Task UpdateWorkflowStepStatus(UpdateWorkflowStepStatusGto updateWorkflowStepStatusGto);
 
         Task<IncidentDetailGto> GetIncidentById(string incidentId);
 

@@ -11,6 +11,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 
 namespace Honeywell.Gateway.Incident
 {
@@ -27,9 +28,9 @@ namespace Honeywell.Gateway.Incident
 
    
         [HttpPost]
-        public async Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled,string incidentId)
+        public async Task<ApiResponse> UpdateStepStatusAsync(UpdateWorkflowStepStatusGto updateWorkflowStepStatusGto)
         {
-            var result = await _incidentAppService.UpdateStepStatusAsync(workflowStepId, isHandled, incidentId);
+            var result = await _incidentAppService.UpdateStepStatusAsync(updateWorkflowStepStatusGto);
             return result;
         }
 

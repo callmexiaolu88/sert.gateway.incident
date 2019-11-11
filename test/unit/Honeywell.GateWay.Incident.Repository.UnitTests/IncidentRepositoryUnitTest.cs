@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.LiveData.Api;
 using Xunit;
@@ -65,18 +66,27 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<EventData>()));
         }
 
+        private UpdateWorkflowStepStatusGto MockStepStatusGto()
+        {
+            var gto = new UpdateWorkflowStepStatusGto
+            {
+                IncidentId = Guid.NewGuid().ToString(), IsHandled = true, WorkflowStepId = Guid.NewGuid().ToString()
+            };
+            return gto;
+        }
+
         [Fact]
         public async Task UpdateWorkflowStepStatus_Success()
         {
             //arrange
-            var workflowStepId = Guid.NewGuid();
+            var stepStatusGto = MockStepStatusGto();
             MockLiveData();
             _mockWorkflowMicroApi
                 .Setup(api => api.UpdateStepStatusAsync(It.IsAny<UpdateWorkflowStepStatusRequestDto>()))
                 .ReturnsAsync(new WorkflowActionResponseDto());
 
             //act
-            await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId.ToString(), true,Guid.NewGuid().ToString());
+            await _incidentRepository.UpdateWorkflowStepStatus(stepStatusGto);
 
             //assert
             _mockWorkflowMicroApi.Verify(api => api.UpdateStepStatusAsync(It.IsAny<UpdateWorkflowStepStatusRequestDto>()), Times.Once);
@@ -86,14 +96,14 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         public async Task UpdateWorkflowStepStatus_Failed()
         {
             //arrange
-            var workflowStepId = Guid.NewGuid();
+            var stepStatusGto = MockStepStatusGto();
             var mockResponse = ApiResponse.CreateFailed().To<WorkflowActionResponseDto>();
             _mockWorkflowMicroApi
                 .Setup(api => api.UpdateStepStatusAsync(It.IsAny<UpdateWorkflowStepStatusRequestDto>()))
                 .ReturnsAsync(mockResponse);
 
             //act
-            var act = new Func<Task>(async () => await _incidentRepository.UpdateWorkflowStepStatus(workflowStepId.ToString(), true,It.IsAny<string>()));
+            var act = new Func<Task>(async () => await _incidentRepository.UpdateWorkflowStepStatus(stepStatusGto));
 
             //assert
             await Assert.ThrowsAsync<HoneywellException>(act);
