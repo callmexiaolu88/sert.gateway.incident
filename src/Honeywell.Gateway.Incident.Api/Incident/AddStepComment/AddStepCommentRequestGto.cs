@@ -6,5 +6,7 @@ namespace Honeywell.Gateway.Incident.Api.Incident.AddStepComment
         public string WorkflowStepId { get; set; }
 
         public string Comment { get; set; }
+
+        public string IncidentId { get; set; }
     }
 }

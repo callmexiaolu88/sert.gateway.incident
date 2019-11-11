@@ -5,6 +5,7 @@ using Honeywell.GateWay.Incident.Repository.WorkflowDesign;
 using Honeywell.Infra.Client.WebApi;
 using Honeywell.Infra.Client.WebApi.Config;
 using Honeywell.Infra.Core.Modular;
+using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Workflow.Api;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +36,7 @@ namespace Honeywell.GateWay.Incident.Repository
             IocContainer.AddRemoteService(typeof(IWorkflowMicroApi).Assembly);
             IocContainer.AddRemoteService(typeof(IIncidentMicroApi).Assembly);
             IocContainer.AddRemoteService(typeof(IIncidentFacadeApi).Assembly);
+            IocContainer.AddRemoteService(typeof(ILiveDataApi).Assembly);
             IocContainer.AddHttpContextAccessor();
         }
     }

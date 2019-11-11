@@ -8,12 +8,13 @@ using Honeywell.Infra.Core;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 
 namespace Honeywell.Gateway.Incident.Api
 {
     public interface IIncidentApi : IRemoteService
     {
-        Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled);
+        Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updatewrokflowStepStatusGto);
 
         Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId);
 
@@ -36,5 +37,7 @@ namespace Honeywell.Gateway.Incident.Api
         Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests);
 
         Task<ApiResponse<IncidentStatusInfoGto[]>> GetStatusByAlarmAsync(string[] alarmIds);
+
+        Task<ApiResponse<ActivityGto[]>> GetActivitysAsync(string incidentId);
     }
 }

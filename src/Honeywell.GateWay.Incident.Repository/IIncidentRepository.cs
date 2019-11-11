@@ -5,12 +5,13 @@ using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
     public interface IIncidentRepository
     {
-        Task UpdateWorkflowStepStatus(string workflowStepId, bool isHandled);
+        Task UpdateWorkflowStepStatus(UpdateStepStatusRequestGto updateWorkflowStepStatusGto);
 
         Task<IncidentDetailGto> GetIncidentById(string incidentId);
 
@@ -31,5 +32,7 @@ namespace Honeywell.GateWay.Incident.Repository
         Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] request);
 
         Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds);
+
+        Task<ActivityGto[]> GetActivitysAsync(string incidentId);
     }
 }

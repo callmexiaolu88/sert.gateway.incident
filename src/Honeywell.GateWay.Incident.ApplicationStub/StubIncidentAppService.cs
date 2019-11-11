@@ -8,6 +8,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
@@ -17,11 +18,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
     public class StubIncidentAppService : BaseIncidentStub, IIncidentAppService
     {
   
-        public Task<ApiResponse> UpdateStepStatusAsync(string workflowStepId, bool isHandled)
+        public Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updateWorkflowStepStatusGto)
         {
             return ResponseRequest();
         }
-
 
         public async Task<ApiResponse<IncidentDetailGto>> GetDetailAsync(string incidentId)
         {
@@ -150,6 +150,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             {
                 return ApiResponse.CreateFailed(ex).To<IncidentStatusInfoGto[]>();
             }
+        }
+
+        public async Task<ApiResponse<ActivityGto[]>> GetActivitysAsync(string incidentId)
+        {
+            return await StubDataAsync<ActivityGto[]>();
         }
 
         public Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto)
