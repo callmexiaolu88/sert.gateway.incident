@@ -63,7 +63,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
         private void MockLiveData()
         {
-            _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<EventData>()));
+            _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<IncidentActivities>()));
         }
 
         private UpdateStepStatusRequestGto MockStepStatusGto()
