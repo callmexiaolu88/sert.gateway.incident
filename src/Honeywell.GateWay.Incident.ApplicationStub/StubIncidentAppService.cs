@@ -18,7 +18,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
     public class StubIncidentAppService : BaseIncidentStub, IIncidentAppService
     {
   
-        public Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updatewrokflowStepStatusGto)
+        public Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updateWorkflowStepStatusGto)
         {
             return ResponseRequest();
         }

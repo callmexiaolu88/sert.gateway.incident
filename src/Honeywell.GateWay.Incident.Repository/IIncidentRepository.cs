@@ -29,7 +29,7 @@ namespace Honeywell.GateWay.Incident.Repository
 
         Task<IncidentSummaryGto[]> GetActiveIncidentList();
 
-        Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] request);
+        Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests);
 
         Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds);
 

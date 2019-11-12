@@ -28,9 +28,9 @@ namespace Honeywell.Gateway.Incident
 
    
         [HttpPost]
-        public async Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updatewrokflowStepStatusGto)
+        public async Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updateWorkflowStepStatusGto)
         {
-            var result = await _incidentAppService.UpdateStepStatusAsync(updatewrokflowStepStatusGto);
+            var result = await _incidentAppService.UpdateStepStatusAsync(updateWorkflowStepStatusGto);
             return result;
         }
 

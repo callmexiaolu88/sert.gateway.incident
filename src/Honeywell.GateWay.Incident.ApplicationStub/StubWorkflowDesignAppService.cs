@@ -67,22 +67,23 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         {
             try
             {
-                var result = new List<WorkflowDesignDetailGto>();
-                if (workflowDesignIds != null)
+                if (workflowDesignIds == null)
                 {
-                    foreach (var id in workflowDesignIds)
+                    throw new Exception("workflowDesignIds is empty");
+                }
+                var result = new List<WorkflowDesignDetailGto>();
+                foreach (var id in workflowDesignIds)
+                {
+                    var workflowDesigns = (await StubDataAsync<WorkflowDesignDetailGto[]>()).FirstOrDefault(m => m.Id == id);
+                    if (workflowDesigns != null)
                     {
-                        var workflowDesigns = (await StubDataAsync<WorkflowDesignDetailGto[]>()).FirstOrDefault(m => m.Id == id);
-                        if (workflowDesigns != null)
-                        {
-                            result.Add(workflowDesigns);
-                        }
-                        else
-                        {
-                            throw new Exception($"cannot found the workflow design by id:{id}");
-                        }
-
+                        result.Add(workflowDesigns);
                     }
+                    else
+                    {
+                        throw new Exception($"cannot found the workflow design by id:{id}");
+                    }
+
                 }
                 return result.ToArray();
             }

@@ -52,23 +52,20 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
         public async Task UpdateWorkflowStepStatus(UpdateStepStatusRequestGto updateWorkflowStepStatusGto)
         {
-            if (updateWorkflowStepStatusGto != null)
+            if (updateWorkflowStepStatusGto == null)
             {
-                Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
-                var workflowStepGuid = Guid.Parse(updateWorkflowStepStatusGto.WorkflowStepId);
-
-                var request = new UpdateWorkflowStepStatusRequestDto { WorkflowStepId = workflowStepGuid, IsHandled = updateWorkflowStepStatusGto.IsHandled };
-
-                var response = await _workflowMicroApi.UpdateStepStatusAsync(request);
-
-                ApiResponse.ThrowExceptionIfFailed(response);
-
-                await NotificationActivity(updateWorkflowStepStatusGto.IncidentId);
+                throw new Exception("updateWorkflowStepStatusGto is empty");
             }
-            else
-            {
-                throw new ArgumentException("UpdateStepStatusRequestGto is invalid", nameof(UpdateStepStatusRequestGto));
-            }
+            Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
+            var workflowStepGuid = Guid.Parse(updateWorkflowStepStatusGto.WorkflowStepId);
+
+            var request = new UpdateWorkflowStepStatusRequestDto { WorkflowStepId = workflowStepGuid, IsHandled = updateWorkflowStepStatusGto.IsHandled };
+
+            var response = await _workflowMicroApi.UpdateStepStatusAsync(request);
+
+            ApiResponse.ThrowExceptionIfFailed(response);
+
+            await NotificationActivity(updateWorkflowStepStatusGto.IncidentId);
         }
 
         public async Task<IncidentDetailGto> GetIncidentById(string incidentId)
@@ -233,11 +230,11 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return activeIncidentsGto;
         }
 
-        public async Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] request)
+        public async Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests)
         {
             Logger.LogInformation($"call Incident api {nameof(CreateIncidentByAlarm)} Start");
             var facadeRequest =
-                HoneyMapper.Map<CreateIncidentByAlarmRequestGto[], CreateIncidentByAlarmDto[]>(request);
+                HoneyMapper.Map<CreateIncidentByAlarmRequestGto[], CreateIncidentByAlarmDto[]>(requests);
 
             var response = await _incidentFacadeApi.CreateByAlarmAsync(new CreateIncidentByAlarmRequestDto { CreateIncidentDatas = facadeRequest });
             ApiResponse.ThrowExceptionIfFailed(response);

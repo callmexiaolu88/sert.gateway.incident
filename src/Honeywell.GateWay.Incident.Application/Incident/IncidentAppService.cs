@@ -30,11 +30,11 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             _deviceRepository = deviceRepository;
         }
 
-        public async Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updatewrokflowStepStatusGto)
+        public async Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updateWorkflowStepStatusGto)
         {
             try
             {
-                await _incidentRepository.UpdateWorkflowStepStatus(updatewrokflowStepStatusGto);
+                await _incidentRepository.UpdateWorkflowStepStatus(updateWorkflowStepStatusGto);
                 return ApiResponse.CreateSuccess();
             }
             catch (Exception ex)
