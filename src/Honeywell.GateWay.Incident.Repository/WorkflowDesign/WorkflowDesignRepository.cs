@@ -108,15 +108,22 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 
         public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
         {
-            Logger.LogInformation(
+            if (workflowIds != null)
+            {
+                Logger.LogInformation(
                 $"call workflow design api ExportWorkflows Start|workflowId.Length:{workflowIds.Length},guids:{string.Join(",", workflowIds.ToArray())}");
-            Guid[] guidWorkflowIds = workflowIds.Select(o => Guid.Parse(o)).ToArray();
-            var exportWorkflowRequestDto = new ExportWorkflowRequestDto { WorkflowIds = guidWorkflowIds };
-            var result = await _workflowDesignApi.ExportAsync(exportWorkflowRequestDto);
+                Guid[] guidWorkflowIds = workflowIds.Select(o => Guid.Parse(o)).ToArray();
+                var exportWorkflowRequestDto = new ExportWorkflowRequestDto { WorkflowIds = guidWorkflowIds };
+                var result = await _workflowDesignApi.ExportAsync(exportWorkflowRequestDto);
 
-            ApiResponse.ThrowExceptionIfFailed(result);
-            WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(result.Value.WorkflowsBytes);
-            return workflowDownloadTemplateGto;
+                ApiResponse.ThrowExceptionIfFailed(result);
+                WorkflowTemplateGto workflowDownloadTemplateGto = new WorkflowTemplateGto(result.Value.WorkflowsBytes);
+                return workflowDownloadTemplateGto;
+            }
+            else
+            {
+                throw new ArgumentException("workflowIds is invalid", nameof(workflowIds));
+            }
         }
 
         public async Task<WorkflowDesignIdGto[]> GetWorkflowDesignIds()

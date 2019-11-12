@@ -17,12 +17,12 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 {
     public class StubWorkflowDesignAppService : BaseIncidentStub, IWorkflowDesignAppService
     {
-        public Task<ApiResponse> ImportAsync(Stream stream)
+        public Task<ApiResponse> ImportAsync(Stream workflowDesignStream)
         {
             return ResponseRequest();
         }
 
-        public Task<ApiResponse> ValidateAsync(Stream stream)
+        public Task<ApiResponse> ValidateAsync(Stream workflowDesignStream)
         {
             return ResponseRequest();
         }
@@ -68,20 +68,22 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             try
             {
                 var result = new List<WorkflowDesignDetailGto>();
-                foreach (var id in workflowDesignIds)
+                if (workflowDesignIds != null)
                 {
-                    var workflowDesigns = (await StubDataAsync<WorkflowDesignDetailGto[]>()).FirstOrDefault(m => m.Id == id);
-                    if (workflowDesigns != null)
+                    foreach (var id in workflowDesignIds)
                     {
-                        result.Add(workflowDesigns);
-                    }
-                    else
-                    {
-                        throw new Exception($"cannot found the workflow design by id:{id}");
-                    }
+                        var workflowDesigns = (await StubDataAsync<WorkflowDesignDetailGto[]>()).FirstOrDefault(m => m.Id == id);
+                        if (workflowDesigns != null)
+                        {
+                            result.Add(workflowDesigns);
+                        }
+                        else
+                        {
+                            throw new Exception($"cannot found the workflow design by id:{id}");
+                        }
 
+                    }
                 }
-
                 return result.ToArray();
             }
             catch (Exception ex)

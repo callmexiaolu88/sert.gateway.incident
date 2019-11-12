@@ -18,7 +18,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
     public class StubIncidentAppService : BaseIncidentStub, IIncidentAppService
     {
   
-        public Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updateWorkflowStepStatusGto)
+        public Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updatewrokflowStepStatusGto)
         {
             return ResponseRequest();
         }
@@ -49,8 +49,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                 .FirstOrDefault(m => m.Id == Guid.Parse(request.WorkflowDesignReferenceId))
                 ?.Name;
             var incident = StubData<IncidentDetailGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
-            if (incident != null) return incident.Id.ToString();
-            throw new Exception("cannot found the incident");
+            if (incident == null)
+            {
+                throw new Exception("cannot found the incident");
+            }
+            return incident.Id.ToString();
         }
 
         public async Task<ApiResponse<SiteDeviceGto[]>> GetSiteDevicesAsync()
@@ -96,23 +99,25 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             try
             {
                 var result = new List<Guid>();
-                foreach (var request in requests)
+                if (requests != null)
                 {
-                    var workflowName = (await StubDataAsync<WorkflowDesignDetailGto[]>())
-                        .FirstOrDefault(m => m.Id == request.WorkflowDesignReferenceId)?.Name;
-
-                    var incident = (await StubDataAsync<IncidentDetailGto[]>()).FirstOrDefault(m => m.WorkflowName == workflowName);
-
-                    if (incident != null)
+                    foreach (var request in requests)
                     {
-                        result.Add(incident.Id);
-                    }
-                    else
-                    {
-                        throw new Exception("cannot found the incident");
+                        var workflowName = (await StubDataAsync<WorkflowDesignDetailGto[]>())
+                            .FirstOrDefault(m => m.Id == request.WorkflowDesignReferenceId)?.Name;
+
+                        var incident = (await StubDataAsync<IncidentDetailGto[]>()).FirstOrDefault(m => m.WorkflowName == workflowName);
+
+                        if (incident != null)
+                        {
+                            result.Add(incident.Id);
+                        }
+                        else
+                        {
+                            throw new Exception("cannot found the incident");
+                        }
                     }
                 }
-
                 return result.ToArray();
             }
             catch (Exception ex)
@@ -126,24 +131,26 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             try
             {
                 var result = new List<IncidentStatusInfoGto>();
-                foreach (var id in alarmIds)
+                if (alarmIds != null)
                 {
-                    var incident = (await StubDataAsync<IncidentDetailGto[]>()).FirstOrDefault((m => m.DeviceId == id));
-                    if (incident == null)
+                    foreach (var id in alarmIds)
                     {
-                        throw new Exception($"cannot found the incident associates with alarm id {id}");
+                        var incident = (await StubDataAsync<IncidentDetailGto[]>()).FirstOrDefault((m => m.DeviceId == id));
+                        if (incident == null)
+                        {
+                            throw new Exception($"cannot found the incident associates with alarm id {id}");
+                        }
+
+                        var statusInfoGto = new IncidentStatusInfoGto
+                        {
+                            AlarmId = id,
+                            IncidentId = incident.Id,
+                            Status = incident.State
+                        };
+
+                        result.Add(statusInfoGto);
                     }
-
-                    var statusInfoGto = new IncidentStatusInfoGto
-                    {
-                        AlarmId = id,
-                        IncidentId = incident.Id,
-                        Status = incident.State
-                    };
-
-                    result.Add(statusInfoGto);
                 }
-
                 return result.ToArray();
             }
             catch (Exception ex)
