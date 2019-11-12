@@ -54,7 +54,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         {
             if (updateWorkflowStepStatusGto == null)
             {
-                throw new Exception("updateWorkflowStepStatusGto is empty");
+                throw new ArgumentNullException(nameof(updateWorkflowStepStatusGto));
             }
             Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
             var workflowStepGuid = Guid.Parse(updateWorkflowStepStatusGto.WorkflowStepId);

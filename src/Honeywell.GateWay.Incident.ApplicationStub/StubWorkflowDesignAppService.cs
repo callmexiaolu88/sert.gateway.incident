@@ -69,7 +69,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             {
                 if (workflowDesignIds == null)
                 {
-                    throw new Exception("workflowDesignIds is empty");
+                    throw new ArgumentNullException(nameof(workflowDesignIds));
                 }
                 var result = new List<WorkflowDesignDetailGto>();
                 foreach (var id in workflowDesignIds)

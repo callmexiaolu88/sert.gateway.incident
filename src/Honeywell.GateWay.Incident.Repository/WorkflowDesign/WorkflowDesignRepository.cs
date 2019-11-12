@@ -110,7 +110,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
         {
             if (workflowIds == null)
             {
-                throw new Exception("workflowIds is empty");
+                throw new ArgumentNullException(nameof(workflowIds));
             }
             Logger.LogInformation(
                 $"call workflow design api ExportWorkflows Start|workflowId.Length:{workflowIds.Length},guids:{string.Join(",", workflowIds.ToArray())}");

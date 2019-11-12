@@ -12,6 +12,7 @@ using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.Infra.Api.Abstract;
+using Honeywell.Infra.Core.Common.Exceptions;
 
 namespace Honeywell.GateWay.Incident.ApplicationStub
 {
@@ -51,7 +52,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             var incident = StubData<IncidentDetailGto[]>().FirstOrDefault(m => m.WorkflowName == workflowName);
             if (incident == null)
             {
-                throw new Exception("cannot found the incident");
+                throw new HoneywellException("cannot found the incident");
             }
             return incident.Id.ToString();
         }
@@ -100,7 +101,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             {
                 if (requests == null)
                 {
-                    throw new Exception("requests is empty");
+                    throw new ArgumentNullException(nameof(requests));
                 }
                 var result = new List<Guid>();
                 foreach (var request in requests)
@@ -132,25 +133,26 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             try
             {
                 var result = new List<IncidentStatusInfoGto>();
-                if (alarmIds != null)
+                if (alarmIds == null)
                 {
-                    foreach (var id in alarmIds)
+                    throw new ArgumentNullException(nameof(alarmIds));
+                }
+                foreach (var id in alarmIds)
+                {
+                    var incident = (await StubDataAsync<IncidentDetailGto[]>()).FirstOrDefault((m => m.DeviceId == id));
+                    if (incident == null)
                     {
-                        var incident = (await StubDataAsync<IncidentDetailGto[]>()).FirstOrDefault((m => m.DeviceId == id));
-                        if (incident == null)
-                        {
-                            throw new Exception($"cannot found the incident associates with alarm id {id}");
-                        }
-
-                        var statusInfoGto = new IncidentStatusInfoGto
-                        {
-                            AlarmId = id,
-                            IncidentId = incident.Id,
-                            Status = incident.State
-                        };
-
-                        result.Add(statusInfoGto);
+                        throw new Exception($"cannot found the incident associates with alarm id {id}");
                     }
+
+                    var statusInfoGto = new IncidentStatusInfoGto
+                    {
+                        AlarmId = id,
+                        IncidentId = incident.Id,
+                        Status = incident.State
+                    };
+
+                    result.Add(statusInfoGto);
                 }
                 return result.ToArray();
             }
