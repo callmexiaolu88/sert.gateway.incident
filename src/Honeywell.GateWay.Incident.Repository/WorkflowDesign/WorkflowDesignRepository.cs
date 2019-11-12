@@ -108,7 +108,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 
         public async Task<WorkflowTemplateGto> ExportWorkflowDesigns(string[] workflowIds)
         {
-            if (workflowIds != null)
+            if (workflowIds == null)
             {
                 throw new Exception("workflowIds is empty");
             }
