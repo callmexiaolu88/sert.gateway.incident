@@ -6,6 +6,7 @@ using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
@@ -27,7 +28,49 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _testObj = new IncidentAppService(_mockIncidentRepository.Object,
                 _mockDeviceRepository.Object);
         }
-        
+
+        [Fact]
+        public void UpdateWorkflowStepStatus_Normal_Succeed()
+        {
+            //arrange
+            var mockIncident = new UpdateStepStatusRequestGto
+            {
+                WorkflowStepId = It.IsAny<string>(),
+                IsHandled = It.IsAny<bool>(),
+                IncidentId = It.IsAny<string>()
+            };
+
+            _mockIncidentRepository.Setup(x => x.UpdateWorkflowStepStatus(mockIncident));
+
+            //act
+            var result = _testObj.UpdateStepStatusAsync(mockIncident);
+
+            //assert
+            Assert.NotNull(result);
+            Assert.True(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void UpdateWorkflowStepStatus_ThrowException_Failed()
+        {
+            //arrange
+            var mockIncident = new UpdateStepStatusRequestGto
+            {
+                WorkflowStepId = It.IsAny<string>(),
+                IsHandled = It.IsAny<bool>(),
+                IncidentId = It.IsAny<string>()
+            };
+
+            _mockIncidentRepository.Setup(x => x.UpdateWorkflowStepStatus(mockIncident)).ThrowsAsync(new Exception());
+
+            //act
+            var result = _testObj.UpdateStepStatusAsync(mockIncident);
+
+            //assert
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
         [Fact]
         public void GetIncidentById_EmptyDevice_Succeed()
         {
@@ -106,11 +149,36 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
+        public void CreateIncident_ThrowException_Failed()
+        {
+
+            var id = Guid.NewGuid().ToString();
+            _mockIncidentRepository.Setup(x => x.CreateIncident(It.IsAny<CreateIncidentRequestGto>()))
+                .ThrowsAsync(new Exception());
+
+            var result = _testObj.CreateAsync(It.IsAny<CreateIncidentRequestGto>());
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
+        [Fact]
         public void RespondIncident_Test()
         {
             _mockIncidentRepository.Setup(x => x.RespondIncident(It.IsAny<string>()));
             var result = _testObj.RespondAsync(It.IsAny<string>());
             Assert.True(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void RespondIncident_ThrowException_Failed()
+        {
+            _mockIncidentRepository.Setup(x => x.RespondIncident(It.IsAny<string>())).ThrowsAsync(new Exception());
+
+            var result = _testObj.RespondAsync(It.IsAny<string>());
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
         }
         [Fact]
         public void TakeoverIncident_Test()
@@ -121,11 +189,33 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
+        public void TakeoverIncident_ThrowException_Failed()
+        {
+            _mockIncidentRepository.Setup(x => x.TakeoverIncident(It.IsAny<string>())).ThrowsAsync(new Exception());
+
+            var result = _testObj.TakeoverAsync(It.IsAny<string>());
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
+        [Fact]
         public void CloseIncident_Test()
         {
             _mockIncidentRepository.Setup(x => x.CloseIncident(It.IsAny<string>(), It.IsAny<string>()));
             var result = _testObj.CloseAsync(It.IsAny<string>(), It.IsAny<string>());
             Assert.True(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void CloseIncident_ThrowException_Failed()
+        {
+            _mockIncidentRepository.Setup(x => x.CloseIncident(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
+
+            var result = _testObj.CloseAsync(It.IsAny<string>(), It.IsAny<string>());
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
         }
 
         [Fact]
@@ -142,6 +232,49 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.Equal(result.Result.Value[0].Devices[0].DeviceLocation, mockDevice.Config[0].Identifiers.Tag[0]);
             Assert.Equal(result.Result.Value[0].SiteId, mockDevice.Config[0].Relation[0].Id);
             Assert.Equal(result.Result.Value[0].SiteDisplayName, mockDevice.Config[0].Relation[0].EntityId);
+        }
+
+        [Fact]
+        public void GetDevices_ThrowException_Failed()
+        {
+            var mockDevice = MockDeviceEntities();
+            _mockDeviceRepository.Setup(x => x.GetDevices()).ThrowsAsync(new Exception());
+
+            var result = _testObj.GetSiteDevicesAsync();
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
+
+        [Fact]
+        public void CompleteIncident_Normal_Succeed()
+        {
+            //arrange
+
+            _mockIncidentRepository.Setup(x => x.CompleteIncident(It.IsAny<string>()));
+
+            //act
+            var result = _testObj.CompleteAsync(It.IsAny<string>());
+
+            //assert
+            Assert.NotNull(result);
+            Assert.True(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void CompleteIncident_ThrowException_Failed()
+        {
+            //arrange
+            _mockIncidentRepository.Setup(x => x.CompleteIncident(It.IsAny<string>()))
+                .ThrowsAsync(new Exception());
+
+            //act
+            var result = _testObj.CompleteAsync(It.IsAny<string>());
+
+            //assert
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
         }
 
         [Fact]
@@ -164,6 +297,49 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
+        public void GetActiveIncidentList_ThrowException_Failed()
+        {
+
+            _mockIncidentRepository.Setup(x => x.GetActiveIncidentList()).ThrowsAsync(new Exception());
+
+            var result = _testObj.GetListAsync();
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+
+        }
+
+        [Fact]
+        public void GetActivitysAsync_Normal_Succeed()
+        {
+            //arrange
+
+            _mockIncidentRepository.Setup(x => x.GetActivitysAsync(It.IsAny<string>()));
+
+            //act
+            var result = _testObj.GetActivitysAsync(It.IsAny<string>());
+
+            //assert
+            Assert.NotNull(result);
+            Assert.True(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void GetActivitysAsync_ThrowException_Failed()
+        {
+            //arrange
+            _mockIncidentRepository.Setup(x => x.GetActivitysAsync(It.IsAny<string>()))
+                .ThrowsAsync(new Exception());
+
+            //act
+            var result = _testObj.GetActivitysAsync(It.IsAny<string>());
+
+            //assert
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
+        [Fact]
         public void AddStepComment_Successful()
         {
             var addStepComment = new AddStepCommentRequestGto()
@@ -173,6 +349,20 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             var result = _testObj.AddStepCommentAsync(addStepComment);
             Assert.True(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void AddStepComment_ThrowException_Failed()
+        {
+            var addStepComment = new AddStepCommentRequestGto()
+            { WorkflowStepId = It.IsAny<string>(), Comment = It.IsAny<string>() };
+
+            _mockIncidentRepository.Setup(x => x.AddStepComment(addStepComment)).ThrowsAsync(new Exception());
+
+            var result = _testObj.AddStepCommentAsync(addStepComment);
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
         }
 
         private DevicesEntity MockDeviceEntities()

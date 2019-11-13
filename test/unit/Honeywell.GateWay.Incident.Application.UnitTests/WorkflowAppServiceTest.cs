@@ -34,6 +34,18 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
+        public void ImportWorkflowDesigns_ThrowException_Failed()
+        {
+            _mockWorkflowDesignRepository.Setup(x => x.ImportWorkflowDesigns(It.IsAny<Stream>()))
+                .ThrowsAsync(new Exception());
+
+            var result = _testObj.ImportAsync(It.IsAny<Stream>());
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
+        [Fact]
         public void ValidatorWorkflowDesigns_Test()
         {
             _mockWorkflowDesignRepository.Setup(x => x.ValidatorWorkflowDesigns(It.IsAny<Stream>()))
@@ -41,6 +53,17 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var result = _testObj.ValidateAsync(It.IsAny<Stream>());
             Assert.NotNull(result);
             Assert.True(result.Result.IsSuccess);
+        }
+        [Fact]
+        public void ValidatorWorkflowDesigns_ThrowException_Failed()
+        {
+            _mockWorkflowDesignRepository.Setup(x => x.ValidatorWorkflowDesigns(It.IsAny<Stream>()))
+                .ThrowsAsync(new Exception());
+
+            var result = _testObj.ValidateAsync(It.IsAny<Stream>());
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
         }
 
         [Fact]
@@ -50,6 +73,17 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var result = _testObj.DeletesAsync(It.IsAny<string[]>());
             Assert.NotNull(result);
             Assert.True(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void DeleteWorkflowDesigns_ThrowException_Failed()
+        {
+            _mockWorkflowDesignRepository.Setup(x => x.DeleteWorkflowDesigns(It.IsAny<string[]>())).ThrowsAsync(new Exception());
+
+            var result = _testObj.DeletesAsync(It.IsAny<string[]>());
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
         }
 
         [Fact]
@@ -65,6 +99,17 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.NotNull(result);
             Assert.True(result.Result.Value.Length == 1);
             Assert.True(result.Result.Value[0].Id == mockDesign.Id);
+        }
+
+        [Fact]
+        public void GetAllActiveWorkflowDesigns_ThrowException_Failed()
+        {
+            _mockWorkflowDesignRepository.Setup(x => x.GetAllActiveWorkflowDesigns()).ThrowsAsync(new Exception());
+
+            var result = _testObj.GetSummariesAsync();
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
         }
 
 
@@ -91,6 +136,22 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
+        public void GetWorkflowDesignSelectors_ThrowException_Failed()
+        {
+            // arrange
+
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignSelectors())
+                .ThrowsAsync(new Exception());
+
+            // action
+            var result = _testObj.GetSelectorsAsync();
+
+            // assert
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
+        [Fact]
         public void GetWorkflowDesignById_Test()
         {
             var mockDesign = new WorkflowDesignDetailGto
@@ -103,6 +164,19 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.NotNull(result);
             Assert.True(result.Result.IsSuccess);
             Assert.True(result.Result.Value.Id == mockDesign.Id);
+        }
+
+        [Fact]
+        public void GetWorkflowDesignById_ThrowException_Failed()
+        {
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignById(It.IsAny<string>()))
+                .ThrowsAsync(new Exception());
+
+            var result = _testObj.GetDetailByIdAsync(It.IsAny<string>());
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+
         }
 
         [Fact]
@@ -121,6 +195,19 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
+        public void DownloadWorkflowTemplate_ThrowException_Failed()
+        {
+            _mockWorkflowDesignRepository.Setup(x => x.DownloadWorkflowTemplate())
+                .ThrowsAsync(new Exception());
+
+            var result = _testObj.DownloadTemplateAsync();
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+
+        }
+
+        [Fact]
         public void ExportWorkflowDesigns_Test()
         {
             var mockTemplate = new WorkflowTemplateGto
@@ -133,6 +220,18 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.NotNull(result);
             Assert.True(result.Result.IsSuccess);
             Assert.True(result.Result.Value.FileName == mockTemplate.FileName);
+        }
+
+        [Fact]
+        public void ExportWorkflowDesigns_ThrowException_Failed()
+        {
+            _mockWorkflowDesignRepository.Setup(x => x.ExportWorkflowDesigns(It.IsAny<string[]>()))
+                .ThrowsAsync(new Exception());
+
+            var result = _testObj.ExportsAsync(It.IsAny<string[]>());
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
         }
 
         [Fact]
