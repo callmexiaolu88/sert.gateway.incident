@@ -33,17 +33,11 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void UpdateWorkflowStepStatus_Normal_Succeed()
         {
             //arrange
-            var mockIncident = new UpdateStepStatusRequestGto
-            {
-                WorkflowStepId = It.IsAny<string>(),
-                IsHandled = It.IsAny<bool>(),
-                IncidentId = It.IsAny<string>()
-            };
 
-            _mockIncidentRepository.Setup(x => x.UpdateWorkflowStepStatus(mockIncident));
+            _mockIncidentRepository.Setup(x => x.UpdateWorkflowStepStatus(It.IsAny<UpdateStepStatusRequestGto>()));
 
             //act
-            var result = _testObj.UpdateStepStatusAsync(mockIncident);
+            var result = _testObj.UpdateStepStatusAsync(It.IsAny<UpdateStepStatusRequestGto>());
 
             //assert
             Assert.NotNull(result);
@@ -54,17 +48,11 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void UpdateWorkflowStepStatus_ThrowException_Failed()
         {
             //arrange
-            var mockIncident = new UpdateStepStatusRequestGto
-            {
-                WorkflowStepId = It.IsAny<string>(),
-                IsHandled = It.IsAny<bool>(),
-                IncidentId = It.IsAny<string>()
-            };
 
-            _mockIncidentRepository.Setup(x => x.UpdateWorkflowStepStatus(mockIncident)).ThrowsAsync(new Exception());
+            _mockIncidentRepository.Setup(x => x.UpdateWorkflowStepStatus(It.IsAny<UpdateStepStatusRequestGto>())).ThrowsAsync(new Exception());
 
             //act
-            var result = _testObj.UpdateStepStatusAsync(mockIncident);
+            var result = _testObj.UpdateStepStatusAsync(It.IsAny<UpdateStepStatusRequestGto>());
 
             //assert
             Assert.NotNull(result);
