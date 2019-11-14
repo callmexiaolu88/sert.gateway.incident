@@ -93,7 +93,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                                 Name = ""
                             }
                         },
-                        Type = "door"
+                        Type = "door",
+                        SubType = ""
                     }
                 }
             };
