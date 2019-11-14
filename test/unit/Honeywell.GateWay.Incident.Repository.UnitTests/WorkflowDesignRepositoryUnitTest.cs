@@ -32,6 +32,50 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
+        public async Task ValidateAsync_ValidatorWorkflowDesigns_Success()
+        {
+            var mockResponse = new ImportWorkflowDesignsResponseDto();
+            mockResponse.ImportResponseList = new List<WorkflowResponseDto>()
+            {
+                new WorkflowResponseDto()
+                {
+                    Errors = new List<string>(){ "IsSuccess" }
+                }
+            };
+
+            _workflowDesignMicroApiMock.Setup(x => x.ValidateAsync(It.IsAny<Stream>()))
+                .ReturnsAsync(mockResponse);
+
+            var result = await _incidentRepository.ValidatorWorkflowDesigns(It.IsAny<Stream>());
+
+            Assert.NotNull(result);
+            Assert.True(result.IsSuccess);
+            Assert.Equal(mockResponse.ImportResponseList[0].Errors[0], result.Messages[0].Message);
+        }
+
+        [Fact]
+        public async Task ValidateAsync_ValidatorWorkflowDesigns_CreateFailed()
+        {
+            var mockResponse = new ImportWorkflowDesignsResponseDto();
+            mockResponse.ImportResponseList = new List<WorkflowResponseDto>()
+            {
+                new WorkflowResponseDto()
+                {
+                    Errors = new List<string>(){ "IsFail" }
+                }
+            };
+
+            _workflowDesignMicroApiMock.Setup(x => x.ValidateAsync(It.IsAny<Stream>()))
+                .ReturnsAsync(ApiResponse.CreateFailed().To(mockResponse));
+
+            var response = await _incidentRepository.ValidatorWorkflowDesigns(It.IsAny<Stream>());          
+
+            Assert.NotNull(response);
+            Assert.False(response.IsSuccess);
+            Assert.Equal(mockResponse.ImportResponseList[0].Errors[0], response.Messages[0].Message);
+        }
+
+        [Fact]
         public async Task WorkflowDesign_DeleteWorkflowDesigns_Success()
         {
             // arrange
@@ -211,6 +255,12 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
             //assert
             Assert.True(result.FileBytes != null && result.FileBytes.Length > 0);
+        }
+
+        [Fact]
+        public async Task ExportWorkflowDesigns_ThrowException_Fail()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _incidentRepository.ExportWorkflowDesigns(null));
         }
 
         [Fact]
