@@ -46,5 +46,11 @@ namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
         public IncidentTriggerType TriggerType { get; set; }
 
         public AlarmData AlarmData { get; set; }
+
+        public int ActiveCount { get; set; }
+
+        public int CompletedCount { get; set; }
+
+        public int CloseCount { get; set; }
     }
 }
