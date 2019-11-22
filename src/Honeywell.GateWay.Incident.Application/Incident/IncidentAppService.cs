@@ -7,6 +7,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.Statistics;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
@@ -218,6 +219,19 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             {
                 Logger.LogError(ex.ToString());
                 return ApiResponse.CreateFailed(ex).To<ActivityGto[]>();
+            }
+        }
+
+        public async Task<ApiResponse<IncidentStatisticsGto>> GetStatisticsAsync(string deviceId)
+        {
+            try
+            {
+                return await _incidentRepository.GetStatisticsAsync(deviceId);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<IncidentStatisticsGto>();
             }
         }
 

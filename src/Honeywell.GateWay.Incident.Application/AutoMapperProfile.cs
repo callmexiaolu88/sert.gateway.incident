@@ -4,12 +4,14 @@ using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.Statistics;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
+using Honeywell.Micro.Services.Incident.Api.Incident.Statistics;
 using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
@@ -79,6 +81,7 @@ namespace Honeywell.GateWay.Incident.Application
 
             CreateMap<IncidentActivityDto, ActivityGto>()
                 .ForMember(dest => dest.Operator, opt => opt.MapFrom(src => src.Manipulator));
+            CreateMap<IncidentStatisticsDto, IncidentStatisticsGto>();
         }
     }
 }

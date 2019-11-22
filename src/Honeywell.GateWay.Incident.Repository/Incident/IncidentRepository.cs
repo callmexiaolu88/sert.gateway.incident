@@ -18,11 +18,13 @@ using System.Threading.Tasks;
 using Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Gateway.Incident.Api.Incident.Statistics;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Infra.Core.Common.Exceptions;
 using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Actions;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Incident.Api.Incident.Statistics;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 
 
@@ -259,6 +261,15 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             Logger.LogInformation($"call Incident api {nameof(GetActivitysAsync)} Start");
             var result = await GetIncidentById(incidentId);
             return result.IncidentActivities.ToArray();
+        }
+
+        public async Task<ApiResponse<IncidentStatisticsGto>> GetStatisticsAsync(string deviceId)
+        {
+            Logger.LogInformation($"call GetStatisticsAsync {nameof(GetStatisticsAsync)} Start");
+            var response = await _incidentMicroApi.GetStatisticsAsync(new GetIncidentStatisticsRequestDto { DeviceIds = new[] { deviceId } });
+            ApiResponse.ThrowExceptionIfFailed(response);
+            var result =  HoneyMapper.Map<IncidentStatisticsDto, IncidentStatisticsGto>(response.Value.StatisticsIncident[0]);
+            return result;
         }
 
         public async Task AddStepComment(AddStepCommentRequestGto addStepCommentGto)
