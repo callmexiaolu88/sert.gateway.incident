@@ -47,10 +47,5 @@ namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
 
         public AlarmData AlarmData { get; set; }
 
-        public int ActiveCount { get; set; }
-
-        public int CompletedCount { get; set; }
-
-        public int CloseCount { get; set; }
     }
 }
