@@ -8,6 +8,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.Statistics;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.GateWay.Incident.Application.Incident;
@@ -165,6 +166,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         public async Task<ApiResponse<ActivityGto[]>> GetActivitysAsync(string incidentId)
         {
             return await StubDataAsync<ActivityGto[]>();
+        }
+
+        public async Task<ApiResponse<IncidentStatisticsGto>> GetStatisticsAsync(string deviceId)
+        {
+            return await StubDataAsync<IncidentStatisticsGto>();
         }
 
         public Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto)

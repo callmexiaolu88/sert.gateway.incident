@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
@@ -6,10 +7,12 @@ using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.Statistics;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
+using Honeywell.Micro.Services.Incident.Api.Incident.Statistics;
 using Moq;
 using Xunit;
 
@@ -448,6 +451,47 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             //Act
             var result = _testObj.GetStatusByAlarmAsync(It.IsAny<string[]>());
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
+
+        [Fact]
+        public void GetStatistics_Successful()
+        {
+            //Arrange
+            var deviceId = Guid.NewGuid().ToString();
+            var incidentStatisticsGto = new IncidentStatisticsGto
+            {
+                DeviceId = deviceId, ActiveCount = 1, CloseCount = 1, CompletedCount = 1
+            };
+            _mockIncidentRepository.Setup(x => x.GetStatisticsAsync(deviceId))
+                .ReturnsAsync(incidentStatisticsGto);
+
+            //Act
+            var result = _testObj.GetStatisticsAsync(deviceId);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.True(result.Result.IsSuccess);
+            Assert.Equal(result.Result.Value.ActiveCount, incidentStatisticsGto.ActiveCount);
+            Assert.Equal(result.Result.Value.DeviceId, incidentStatisticsGto.DeviceId);
+            Assert.Equal(result.Result.Value.CloseCount, incidentStatisticsGto.CloseCount);
+            Assert.Equal(result.Result.Value.CompletedCount, incidentStatisticsGto.CompletedCount);
+        }
+
+        [Fact]
+        public void GetStatistics_ThrowException()
+        {
+            //Arrange
+            var deviceId = Guid.NewGuid().ToString();
+            _mockIncidentRepository.Setup(x => x.GetStatisticsAsync(deviceId))
+                .Throws(new Exception());
+
+            //Act
+            var result = _testObj.GetStatisticsAsync(deviceId);
 
             //Assert
             Assert.NotNull(result);
