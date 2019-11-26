@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Honeywell.Infra.AspNetCore" Version="0.0.2.*" />
     <PackageReference Include="Honeywell.Infra.Client.WebApi" Version="0.0.2.*" />
     <PackageReference Include="Honeywell.Infra.Core" Version="0.0.2.*" />
