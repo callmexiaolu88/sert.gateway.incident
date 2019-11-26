@@ -19,7 +19,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ApiResponse> DeletesAsync(string[] workflowDesignIds);
 
-        Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync();
+        Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync(string condition);
 
         Task<ApiResponse<WorkflowDesignSelectorGto[]>> GetSelectorsAsync();
 

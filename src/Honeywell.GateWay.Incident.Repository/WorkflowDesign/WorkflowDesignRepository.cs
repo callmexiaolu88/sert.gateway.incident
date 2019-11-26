@@ -61,9 +61,9 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
             ApiResponse.ThrowExceptionIfFailed(result);
         }
 
-        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns()
+        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns(string condition)
         {
-            var result = await _workflowDesignApi.GetSummariesAsync();
+            var result = await _workflowDesignApi.GetSummariesAsync(condition);
 
             ApiResponse.ThrowExceptionIfFailed(result);
 
@@ -127,7 +127,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
         {
             Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignIds)} Start");
 
-            var response = await _workflowDesignApi.GetSummariesAsync();
+            var response = await _workflowDesignApi.GetSummariesAsync(string.Empty);
             ApiResponse.ThrowExceptionIfFailed(response);
 
             var result = HoneyMapper

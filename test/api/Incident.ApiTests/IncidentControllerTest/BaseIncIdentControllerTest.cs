@@ -36,7 +36,7 @@ namespace Incident.ApiTests.IncidentControllerTest
 
         protected async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
         {
-            var workflowDesigns = await WorkflowDesignGateWayApi.GetSummariesAsync();
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetSummariesAsync(string.Empty);
             return workflowDesigns.Value;
         }
 

@@ -62,11 +62,11 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             }
         }
 
-        public async Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync()
+        public async Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync(string condition)
         {
             try
             {
-                return await _workflowDesignRepository.GetAllActiveWorkflowDesigns();
+                return await _workflowDesignRepository.GetAllActiveWorkflowDesigns(condition);
             }
             catch(Exception ex)
             {

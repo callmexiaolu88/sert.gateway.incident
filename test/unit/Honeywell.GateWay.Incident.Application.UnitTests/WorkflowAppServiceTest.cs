@@ -93,8 +93,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             {
                 Id = Guid.NewGuid()
             };
-            _mockWorkflowDesignRepository.Setup(x => x.GetAllActiveWorkflowDesigns()).ReturnsAsync(new[] { mockDesign });
-            var result = _testObj.GetSummariesAsync();
+            _mockWorkflowDesignRepository.Setup(x => x.GetAllActiveWorkflowDesigns(string.Empty)).ReturnsAsync(new[] { mockDesign });
+            var result = _testObj.GetSummariesAsync(string.Empty);
             Assert.True(result.Result.IsSuccess);
             Assert.NotNull(result);
             Assert.True(result.Result.Value.Length == 1);
@@ -104,9 +104,9 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         [Fact]
         public void GetAllActiveWorkflowDesigns_ThrowException_Failed()
         {
-            _mockWorkflowDesignRepository.Setup(x => x.GetAllActiveWorkflowDesigns()).ThrowsAsync(new Exception());
+            _mockWorkflowDesignRepository.Setup(x => x.GetAllActiveWorkflowDesigns(string.Empty)).ThrowsAsync(new Exception());
 
-            var result = _testObj.GetSummariesAsync();
+            var result = _testObj.GetSummariesAsync(string.Empty);
 
             Assert.NotNull(result);
             Assert.False(result.Result.IsSuccess);

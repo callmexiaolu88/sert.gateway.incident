@@ -32,7 +32,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return ResponseRequest();
         }
 
-        public async Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync()
+        public async Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync(string condition)
         {
             return await StubDataAsync<WorkflowDesignSummaryGto[]>();
         }

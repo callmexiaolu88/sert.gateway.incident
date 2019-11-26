@@ -47,9 +47,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync()
+        public async Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync(string condition)
         {
-            var workflowDesignList = await _workflowDesignAppService.GetSummariesAsync();
+            var workflowDesignList = await _workflowDesignAppService.GetSummariesAsync(condition);
             return workflowDesignList;
         }
 
