@@ -11,6 +11,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
+using Honeywell.Gateway.Incident.Api.Incident.Statistics;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 
 namespace Honeywell.Gateway.Incident
@@ -108,6 +109,13 @@ namespace Honeywell.Gateway.Incident
         public async Task<ApiResponse<ActivityGto[]>> GetActivitysAsync(string incidentId)
         {
             var result = await _incidentAppService.GetActivitysAsync(incidentId);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ApiResponse<IncidentStatisticsGto>> GetStatisticsAsync(string deviceId)
+        {
+            var result = await _incidentAppService.GetStatisticsAsync(deviceId);
             return result;
         }
 

@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
+using Honeywell.Micro.Services.Incident.Api.Incident.Statistics;
 using Xunit;
 using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
 using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
@@ -657,6 +658,29 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //assert
             _mockWorkflowMicroApi.Verify(api => api.AddStepCommentAsync(It.IsAny<AddStepCommentRequestDto>()), Times.Once);
 
+        }
+
+
+        [Fact]
+        public async Task GetStatisticsAsync_Success()
+        {
+            //arrange
+            var deviceId = Guid.NewGuid().ToString();
+            var request = new GetIncidentStatisticsRequestDto {DeviceIds = new[] {deviceId}};
+            var response = new GetIncidentStatisticstResponseDto();
+            response.StatisticsIncident.Add(new IncidentStatisticsDto {ActiveCount = 1,CloseCount = 1,CompletedCount = 1,DeviceId = deviceId});
+            _mockIncidentMicroApi.Setup(x => x.GetStatisticsAsync(request)).ReturnsAsync(response);
+
+            //act
+           var result =  await _incidentRepository.GetStatisticsAsync(deviceId);
+
+            //asser.
+            Assert.NotNull(result);
+            Assert.True(result.IsSuccess);
+            Assert.Equal(response.StatisticsIncident[0].DeviceId, result.Value.DeviceId);
+            Assert.Equal(response.StatisticsIncident[0].ActiveCount, result.Value.ActiveCount);
+            Assert.Equal(response.StatisticsIncident[0].CloseCount, result.Value.CloseCount);
+            Assert.Equal(response.StatisticsIncident[0].CompletedCount, result.Value.CompletedCount);
         }
 
         #region private methods

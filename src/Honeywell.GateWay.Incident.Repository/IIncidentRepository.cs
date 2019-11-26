@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
+using Honeywell.Gateway.Incident.Api.Incident.Statistics;
+using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
@@ -34,5 +36,7 @@ namespace Honeywell.GateWay.Incident.Repository
         Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds);
 
         Task<ActivityGto[]> GetActivitysAsync(string incidentId);
+
+        Task<ApiResponse<IncidentStatisticsGto>> GetStatisticsAsync(string deviceId);
     }
 }
