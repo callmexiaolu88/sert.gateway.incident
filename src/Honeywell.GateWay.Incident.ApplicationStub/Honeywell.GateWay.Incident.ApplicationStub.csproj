@@ -19,6 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="StubData\IncidentStatisticsGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="StubData\ActivityGto.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
