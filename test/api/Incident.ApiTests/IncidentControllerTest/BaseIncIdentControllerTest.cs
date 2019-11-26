@@ -34,16 +34,16 @@ namespace Incident.ApiTests.IncidentControllerTest
             return workflowDesign.Id.ToString();
         }
 
-        protected string GetFirstWorkflowDesignReferenceId()
+        protected async Task<string> GetFirstWorkflowDesignReferenceId()
         {
-            var workflowDesigns = WorkflowDesignGateWayApi.GetIdsAsync();
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetSelectorsAsync();
             Assert.NotNull(workflowDesigns);
-            Assert.NotNull(workflowDesigns.Result);
-            var workflowDesign = workflowDesigns.Result.Value.FirstOrDefault();
+            Assert.NotNull(workflowDesigns.Value);
+            var workflowDesign = workflowDesigns.Value.FirstOrDefault();
             Assert.NotNull(workflowDesign);
-            
-            return workflowDesign.WorkflowDesignReferenceId.ToString();
+            return workflowDesign.ReferenceId.ToString();
         }
+
         protected async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
         {
             var workflowDesigns = await WorkflowDesignGateWayApi.GetSummariesAsync();
@@ -75,10 +75,10 @@ namespace Incident.ApiTests.IncidentControllerTest
 
         protected async Task<string> CreateIncident(string deviceId = null, string deviceType = null)
         {
-            var workflowDesignId = GetFirstWorkflowDesignReferenceId();
+            var workflowDesignReferenceId = await GetFirstWorkflowDesignReferenceId();
             var incident = new CreateIncidentRequestGto
             {
-                Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignId,
+                Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignReferenceId,
                 DeviceId = deviceId, DeviceType = deviceType
             };
             var result = await IncidentGateWayApi.CreateAsync(incident);
@@ -89,10 +89,10 @@ namespace Incident.ApiTests.IncidentControllerTest
         protected async Task<ApiResponse<Guid[]>> CreateIncidentByAlarm(string alarmId = null)
         {
             alarmId = string.IsNullOrEmpty(alarmId) ? Guid.NewGuid().ToString() : alarmId;
-            var workflowDesignId = GetFirstWorkflowDesignId();
+            var workflowDesignReferenceId = await GetFirstWorkflowDesignReferenceId();
             var request = new CreateIncidentByAlarmRequestGto
             {
-                WorkflowDesignReferenceId = new Guid(workflowDesignId),
+                WorkflowDesignReferenceId = new Guid(workflowDesignReferenceId),
                 Priority = IncidentPriority.High,
                 Description = "incident description",
                 DeviceId = Guid.NewGuid().ToString(),
