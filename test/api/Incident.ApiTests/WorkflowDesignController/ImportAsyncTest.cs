@@ -3,9 +3,9 @@
 namespace Incident.ApiTests.IncidentControllerTest
 {
     [Collection(Colections.DICollection)]
-    public class ImportWorkFlowDesignTest: BaseIncIdentControllerTest
+    public class ImportAsyncTest: BaseIncIdentControllerTest
     {
-        public ImportWorkFlowDesignTest(DIFixture dIFixture) : base(dIFixture)
+        public ImportAsyncTest(DIFixture dIFixture) : base(dIFixture)
         {
 
         }

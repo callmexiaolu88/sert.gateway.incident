@@ -7,9 +7,9 @@ using Xunit;
 namespace Incident.ApiTests.IncidentControllerTest
 {
     [Collection(Colections.DICollection)]
-    public class ExportWorkflowDesignsTest : BaseIncIdentControllerTest
+    public class ExportsAsyncTest : BaseIncIdentControllerTest
     {
-        public ExportWorkflowDesignsTest(DIFixture dIFixture) : base(dIFixture)
+        public ExportsAsyncTest(DIFixture dIFixture) : base(dIFixture)
         {
 
         }

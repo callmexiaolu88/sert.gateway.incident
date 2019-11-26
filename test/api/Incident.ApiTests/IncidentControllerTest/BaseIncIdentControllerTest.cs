@@ -34,6 +34,16 @@ namespace Incident.ApiTests.IncidentControllerTest
             return workflowDesign.Id.ToString();
         }
 
+        protected string GetFirstWorkflowDesignReferenceId()
+        {
+            var workflowDesigns = WorkflowDesignGateWayApi.GetIdsAsync();
+            Assert.NotNull(workflowDesigns);
+            Assert.NotNull(workflowDesigns.Result);
+            var workflowDesign = workflowDesigns.Result.Value.FirstOrDefault();
+            Assert.NotNull(workflowDesign);
+            
+            return workflowDesign.WorkflowDesignReferenceId.ToString();
+        }
         protected async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
         {
             var workflowDesigns = await WorkflowDesignGateWayApi.GetSummariesAsync();
@@ -65,7 +75,7 @@ namespace Incident.ApiTests.IncidentControllerTest
 
         protected async Task<string> CreateIncident(string deviceId = null, string deviceType = null)
         {
-            var workflowDesignId = GetFirstWorkflowDesignId();
+            var workflowDesignId = GetFirstWorkflowDesignReferenceId();
             var incident = new CreateIncidentRequestGto
             {
                 Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignId,
