@@ -13,10 +13,6 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
     [DependsOn(typeof(ModuleOfApplication))]
     public class ModuleOfStub : Module<IServiceCollection>
     {
-        public ModuleOfStub(IServiceCollection icoContainer) : base(icoContainer)
-        {
-        }
-
         public override void ConfigureServices(ConfigureServicesContext<IServiceCollection> context)
         {
             var provider = context.Services.BuildServiceProvider();

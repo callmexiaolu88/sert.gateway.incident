@@ -11,8 +11,6 @@ namespace Honeywell.GateWay.Incident.Application
     [DependsOn(typeof(ModuleOfRepository))]
     public class ModuleOfApplication : Module<IServiceCollection>
     {
-        public ModuleOfApplication(IServiceCollection icoContainer) : base(icoContainer) { }
-
         public override void ConfigureServices(ConfigureServicesContext<IServiceCollection> context)
         {
             context.Services.Configure<AutoMapperOptions>(options =>

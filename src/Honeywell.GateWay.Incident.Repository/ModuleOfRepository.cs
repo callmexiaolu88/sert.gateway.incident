@@ -16,9 +16,6 @@ namespace Honeywell.GateWay.Incident.Repository
 {
     public class ModuleOfRepository : Module<IServiceCollection>
     {
-        public ModuleOfRepository(IServiceCollection icoContainer) : base(icoContainer) { }
-
-
         public override void ConfigureServices(ConfigureServicesContext<IServiceCollection> context)
         {
             context.Services.AddScoped<IDeviceRepository, DeviceRepository>();
