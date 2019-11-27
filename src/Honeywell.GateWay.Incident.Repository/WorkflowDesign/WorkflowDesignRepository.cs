@@ -1,6 +1,6 @@
 ﻿using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Micro.Services.Workflow.Api;
@@ -8,14 +8,14 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.getIds;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
 
 namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 {
@@ -61,13 +61,14 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
             ApiResponse.ThrowExceptionIfFailed(result);
         }
 
-        public async Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns(string condition)
+        public async Task<WorkflowDesignListGto[]> GetWorkflowDesignList(string condition)
         {
-            var result = await _workflowDesignApi.GetSummariesAsync(condition);
+            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto() { Condition = condition };
+            var result = await _workflowDesignApi.GetListAsync(workflowDesignListRequestDto);
 
             ApiResponse.ThrowExceptionIfFailed(result);
 
-            return HoneyMapper.Map<WorkflowDesignSummaryDto[], WorkflowDesignSummaryGto[]>(result.Value.Summaries.ToArray());
+            return HoneyMapper.Map<WorkflowDesignListDto[], WorkflowDesignListGto[]>(result.Value.Lists.ToArray());
         }
 
         public async Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectors()
@@ -127,11 +128,12 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
         {
             Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignIds)} Start");
 
-            var response = await _workflowDesignApi.GetSummariesAsync(string.Empty);
+            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto() { Condition = string.Empty };
+            var response = await _workflowDesignApi.GetListAsync(workflowDesignListRequestDto);
             ApiResponse.ThrowExceptionIfFailed(response);
 
             var result = HoneyMapper
-                .Map<WorkflowDesignSummaryDto[], WorkflowDesignIdGto[]>(response.Value.Summaries.ToArray());
+                .Map<WorkflowDesignListDto[], WorkflowDesignIdGto[]>(response.Value.Lists.ToArray());
             return result;
         }
 

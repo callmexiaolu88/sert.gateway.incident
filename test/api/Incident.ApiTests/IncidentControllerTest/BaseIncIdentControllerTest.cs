@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Infra.Api.Abstract;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -34,9 +34,9 @@ namespace Incident.ApiTests.IncidentControllerTest
             return workflowDesign.Id.ToString();
         }
 
-        protected async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
+        protected async Task<WorkflowDesignListGto[]> GetAllWorkflowDesigns()
         {
-            var workflowDesigns = await WorkflowDesignGateWayApi.GetSummariesAsync(string.Empty);
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetListAsync(string.Empty);
             return workflowDesigns.Value;
         }
 

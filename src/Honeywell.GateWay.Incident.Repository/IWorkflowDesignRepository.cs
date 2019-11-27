@@ -5,7 +5,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.getIds;
 using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.GateWay.Incident.Repository
@@ -18,7 +18,7 @@ namespace Honeywell.GateWay.Incident.Repository
 
         Task DeleteWorkflowDesigns(string[] workflowDesignIds);
 
-        Task<WorkflowDesignSummaryGto[]> GetAllActiveWorkflowDesigns(string condition);
+        Task<WorkflowDesignListGto[]> GetWorkflowDesignList(string condition);
 
         Task<WorkflowDesignSelectorGto[]> GetWorkflowDesignSelectors();
 

@@ -7,7 +7,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.getIds;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.Infra.Api.Abstract;
 using Microsoft.AspNetCore.Mvc;
@@ -47,9 +47,9 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync(string condition)
+        public async Task<ApiResponse<WorkflowDesignListGto[]>> GetListAsync(string condition)
         {
-            var workflowDesignList = await _workflowDesignAppService.GetSummariesAsync(condition);
+            var workflowDesignList = await _workflowDesignAppService.GetListAsync(condition);
             return workflowDesignList;
         }
 

@@ -1,13 +1,13 @@
 ﻿using System;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core;
 using System.IO;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.getIds;
 
 namespace Honeywell.Gateway.Incident.Api
 {
@@ -19,7 +19,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ApiResponse> DeletesAsync(string[] workflowDesignIds);
 
-        Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync(string condition);
+        Task<ApiResponse<WorkflowDesignListGto[]>> GetListAsync(string condition);
 
         Task<ApiResponse<WorkflowDesignSelectorGto[]>> GetSelectorsAsync();
 

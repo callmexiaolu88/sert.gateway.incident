@@ -8,7 +8,7 @@ using Honeywell.Gateway.Incident.Api.Incident.Statistics;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.getIds;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Incident.Api.Incident.Statistics;
@@ -17,7 +17,7 @@ using Honeywell.Micro.Services.Incident.Domain.Shared;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
 using WorkflowStepDto = Honeywell.Micro.Services.Workflow.Api.Workflow.Details.WorkflowStepDto;
@@ -32,7 +32,7 @@ namespace Honeywell.GateWay.Incident.Application
 
             CreateMap<WorkflowDesignDto, WorkflowDesignDetailGto>();
 
-            CreateMap<WorkflowDesignSummaryDto, WorkflowDesignSummaryGto>();
+            CreateMap<WorkflowDesignListDto, WorkflowDesignListGto>();
 
             CreateMap<WorkflowDesignSelectorDto, WorkflowDesignSelectorGto>();
 
@@ -63,7 +63,7 @@ namespace Honeywell.GateWay.Incident.Application
             CreateMap<AlarmData, FacadeApi.AlarmData>();
 
             //GetWorkflowDesignIds Response
-            CreateMap<WorkflowDesignSummaryDto, WorkflowDesignIdGto>()
+            CreateMap<WorkflowDesignListDto, WorkflowDesignIdGto>()
                 .ForMember(dest => dest.WorkflowDesignReferenceId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 

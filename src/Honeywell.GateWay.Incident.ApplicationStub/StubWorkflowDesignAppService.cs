@@ -6,9 +6,9 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.getIds;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Common.Exceptions;
@@ -32,9 +32,9 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return ResponseRequest();
         }
 
-        public async Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync(string condition)
+        public async Task<ApiResponse<WorkflowDesignListGto[]>> GetListAsync(string condition)
         {
-            return await StubDataAsync<WorkflowDesignSummaryGto[]>();
+            return await StubDataAsync<WorkflowDesignListGto[]>();
         }
 
         public async Task<ApiResponse<WorkflowDesignSelectorGto[]>> GetSelectorsAsync()
