@@ -106,7 +106,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
 
         [Fact]
-        public async Task WorkflowDesign_GetAllActiveWorkflowDesigns_Success()
+        public async Task WorkflowDesign_GetWorkflowDesignList_Success()
         {
             // arrange
             var summaryResponseDto = MockWorkflowDesignListResponseDto();
@@ -149,7 +149,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
-        public async Task WorkflowDesign_GetAllActiveWorkflowDesigns_Failed()
+        public async Task WorkflowDesign_GetWorkflowDesignList_Failed()
         {
             // arrange
             var mockResponse = ApiResponse.CreateFailed().To<WorkflowDesignListResponseDto>();

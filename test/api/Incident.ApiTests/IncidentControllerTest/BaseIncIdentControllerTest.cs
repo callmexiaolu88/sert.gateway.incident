@@ -44,7 +44,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             return workflowDesign.ReferenceId.ToString();
         }
 
-        protected async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
+        protected async Task<WorkflowDesignListGto[]> GetAllWorkflowDesigns()
         {
             var workflowDesigns = await WorkflowDesignGateWayApi.GetListAsync(string.Empty);
             return workflowDesigns.Value;
