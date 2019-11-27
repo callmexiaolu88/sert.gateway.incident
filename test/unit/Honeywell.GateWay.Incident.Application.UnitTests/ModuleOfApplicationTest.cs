@@ -14,7 +14,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             var sc = new ServiceCollection();
             sc.AddLogging();
-            var moduleOfApplication = new ModuleOfApplication(sc);
+            var moduleOfApplication = new ModuleOfApplication();
 
             var context = new ConfigureServicesContext<IServiceCollection>(sc);
             moduleOfApplication.ConfigureServices(context);

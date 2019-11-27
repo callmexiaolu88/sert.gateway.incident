@@ -22,7 +22,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var configuration = new ConfigurationBuilder().Build();
             sc.AddSingleton<IConfiguration>(configuration);
             
-            var module = new ModuleOfRepository(sc);
+            var module = new ModuleOfRepository();
 
             var context = new ConfigureServicesContext<IServiceCollection>(sc);
             module.ConfigureServices(context);
