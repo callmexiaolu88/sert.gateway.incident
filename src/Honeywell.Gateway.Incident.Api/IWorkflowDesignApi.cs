@@ -7,7 +7,7 @@ using Honeywell.Infra.Core;
 using System.IO;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.getIds;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
 
 namespace Honeywell.Gateway.Incident.Api
 {

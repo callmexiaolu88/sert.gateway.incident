@@ -14,7 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.getIds;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
 
 namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign

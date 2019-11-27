@@ -5,7 +5,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.getIds;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Api.Abstract;

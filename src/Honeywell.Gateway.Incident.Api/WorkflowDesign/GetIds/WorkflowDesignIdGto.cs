@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Honeywell.Gateway.Incident.Api.WorkflowDesign.getIds
+namespace Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds
 {
     public class WorkflowDesignIdGto
     {
