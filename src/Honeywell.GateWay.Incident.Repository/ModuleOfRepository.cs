@@ -5,6 +5,7 @@ using Honeywell.GateWay.Incident.Repository.WorkflowDesign;
 using Honeywell.Infra.Client.WebApi;
 using Honeywell.Infra.Client.WebApi.Config;
 using Honeywell.Infra.Core.Modular;
+using Honeywell.Infra.Core.Modular.Steps;
 using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Workflow.Api;
@@ -15,29 +16,26 @@ namespace Honeywell.GateWay.Incident.Repository
 {
     public class ModuleOfRepository : Module<IServiceCollection>
     {
-        public ModuleOfRepository(IServiceCollection icoContainer) : base(icoContainer) { }
-
-
-        public override void InitializeDependencyInject()
+        public override void ConfigureServices(ConfigureServicesContext<IServiceCollection> context)
         {
-            IocContainer.AddScoped<IDeviceRepository, DeviceRepository>();
-            IocContainer.AddScoped<IIncidentRepository, IncidentRepository>();
-            IocContainer.AddScoped<IWorkflowDesignRepository, WorkflowDesignRepository>();
-            var config = IocContainer.BuildServiceProvider().GetService<IConfiguration>();
+            context.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+            context.Services.AddScoped<IIncidentRepository, IncidentRepository>();
+            context.Services.AddScoped<IWorkflowDesignRepository, WorkflowDesignRepository>();
+            var config = context.Services.BuildServiceProvider().GetService<IConfiguration>();
             var assembly = typeof(IDeviceApi).Assembly;
-            IocContainer.AddRemoteService(assembly,
+            context.Services.AddRemoteService(assembly,
                 o =>
                 {
                     var configuration = new RemoteServiceConfiguration(config["ProWatchAddress"]);
                     o.ConfigRemoteService(assembly, configuration);
                 });
 
-            IocContainer.AddRemoteService(typeof(IWorkflowDesignMicroApi).Assembly);
-            IocContainer.AddRemoteService(typeof(IWorkflowMicroApi).Assembly);
-            IocContainer.AddRemoteService(typeof(IIncidentMicroApi).Assembly);
-            IocContainer.AddRemoteService(typeof(IIncidentFacadeApi).Assembly);
-            IocContainer.AddRemoteService(typeof(ILiveDataApi).Assembly);
-            IocContainer.AddHttpContextAccessor();
+            context.Services.AddRemoteService(typeof(IWorkflowDesignMicroApi).Assembly);
+            context.Services.AddRemoteService(typeof(IWorkflowMicroApi).Assembly);
+            context.Services.AddRemoteService(typeof(IIncidentMicroApi).Assembly);
+            context.Services.AddRemoteService(typeof(IIncidentFacadeApi).Assembly);
+            context.Services.AddRemoteService(typeof(ILiveDataApi).Assembly);
+            context.Services.AddHttpContextAccessor();
         }
     }
 }

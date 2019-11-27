@@ -14,7 +14,6 @@ namespace Honeywell.Gateway.Incident
     )]
     public class ModuleOfIncident : Module<IServiceCollection>
     {
-        public ModuleOfIncident(IServiceCollection icoContainer)
-            : base(icoContainer) { }
+
     }
 }

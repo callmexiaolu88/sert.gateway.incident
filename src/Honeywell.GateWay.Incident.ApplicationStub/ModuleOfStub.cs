@@ -2,6 +2,7 @@
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.Infra.Core.Modular;
+using Honeywell.Infra.Core.Modular.Steps;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -12,13 +13,9 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
     [DependsOn(typeof(ModuleOfApplication))]
     public class ModuleOfStub : Module<IServiceCollection>
     {
-        public ModuleOfStub(IServiceCollection icoContainer) : base(icoContainer)
+        public override void ConfigureServices(ConfigureServicesContext<IServiceCollection> context)
         {
-        }
-
-        public override void InitializeDependencyInject()
-        {
-            var provider = IocContainer.BuildServiceProvider();
+            var provider = context.Services.BuildServiceProvider();
             var config = provider.GetService<IConfiguration>();
             var isStubModel = config.GetValue<bool>("StubModel");
 
@@ -29,14 +26,14 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                         typeof(IIncidentAppService),
                         typeof(StubIncidentAppService),
                         ServiceLifetime.Transient);
-                IocContainer.Replace(incidentDescriptor);
+                context.Services.Replace(incidentDescriptor);
 
                 var workflowDescriptor =
                     new ServiceDescriptor(
                         typeof(IWorkflowDesignAppService),
                         typeof(StubWorkflowDesignAppService),
                         ServiceLifetime.Transient);
-                IocContainer.Replace(workflowDescriptor);
+                context.Services.Replace(workflowDescriptor);
             }
         }
     }

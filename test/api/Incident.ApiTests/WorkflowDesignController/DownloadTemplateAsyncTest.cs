@@ -3,7 +3,7 @@
 namespace Incident.ApiTests.IncidentControllerTest
 {
 
-    public class DownloadWorkflowTemplateTest
+    public class DownloadTemplateAsyncTest
     {
         [Fact]
         public async void DownloadWorkflowTemplate_Success()

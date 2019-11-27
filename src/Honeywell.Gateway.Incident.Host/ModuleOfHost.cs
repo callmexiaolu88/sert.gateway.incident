@@ -7,7 +7,6 @@ namespace Honeywell.Gateway.Incident.Host
     [DependsOn(typeof(ModuleOfCore))]
     public class ModuleOfHost : Module<IServiceCollection>
     {
-        public ModuleOfHost(IServiceCollection icoContainer)
-            : base(icoContainer) { }
+
     }
 }
