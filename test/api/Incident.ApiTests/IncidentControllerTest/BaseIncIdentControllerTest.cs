@@ -50,6 +50,12 @@ namespace Incident.ApiTests.IncidentControllerTest
             return workflowDesigns.Value;
         }
 
+        protected async Task<WorkflowDesignListGto[]> GetAllWorkflowDesigns(string condition)
+        {
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetListAsync(condition);
+            return workflowDesigns.Value;
+        }
+
         protected async Task<ApiResponse> ImportWorkflowDesign()
         {
             var resourceName = "Incident.ApiTests.Data.TestTemplate.docx";
