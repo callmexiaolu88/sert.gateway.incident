@@ -5,7 +5,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
@@ -62,15 +62,15 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             }
         }
 
-        public async Task<ApiResponse<WorkflowDesignSummaryGto[]>> GetSummariesAsync()
+        public async Task<ApiResponse<WorkflowDesignListGto[]>> GetListAsync(string condition)
         {
             try
             {
-                return await _workflowDesignRepository.GetAllActiveWorkflowDesigns();
+                return await _workflowDesignRepository.GetWorkflowDesignList(condition);
             }
             catch(Exception ex)
             {
-                return ApiResponse.CreateFailed(ex).To<WorkflowDesignSummaryGto[]>();
+                return ApiResponse.CreateFailed(ex).To<WorkflowDesignListGto[]>();
             }
         }
 

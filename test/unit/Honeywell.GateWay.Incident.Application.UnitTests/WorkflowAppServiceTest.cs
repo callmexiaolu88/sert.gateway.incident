@@ -5,7 +5,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Api.Abstract;
@@ -89,12 +89,12 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         [Fact]
         public void GetAllActiveWorkflowDesigns_Test()
         {
-            var mockDesign = new WorkflowDesignSummaryGto
+            var mockDesign = new WorkflowDesignListGto
             {
                 Id = Guid.NewGuid()
             };
-            _mockWorkflowDesignRepository.Setup(x => x.GetAllActiveWorkflowDesigns()).ReturnsAsync(new[] { mockDesign });
-            var result = _testObj.GetSummariesAsync();
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignList(string.Empty)).ReturnsAsync(new[] { mockDesign });
+            var result = _testObj.GetListAsync(string.Empty);
             Assert.True(result.Result.IsSuccess);
             Assert.NotNull(result);
             Assert.True(result.Result.Value.Length == 1);
@@ -104,9 +104,9 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         [Fact]
         public void GetAllActiveWorkflowDesigns_ThrowException_Failed()
         {
-            _mockWorkflowDesignRepository.Setup(x => x.GetAllActiveWorkflowDesigns()).ThrowsAsync(new Exception());
+            _mockWorkflowDesignRepository.Setup(x => x.GetWorkflowDesignList(string.Empty)).ThrowsAsync(new Exception());
 
-            var result = _testObj.GetSummariesAsync();
+            var result = _testObj.GetListAsync(string.Empty);
 
             Assert.NotNull(result);
             Assert.False(result.Result.IsSuccess);
