@@ -82,6 +82,32 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListByDeviceAsync(int status, string deviceId)
+        {
+            try
+            {
+                return await _incidentRepository.GetListAsync(status, deviceId);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<IncidentSummaryGto[]>();
+            }
+        }
+
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync()
+        {
+            try
+            {
+                return await _incidentRepository.GetActiveIncidentList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<IncidentSummaryGto[]>();
+            }
+        }
+
         public async Task<ApiResponse<SiteDeviceGto[]>> GetSiteDevicesAsync()
         {
             try
@@ -169,20 +195,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 return ApiResponse.CreateFailed(ex);
             }
         }
-
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync()
-        {
-            try
-            {
-                return await _incidentRepository.GetActiveIncidentList();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<IncidentSummaryGto[]>();
-            }
-        }
-
+        
         public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests)
         {
             try

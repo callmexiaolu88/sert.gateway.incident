@@ -25,6 +25,7 @@ using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Actions;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.Statistics;
+using Honeywell.Micro.Services.Incident.Domain.Shared;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 
 
@@ -202,32 +203,27 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         public async Task<IncidentSummaryGto[]> GetActiveIncidentList()
         {
             Logger.LogInformation("call Incident api GetActiveIncidentList Start");
-            var result = await _incidentMicroApi.GetListAsync();
+            var result = await _incidentMicroApi.GetListAsync(new GetIncidentListRequestDto { State = IncidentState.Active });
             ApiResponse.ThrowExceptionIfFailed(result);
 
             var workflowIds = result.Value.List.Select(x => x.WorkflowId).ToArray();
-            var request = new WorkflowSummaryRequestDto
-            {
-                WorkflowIds = workflowIds
-            };
-            var workflowSummaries = await _workflowMicroApi.GetSummariesAsync(request);
+            var workflowSummaries = await GetWorkflowSummary(workflowIds);
             ApiResponse.ThrowExceptionIfFailed(workflowSummaries);
 
-            var activeIncidentsGto = HoneyMapper.Map<IncidentListItemDto[], IncidentSummaryGto[]>(result.Value.List.ToArray());
-            foreach (var activeIncident in activeIncidentsGto)
-            {
-                foreach (var workflowSummary in workflowSummaries.Value.Summaries)
-                {
-                    if (activeIncident.WorkflowId == workflowSummary.WorkflowId)
-                    {
-                        activeIncident.WorkflowDesignName = workflowSummary.WorkflowDesignName;
-                        activeIncident.CompletedSteps = workflowSummary.CompletedSteps;
-                        activeIncident.TotalSteps = workflowSummary.TotalSteps;
-                    }
-                }
-            }
+            return MappingIncidentsGtos(result, workflowSummaries);
+        }
 
-            return activeIncidentsGto;
+        public async Task<IncidentSummaryGto[]> GetListAsync(int status, string deviceId)
+        {
+            Logger.LogInformation("call Incident api GetListAsync Start");
+            var result = await _incidentMicroApi.GetListAsync(new GetIncidentListRequestDto { State = (IncidentState)status, DeviceId = deviceId });
+            ApiResponse.ThrowExceptionIfFailed(result);
+
+            var workflowIds = result.Value.List.Select(x => x.WorkflowId).ToArray();
+            var workflowSummaries = await GetWorkflowSummary(workflowIds);
+            ApiResponse.ThrowExceptionIfFailed(workflowSummaries);
+
+            return MappingIncidentsGtos(result, workflowSummaries);
         }
 
         public async Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests)
@@ -261,13 +257,41 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return result.IncidentActivities.ToArray();
         }
 
-        public async Task<ApiResponse<IncidentStatisticsGto>> GetStatisticsAsync(string deviceId)
+        public async Task<IncidentStatisticsGto> GetStatisticsAsync(string deviceId)
         {
             Logger.LogInformation($"call GetStatisticsAsync {nameof(GetStatisticsAsync)} Start");
             var response = await _incidentMicroApi.GetStatisticsAsync(new GetIncidentStatisticsRequestDto { DeviceIds = new[] { deviceId } });
             ApiResponse.ThrowExceptionIfFailed(response);
-            var result =  HoneyMapper.Map<IncidentStatisticsDto, IncidentStatisticsGto>(response.Value.StatisticsIncident[0]);
+            var result = HoneyMapper.Map<IncidentStatisticsDto, IncidentStatisticsGto>(response.Value.StatisticsIncident[0]);
             return result;
+        }
+
+        private IncidentSummaryGto[] MappingIncidentsGtos(ApiResponse<GetIncidentListResponseDto> result, ApiResponse<WorkflowSummaryResponseDto> workflowSummaries)
+        {
+            var incidentsGtos = HoneyMapper.Map<IncidentListItemDto[], IncidentSummaryGto[]>(result.Value.List.ToArray());
+            foreach (var incident in incidentsGtos)
+            {
+                foreach (var workflowSummary in workflowSummaries.Value.Summaries)
+                {
+                    if (incident.WorkflowId == workflowSummary.WorkflowId)
+                    {
+                        incident.WorkflowDesignName = workflowSummary.WorkflowDesignName;
+                        incident.CompletedSteps = workflowSummary.CompletedSteps;
+                        incident.TotalSteps = workflowSummary.TotalSteps;
+                    }
+                }
+            }
+            return incidentsGtos;
+        }
+
+        private async Task<ApiResponse<WorkflowSummaryResponseDto>> GetWorkflowSummary(Guid[] workflowIds)
+        {
+            var request = new WorkflowSummaryRequestDto
+            {
+                WorkflowIds = workflowIds
+            };
+            var workflowSummaries = await _workflowMicroApi.GetSummariesAsync(request);
+            return workflowSummaries;
         }
 
         public async Task AddStepComment(AddStepCommentRequestGto addStepCommentGto)
@@ -295,7 +319,14 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 return;
             }
             var activities = new IncidentActivities(incidentId);
-            await _liveDataApi.SendEventData(activities);
+            try
+            {
+                await _liveDataApi.SendEventData(activities);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"NotificationActivity incident: {incidentId}");
+            }
         }
     }
 }
