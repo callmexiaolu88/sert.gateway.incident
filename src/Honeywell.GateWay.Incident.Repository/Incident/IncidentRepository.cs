@@ -203,7 +203,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         public async Task<IncidentSummaryGto[]> GetActiveIncidentList()
         {
             Logger.LogInformation("call Incident api GetActiveIncidentList Start");
-            var result = await _incidentMicroApi.GetListAsync();
+            var result = await _incidentMicroApi.GetListAsync(new GetIncidentListRequestDto { State = IncidentState.Active });
             ApiResponse.ThrowExceptionIfFailed(result);
 
             var workflowIds = result.Value.List.Select(x => x.WorkflowId).ToArray();
@@ -215,7 +215,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         public async Task<IncidentSummaryGto[]> GetListAsync(int status, string deviceId)
         {
             Logger.LogInformation("call Incident api GetListAsync Start");
-            var result = await _incidentMicroApi.GetListAsync();
+            var result = await _incidentMicroApi.GetListAsync(new GetIncidentListRequestDto { State = (IncidentState)status, DeviceId = deviceId });
             ApiResponse.ThrowExceptionIfFailed(result);
 
             var workflowIds = result.Value.List.Select(x => x.WorkflowId).ToArray();

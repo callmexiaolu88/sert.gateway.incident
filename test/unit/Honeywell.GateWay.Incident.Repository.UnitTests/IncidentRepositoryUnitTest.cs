@@ -453,7 +453,9 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 List = new List<IncidentListItemDto> {mockIncidentListItemDto}
             };
 
-            _mockIncidentMicroApi.Setup(x => x.GetListAsync()).ReturnsAsync(mockIncidentResponse);
+            var request = new GetIncidentListRequestDto {State = IncidentState.Active};
+
+            _mockIncidentMicroApi.Setup(x => x.GetListAsync(request)).ReturnsAsync(mockIncidentResponse);
 
             var mockWorkflowSummary = new WorkflowSummaryDto
             {
@@ -500,7 +502,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //assign
             var mockIncidentListResponse = ApiResponse.CreateFailed().To<GetIncidentListResponseDto>();
-            _mockIncidentMicroApi.Setup(x => x.GetListAsync()).ReturnsAsync(mockIncidentListResponse);
+            var request = new GetIncidentListRequestDto { State = IncidentState.Active };
+            _mockIncidentMicroApi.Setup(x => x.GetListAsync(request)).ReturnsAsync(mockIncidentListResponse);
 
             //action
             var act = new Func<Task>(async () => await _incidentRepository.GetActiveIncidentList());
