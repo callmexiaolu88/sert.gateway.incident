@@ -747,13 +747,53 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
-        public async Task GetList_CallGetActiveList_Failed()
+        public async Task GetList_CallGetIncidentsList_Failed()
         {
             //assign
             var mockIncidentListResponse = ApiResponse.CreateFailed().To<GetIncidentListResponseDto>();
             _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<GetIncidentListRequestDto>())).ReturnsAsync(mockIncidentListResponse);
             //action
             var act = new Func<Task>(async () => await _incidentRepository.GetListAsync(0,Guid.NewGuid().ToString()));
+
+            //assert
+            await Assert.ThrowsAsync<HoneywellException>(act);
+        }
+
+        [Fact]
+        public async Task GetList_CallGetWorkflowList_Failed()
+        {
+            //assign
+            var workflowId = Guid.NewGuid();
+            var deviceId = Guid.NewGuid().ToString();
+            var deviceType = "Door";
+            var mockIncidentListItemDto = new IncidentListItemDto
+            {
+                Id = Guid.NewGuid(),
+                DeviceId = deviceId,
+                DeviceType = deviceType,
+                WorkflowId = workflowId,
+                CreateAtUtc = DateTime.Now,
+                Owner = "Admin1",
+                State = IncidentState.Active,
+                Number = 10,
+                Priority = Micro.Services.Incident.Domain.Shared.IncidentPriority.High
+            };
+
+            var mockIncidentResponse = new GetIncidentListResponseDto
+            {
+                List = new List<IncidentListItemDto> { mockIncidentListItemDto }
+            };
+            
+            _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<GetIncidentListRequestDto>())).ReturnsAsync(mockIncidentResponse);
+
+            var mockIncidentListResponse = ApiResponse.CreateFailed().To<WorkflowSummaryResponseDto>();
+            _mockWorkflowMicroApi.Setup(x =>
+                    x.GetSummariesAsync(
+                        It.Is<WorkflowSummaryRequestDto>(request => request.WorkflowIds.Contains(workflowId))))
+                .ReturnsAsync(mockIncidentListResponse);
+
+            //action
+            var act = new Func<Task>(async () => await _incidentRepository.GetListAsync(0, Guid.NewGuid().ToString()));
 
             //assert
             await Assert.ThrowsAsync<HoneywellException>(act);
