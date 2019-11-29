@@ -209,6 +209,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var workflowIds = result.Value.List.Select(x => x.WorkflowId).ToArray();
             var workflowSummaries = await GetWorkflowSummary(workflowIds);
             ApiResponse.ThrowExceptionIfFailed(workflowSummaries);
+
             return MappingIncidentsGtos(result, workflowSummaries);
         }
 
@@ -221,6 +222,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var workflowIds = result.Value.List.Select(x => x.WorkflowId).ToArray();
             var workflowSummaries = await GetWorkflowSummary(workflowIds);
             ApiResponse.ThrowExceptionIfFailed(workflowSummaries);
+
             return MappingIncidentsGtos(result, workflowSummaries);
         }
 
