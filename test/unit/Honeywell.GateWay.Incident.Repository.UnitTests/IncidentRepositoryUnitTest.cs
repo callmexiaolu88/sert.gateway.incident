@@ -676,11 +676,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
             //asser.
             Assert.NotNull(result);
-            Assert.True(result.IsSuccess);
-            Assert.Equal(response.StatisticsIncident[0].DeviceId, result.Value.DeviceId);
-            Assert.Equal(response.StatisticsIncident[0].ActiveCount, result.Value.ActiveCount);
-            Assert.Equal(response.StatisticsIncident[0].CloseCount, result.Value.CloseCount);
-            Assert.Equal(response.StatisticsIncident[0].CompletedCount, result.Value.CompletedCount);
+            Assert.Equal(response.StatisticsIncident[0].DeviceId, result.DeviceId);
+            Assert.Equal(response.StatisticsIncident[0].ActiveCount, result.ActiveCount);
+            Assert.Equal(response.StatisticsIncident[0].CloseCount, result.CloseCount);
+            Assert.Equal(response.StatisticsIncident[0].CompletedCount, result.CompletedCount);
         }
 
         #region private methods
