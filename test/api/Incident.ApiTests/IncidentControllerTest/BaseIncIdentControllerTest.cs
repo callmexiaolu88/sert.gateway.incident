@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
-using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSummary;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Infra.Api.Abstract;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -34,9 +34,25 @@ namespace Incident.ApiTests.IncidentControllerTest
             return workflowDesign.Id.ToString();
         }
 
-        protected async Task<WorkflowDesignSummaryGto[]> GetAllWorkflowDesigns()
+        protected async Task<string> GetFirstWorkflowDesignReferenceId()
         {
-            var workflowDesigns = await WorkflowDesignGateWayApi.GetSummariesAsync();
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetSelectorsAsync();
+            Assert.NotNull(workflowDesigns);
+            Assert.NotNull(workflowDesigns.Value);
+            var workflowDesign = workflowDesigns.Value.FirstOrDefault();
+            Assert.NotNull(workflowDesign);
+            return workflowDesign.ReferenceId.ToString();
+        }
+
+        protected async Task<WorkflowDesignListGto[]> GetAllWorkflowDesigns()
+        {
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetListAsync(string.Empty);
+            return workflowDesigns.Value;
+        }
+
+        protected async Task<WorkflowDesignListGto[]> GetAllWorkflowDesigns(string condition)
+        {
+            var workflowDesigns = await WorkflowDesignGateWayApi.GetListAsync(condition);
             return workflowDesigns.Value;
         }
 
@@ -65,10 +81,10 @@ namespace Incident.ApiTests.IncidentControllerTest
 
         protected async Task<string> CreateIncident(string deviceId = null, string deviceType = null)
         {
-            var workflowDesignId = GetFirstWorkflowDesignId();
+            var workflowDesignReferenceId = await GetFirstWorkflowDesignReferenceId();
             var incident = new CreateIncidentRequestGto
             {
-                Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignId,
+                Description = "incident 1", Priority = "Low", WorkflowDesignReferenceId = workflowDesignReferenceId,
                 DeviceId = deviceId, DeviceType = deviceType
             };
             var result = await IncidentGateWayApi.CreateAsync(incident);
@@ -79,10 +95,10 @@ namespace Incident.ApiTests.IncidentControllerTest
         protected async Task<ApiResponse<Guid[]>> CreateIncidentByAlarm(string alarmId = null)
         {
             alarmId = string.IsNullOrEmpty(alarmId) ? Guid.NewGuid().ToString() : alarmId;
-            var workflowDesignId = GetFirstWorkflowDesignId();
+            var workflowDesignReferenceId = await GetFirstWorkflowDesignReferenceId();
             var request = new CreateIncidentByAlarmRequestGto
             {
-                WorkflowDesignReferenceId = new Guid(workflowDesignId),
+                WorkflowDesignReferenceId = new Guid(workflowDesignReferenceId),
                 Priority = IncidentPriority.High,
                 Description = "incident description",
                 DeviceId = Guid.NewGuid().ToString(),

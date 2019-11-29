@@ -16,7 +16,6 @@ using Honeywell.Micro.Services.Workflow.Api.Workflow.Actions;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
 using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using Moq;
 using System;
@@ -32,31 +31,26 @@ using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
 using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
 using IncidentStatus = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentStatus;
 using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
-
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
 
 namespace Honeywell.GateWay.Incident.Repository.UnitTests
 {
     public class IncidentRepositoryUnitTest : ApplicationServiceTestBase
     {
-        private readonly Mock<IWorkflowDesignMicroApi> _workflowDesignMicroApiMock;
         private readonly Mock<IIncidentMicroApi> _mockIncidentMicroApi;
         private readonly Mock<IWorkflowMicroApi> _mockWorkflowMicroApi;
         private readonly Mock<IIncidentFacadeApi> _mockIncidentFacadeApi;
         private readonly Mock<ILiveDataApi> _mockLiveDataApi;
 
-         
-
         private readonly IIncidentRepository _incidentRepository;
 
         public IncidentRepositoryUnitTest()
         {
-            _workflowDesignMicroApiMock = new Mock<IWorkflowDesignMicroApi>();
             _mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
             _mockWorkflowMicroApi = new Mock<IWorkflowMicroApi>();
             _mockIncidentFacadeApi = new Mock<IIncidentFacadeApi>();
             _mockLiveDataApi = new Mock<ILiveDataApi>();
             _incidentRepository = new IncidentRepository(
-                _workflowDesignMicroApiMock.Object,
                 _mockIncidentMicroApi.Object,
                 _mockWorkflowMicroApi.Object,
                 _mockIncidentFacadeApi.Object,
@@ -669,7 +663,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var request = new GetIncidentStatisticsRequestDto {DeviceIds = new[] {deviceId}};
             var response = new GetIncidentStatisticstResponseDto();
             response.StatisticsIncident.Add(new IncidentStatisticsDto {ActiveCount = 1,CloseCount = 1,CompletedCount = 1,DeviceId = deviceId});
-            _mockIncidentMicroApi.Setup(x => x.GetStatisticsAsync(request)).ReturnsAsync(response);
+            _mockIncidentMicroApi.Setup(x => x.GetStatisticsAsync(It.IsAny<GetIncidentStatisticsRequestDto>())).ReturnsAsync(response);
 
             //act
            var result =  await _incidentRepository.GetStatisticsAsync(deviceId);
@@ -708,13 +702,13 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             };
         }
 
-        private WorkflowDesignSummaryResponseDto MockWorkflowDesignSummaryResponseDto()
+        private WorkflowDesignListResponseDto MockWorkflowDesignListResponseDto()
         {
-            var summaryResponseDto = new WorkflowDesignSummaryResponseDto
+            var listResponseDto = new WorkflowDesignListResponseDto
             {
-                Summaries = new List<WorkflowDesignSummaryDto>
+                Lists = new List<WorkflowDesignListDto>
                 {
-                    new WorkflowDesignSummaryDto
+                    new WorkflowDesignListDto
                     {
                         Id=Guid.NewGuid(),
                         Name = "workflow design 1",
@@ -722,7 +716,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                     }
                 }
             };
-            return summaryResponseDto;
+            return listResponseDto;
         }
 
         private WorkflowDesignSelectorResponseDto MockWorkflowDesignSelectorResponseDto()

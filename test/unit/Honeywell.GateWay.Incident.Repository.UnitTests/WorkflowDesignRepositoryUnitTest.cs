@@ -13,7 +13,7 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Import;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Summary;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
 using Moq;
 using Xunit;
 
@@ -106,21 +106,22 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
 
         [Fact]
-        public async Task WorkflowDesign_GetAllActiveWorkflowDesigns_Success()
+        public async Task WorkflowDesign_GetWorkflowDesignList_Success()
         {
             // arrange
-            var summaryResponseDto = MockWorkflowDesignSummaryResponseDto();
-            _workflowDesignMicroApiMock.Setup(x => x.GetSummariesAsync()).ReturnsAsync(summaryResponseDto);
+            var summaryResponseDto = MockWorkflowDesignListResponseDto();
+            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto() { Condition = string.Empty };
+            _workflowDesignMicroApiMock.Setup(x => x.GetListAsync(workflowDesignListRequestDto)).ReturnsAsync(summaryResponseDto);
 
             // action
-            var result = await _incidentRepository.GetAllActiveWorkflowDesigns();
+            var result = await _incidentRepository.GetWorkflowDesignList(string.Empty);
 
             // assert
             Assert.True(1 == result.Length);
 
             foreach (var item in result)
             {
-                var expectedItem = summaryResponseDto.Summaries.FirstOrDefault(x => x.Id == item.Id);
+                var expectedItem = summaryResponseDto.Lists.FirstOrDefault(x => x.Id == item.Id);
                 Assert.NotNull(expectedItem);
                 Assert.Equal(expectedItem.Name, item.Name);
                 Assert.Equal(expectedItem.Description, item.Description);
@@ -148,14 +149,15 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
-        public async Task WorkflowDesign_GetAllActiveWorkflowDesigns_Failed()
+        public async Task WorkflowDesign_GetWorkflowDesignList_Failed()
         {
             // arrange
-            var mockResponse = ApiResponse.CreateFailed().To<WorkflowDesignSummaryResponseDto>();
-            _workflowDesignMicroApiMock.Setup(x => x.GetSummariesAsync()).ReturnsAsync(mockResponse);
+            var mockResponse = ApiResponse.CreateFailed().To<WorkflowDesignListResponseDto>();
+            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto() { Condition = string.Empty };
+            _workflowDesignMicroApiMock.Setup(x => x.GetListAsync(workflowDesignListRequestDto)).ReturnsAsync(mockResponse);
 
             // action
-            var act = new Func<Task>(async () => await _incidentRepository.GetAllActiveWorkflowDesigns());
+            var act = new Func<Task>(async () => await _incidentRepository.GetWorkflowDesignList(string.Empty));
 
             // assert
             await Assert.ThrowsAsync<HoneywellException>(act);
@@ -267,11 +269,11 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         public void GetWorkflowDesignIds_Success()
         {
             //arrange
-            var summaryResponseDto = new WorkflowDesignSummaryResponseDto
+            var listResponseDto = new WorkflowDesignListResponseDto
             {
-                Summaries = new List<WorkflowDesignSummaryDto>
+                Lists = new List<WorkflowDesignListDto>
                 {
-                    new WorkflowDesignSummaryDto
+                    new WorkflowDesignListDto
                     {
                         Description = "description",
                         Id = new Guid(),
@@ -281,8 +283,9 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 }
             };
 
-            _workflowDesignMicroApiMock.Setup(api => api.GetSummariesAsync())
-                .ReturnsAsync(summaryResponseDto);
+            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto() { Condition = string.Empty };
+            _workflowDesignMicroApiMock.Setup(api => api.GetListAsync(workflowDesignListRequestDto))
+                .ReturnsAsync(listResponseDto);
 
             //act
             var workflowDesignIds = _incidentRepository.GetWorkflowDesignIds();
@@ -291,8 +294,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.NotNull(workflowDesignIds.Result);
             Assert.NotNull(workflowDesignIds.Result);
             Assert.True(workflowDesignIds.Result.Any());
-            Assert.Equal(workflowDesignIds.Result.First().WorkflowDesignReferenceId, summaryResponseDto.Summaries.First().Id);
-            Assert.Equal(workflowDesignIds.Result.First().Name, summaryResponseDto.Summaries.First().Name);
+            Assert.Equal(workflowDesignIds.Result.First().WorkflowDesignReferenceId, listResponseDto.Lists.First().Id);
+            Assert.Equal(workflowDesignIds.Result.First().Name, listResponseDto.Lists.First().Name);
         }
 
         [Fact]
@@ -360,13 +363,13 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
 
-        private WorkflowDesignSummaryResponseDto MockWorkflowDesignSummaryResponseDto()
+        private WorkflowDesignListResponseDto MockWorkflowDesignListResponseDto()
         {
-            var summaryResponseDto = new WorkflowDesignSummaryResponseDto
+            var summaryResponseDto = new WorkflowDesignListResponseDto
             {
-                Summaries = new List<WorkflowDesignSummaryDto>
+                Lists = new List<WorkflowDesignListDto>
                 {
-                    new WorkflowDesignSummaryDto
+                    new WorkflowDesignListDto
                     {
                         Id=Guid.NewGuid(),
                         Name = "workflow design 1",

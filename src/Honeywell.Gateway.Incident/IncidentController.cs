@@ -22,7 +22,7 @@ namespace Honeywell.Gateway.Incident
     {
         private readonly IIncidentAppService _incidentAppService;
 
-        public IncidentController(ILogger<IncidentController> logger, IIncidentAppService incidentAppService)
+        public IncidentController(IIncidentAppService incidentAppService)
         {
             _incidentAppService = incidentAppService;
         }

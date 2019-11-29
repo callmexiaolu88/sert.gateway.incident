@@ -34,19 +34,17 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
     public class IncidentRepository : ApplicationService, IIncidentRepository
     {
-        private readonly IWorkflowDesignMicroApi _workflowDesignApi;
         private readonly IIncidentMicroApi _incidentMicroApi;
         private readonly IWorkflowMicroApi _workflowMicroApi;
         private readonly IIncidentFacadeApi _incidentFacadeApi;
         private readonly ILiveDataApi _liveDataApi;
 
-        public IncidentRepository(IWorkflowDesignMicroApi workflowDesignApi,
+        public IncidentRepository(
             IIncidentMicroApi incidentMicroApi,
             IWorkflowMicroApi workflowMicroApi,
             IIncidentFacadeApi incidentFacadeApi,
             ILiveDataApi liveDataApi)
         {
-            _workflowDesignApi = workflowDesignApi;
             _incidentMicroApi = incidentMicroApi;
             _workflowMicroApi = workflowMicroApi;
             _incidentFacadeApi = incidentFacadeApi;

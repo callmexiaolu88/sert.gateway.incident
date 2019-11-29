@@ -1,4 +1,5 @@
 ﻿using Honeywell.Facade.Services.Incident.Api;
+using Honeywell.Infra.Core.Modular.Steps;
 using Honeywell.Infra.HoneyMapper.AutoMapper;
 using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api;
@@ -19,10 +20,12 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             sc.AddLogging();
 
             var configuration = new ConfigurationBuilder().Build();
-            sc.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configuration);
+            sc.AddSingleton<IConfiguration>(configuration);
             
-            var module = new ModuleOfRepository(sc);
-            module.InitializeDependencyInject();
+            var module = new ModuleOfRepository();
+
+            var context = new ConfigureServicesContext<IServiceCollection>(sc);
+            module.ConfigureServices(context);
 
             Assert.NotNull(sc);
             Assert.Contains(sc, s => s.ServiceType == typeof(IIncidentRepository));
