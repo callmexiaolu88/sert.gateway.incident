@@ -110,8 +110,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             // arrange
             var summaryResponseDto = MockWorkflowDesignListResponseDto();
-            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto() { Condition = string.Empty };
-            _workflowDesignMicroApiMock.Setup(x => x.GetListAsync(workflowDesignListRequestDto)).ReturnsAsync(summaryResponseDto);
+            _workflowDesignMicroApiMock.Setup(x => x.GetListAsync(It.IsAny<WorkflowDesignListRequestDto>())).ReturnsAsync(summaryResponseDto);
 
             // action
             var result = await _incidentRepository.GetWorkflowDesignList(string.Empty);
@@ -153,8 +152,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             // arrange
             var mockResponse = ApiResponse.CreateFailed().To<WorkflowDesignListResponseDto>();
-            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto() { Condition = string.Empty };
-            _workflowDesignMicroApiMock.Setup(x => x.GetListAsync(workflowDesignListRequestDto)).ReturnsAsync(mockResponse);
+            _workflowDesignMicroApiMock.Setup(x => x.GetListAsync(It.IsAny<WorkflowDesignListRequestDto>())).ReturnsAsync(mockResponse);
 
             // action
             var act = new Func<Task>(async () => await _incidentRepository.GetWorkflowDesignList(string.Empty));
@@ -283,8 +281,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 }
             };
 
-            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto() { Condition = string.Empty };
-            _workflowDesignMicroApiMock.Setup(api => api.GetListAsync(workflowDesignListRequestDto))
+            _workflowDesignMicroApiMock.Setup(api => api.GetListAsync(It.IsAny<WorkflowDesignListRequestDto>()))
                 .ReturnsAsync(listResponseDto);
 
             //act
