@@ -24,5 +24,6 @@ namespace Honeywell.Gateway.Incident.Api.Incident.Create
     {
         public string AlarmType { get; set; }
         public string Description { get; set; }
+        public int AlarmTimestamp { get; set; }
     }
 }
