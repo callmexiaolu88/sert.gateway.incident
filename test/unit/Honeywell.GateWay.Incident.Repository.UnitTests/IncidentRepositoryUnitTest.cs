@@ -527,7 +527,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 {
                     AlarmType = "AlarmType",
                     Description = "alarm description",
-                    AlarmTimestamp = "1574406225000"
+                    AlarmTimestamp = 1574406225000
                 }
             };
 

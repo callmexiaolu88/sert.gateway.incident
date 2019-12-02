@@ -108,7 +108,7 @@ namespace Incident.ApiTests.IncidentControllerTest
                 {
                     AlarmType = "AlarmType",
                     Description = "alarm description",
-                    AlarmTimestamp = "1574406225000"
+                    AlarmTimestamp = 1574406225000
                 }
             };
 
