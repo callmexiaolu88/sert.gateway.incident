@@ -35,7 +35,6 @@ namespace Incident.ApiTests.IncidentControllerTest
 
             Assert.True(getListResponse.IsSuccess);
             var list = getListResponse.Value;
-            Assert.Equal(2, list.Length);
             foreach (var incident in list)
             {
                 Assert.Equal(device.DeviceId,incident.DeviceId);

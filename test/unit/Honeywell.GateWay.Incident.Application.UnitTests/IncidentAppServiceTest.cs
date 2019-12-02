@@ -495,5 +495,34 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.NotNull(result);
             Assert.False(result.Result.IsSuccess);
         }
+
+        [Fact]
+        public void GetListByDevice_Successful()
+        {
+            var mockActiveIncidentGto = new IncidentSummaryGto
+            {
+                WorkflowId = Guid.NewGuid(),
+                WorkflowDesignName = "test"
+            };
+
+            _mockIncidentRepository.Setup(x => x.GetListAsync(It.IsAny<int>(),It.IsAny<string>()))
+                .ReturnsAsync(new[] { mockActiveIncidentGto });
+            var result = _testObj.GetListByDeviceAsync(It.IsAny<int>(), It.IsAny<string>());
+            Assert.NotNull(result);
+            Assert.True(result.Result.Value.Length == 1);
+            Assert.True(result.Result.Value[0].WorkflowId == mockActiveIncidentGto.WorkflowId);
+            Assert.True(result.Result.Value[0].WorkflowDesignName == mockActiveIncidentGto.WorkflowDesignName);
+        }
+
+        [Fact]
+        public void GetListByDevice_ThrowException()
+        {
+            _mockIncidentRepository.Setup(x => x.GetListAsync(It.IsAny<int>(), It.IsAny<string>())).ThrowsAsync(new Exception());
+
+            var result = _testObj.GetListByDeviceAsync(It.IsAny<int>(), It.IsAny<string>());
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
     }
 }
