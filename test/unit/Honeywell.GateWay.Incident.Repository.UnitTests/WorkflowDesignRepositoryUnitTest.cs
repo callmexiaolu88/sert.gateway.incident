@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Create;
 using Honeywell.GateWay.Incident.Repository.WorkflowDesign;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Common.Exceptions;
 using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.DownloadTemplate;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Create;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Delete;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
@@ -227,6 +229,35 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
             // assert
             _workflowDesignMicroApiMock.Verify(x => x.ImportsAsync(It.IsAny<Stream>()), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task CreateWorkFlowDesign_Successful()
+        {
+            // arrange
+            var mockCreateWorkflowDesignRequestGto = new CreateWorkflowDesginRequestGto
+            {
+                Description = "This procedure shall be completed 48hours before any events.",
+                Name = "Event Prep Master 1",
+                Steps ={
+                    new CreateWorkflowStepDesignGto(false,
+                        "Confirm with event manager on final event requirements and special needs",
+                        "View event booking calendar.On the calendar, link to event contract"),
+                    new CreateWorkflowStepDesignGto(true,
+                        "If required by the event, engage Energy team for pre-event check.",
+                        "Any cabling on special electricity supply ? Backup generators ready ? ")
+                }
+            };
+            var mockCreateWorkflowDesignResponse = new CreateWorkflowDesignResponseDto("workflow1", Guid.NewGuid());
+             _workflowDesignMicroApiMock.Setup(x => x.CreateAsync(It.IsAny<CreateWorkflowDesignRequestDto>())).
+                ReturnsAsync(mockCreateWorkflowDesignResponse);
+
+            // action
+            await _incidentRepository.CreateWorkflowDesign(mockCreateWorkflowDesignRequestGto);
+
+            // assert
+            _workflowDesignMicroApiMock.Verify(x => x.CreateAsync(It.IsAny<CreateWorkflowDesignRequestDto>()), Times.Once);
         }
 
         [Fact]

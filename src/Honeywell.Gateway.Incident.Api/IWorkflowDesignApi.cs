@@ -6,6 +6,7 @@ using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core;
 using System.IO;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Create;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
 
@@ -13,6 +14,8 @@ namespace Honeywell.Gateway.Incident.Api
 {
     public interface IWorkflowDesignApi : IRemoteService
     {
+        Task<ApiResponse> CreateAsync(CreateWorkflowDesginRequestGto createWorkflowDesginRequestGto);
+
         Task<ApiResponse> ImportAsync(Stream workflowDesignStream);
 
         Task<ApiResponse> ValidateAsync(Stream workflowDesignStream);

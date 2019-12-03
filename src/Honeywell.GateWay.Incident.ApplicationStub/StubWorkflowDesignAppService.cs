@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Create;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
@@ -17,6 +18,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 {
     public class StubWorkflowDesignAppService : BaseIncidentStub, IWorkflowDesignAppService
     {
+        public Task<ApiResponse> CreateAsync(CreateWorkflowDesginRequestGto createWorkflowDesginRequestGto)
+        {
+            return ResponseRequest();
+        }
+
         public Task<ApiResponse> ImportAsync(Stream workflowDesignStream)
         {
             return ResponseRequest();

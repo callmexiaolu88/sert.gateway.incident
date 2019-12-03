@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Create;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
@@ -24,6 +25,31 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _mockWorkflowDesignRepository = new Mock<IWorkflowDesignRepository>();
             _testObj = new WorkflowDesignAppService(_mockWorkflowDesignRepository.Object);
         }
+
+        [Fact]
+        public void CreateWorkflowDesign_Success()
+        {
+            //assign
+            _mockWorkflowDesignRepository.Setup(x => x.CreateWorkflowDesign(It.IsAny<CreateWorkflowDesginRequestGto>()));
+            //action
+            var result = _testObj.CreateAsync(It.IsAny<CreateWorkflowDesginRequestGto>());
+            //assert
+            Assert.True(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void CreateWorkflowDesign_ThrowException_Failed()
+        {
+            //assign
+            _mockWorkflowDesignRepository.Setup(x => x.CreateWorkflowDesign(It.IsAny<CreateWorkflowDesginRequestGto>()))
+                .ThrowsAsync(new Exception());
+            //action
+            var result = _testObj.CreateAsync(It.IsAny<CreateWorkflowDesginRequestGto>());
+            //assert
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
 
         [Fact]
         public void ImportWorkflowDesigns_Test()

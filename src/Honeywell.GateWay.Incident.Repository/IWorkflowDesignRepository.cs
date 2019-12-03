@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Create;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
@@ -12,6 +13,8 @@ namespace Honeywell.GateWay.Incident.Repository
 {
     public interface IWorkflowDesignRepository
     {
+        Task CreateWorkflowDesign(CreateWorkflowDesginRequestGto createWorkflowDesginRequestGto);
+
         Task ImportWorkflowDesigns(Stream workflowDesignStream);
 
         Task<ApiResponse> ValidatorWorkflowDesigns(Stream workflowDesignStream);
