@@ -13,9 +13,7 @@ namespace Honeywell.Gateway.Incident.Api.WorkflowDesign.Create
             HelpText = helpText;
         }
         public bool IsOptional { get; set; }
-
         public string Instruction { get; set; }
-
         public string HelpText { get; set; }
     }
 }
