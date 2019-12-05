@@ -29,12 +29,14 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
         {
             _workflowDesignApi = workflowDesignApi;
         }
-        public async Task CreateWorkflowDesign(CreateWorkflowDesginRequestGto createWorkflowDesginRequestGto)
+        public async Task CreateWorkflowDesign(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
         {
-            CreateWorkflowDesignRequestDto createWorkflowDesignRequestDto=new CreateWorkflowDesignRequestDto();
-            createWorkflowDesignRequestDto.Description = createWorkflowDesginRequestGto.Description;
-            createWorkflowDesignRequestDto.Name = createWorkflowDesginRequestGto.Name;
-            foreach (var step in createWorkflowDesginRequestGto.Steps)
+            var createWorkflowDesignRequestDto = new CreateWorkflowDesignRequestDto
+            {
+                Description = createWorkflowDesignRequestGto.Description,
+                Name = createWorkflowDesignRequestGto.Name
+            };
+            foreach (var step in createWorkflowDesignRequestGto.Steps)
             {
                 var createWorkflowStepDesignDto = new CreateWorkflowStepDesignDto
                 {

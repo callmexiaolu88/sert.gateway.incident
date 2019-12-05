@@ -18,7 +18,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 {
     public class StubWorkflowDesignAppService : BaseIncidentStub, IWorkflowDesignAppService
     {
-        public Task<ApiResponse> CreateAsync(CreateWorkflowDesginRequestGto createWorkflowDesginRequestGto)
+        public Task<ApiResponse> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
         {
             return ResponseRequest();
         }

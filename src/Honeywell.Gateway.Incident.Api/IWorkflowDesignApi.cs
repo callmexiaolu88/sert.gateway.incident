@@ -14,7 +14,7 @@ namespace Honeywell.Gateway.Incident.Api
 {
     public interface IWorkflowDesignApi : IRemoteService
     {
-        Task<ApiResponse> CreateAsync(CreateWorkflowDesginRequestGto createWorkflowDesginRequestGto);
+        Task<ApiResponse> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto);
 
         Task<ApiResponse> ImportAsync(Stream workflowDesignStream);
 

@@ -23,11 +23,14 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             _workflowDesignRepository = workflowDesignRepository;
         }
 
-        public async Task<ApiResponse> CreateAsync(CreateWorkflowDesginRequestGto createWorkflowDesginRequestGto)
+        public async Task<ApiResponse> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
         {
             try
             {
-                await _workflowDesignRepository.CreateWorkflowDesign(createWorkflowDesginRequestGto);
+                if (createWorkflowDesignRequestGto.Steps.Count==0) {
+                    return ApiResponse.CreateFailed();
+                }
+                await _workflowDesignRepository.CreateWorkflowDesign(createWorkflowDesignRequestGto);
                 return ApiResponse.CreateSuccess();
             }
             catch (Exception ex)

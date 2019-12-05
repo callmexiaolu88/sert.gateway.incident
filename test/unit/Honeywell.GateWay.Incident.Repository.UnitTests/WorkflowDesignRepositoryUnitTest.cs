@@ -236,7 +236,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         public async Task CreateWorkFlowDesign_Successful()
         {
             // arrange
-            var mockCreateWorkflowDesignRequestGto = new CreateWorkflowDesginRequestGto
+            var mockCreateWorkflowDesignRequestGto = new CreateWorkflowDesignRequestGto
             {
                 Description = "This procedure shall be completed 48hours before any events.",
                 Name = "Event Prep Master 1",

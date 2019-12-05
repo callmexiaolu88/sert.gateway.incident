@@ -22,7 +22,7 @@ namespace Incident.ApiTests.IncidentControllerTest
 
         public async Task<ApiResponse> CreateWorkflowDesign()
         {
-            var mockCreateWorkflowDesignRequestGto = new CreateWorkflowDesginRequestGto
+            var mockCreateWorkflowDesignRequestGto = new CreateWorkflowDesignRequestGto
             {
                 Description = "This procedure shall be completed 48hours before any events.",
                 Name= "Event Prep Master 1",

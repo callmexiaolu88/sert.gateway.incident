@@ -30,9 +30,9 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void CreateWorkflowDesign_Success()
         {
             //assign
-            _mockWorkflowDesignRepository.Setup(x => x.CreateWorkflowDesign(It.IsAny<CreateWorkflowDesginRequestGto>()));
+            _mockWorkflowDesignRepository.Setup(x => x.CreateWorkflowDesign(It.IsAny<CreateWorkflowDesignRequestGto>()));
             //action
-            var result = _testObj.CreateAsync(It.IsAny<CreateWorkflowDesginRequestGto>());
+            var result = _testObj.CreateAsync(It.IsAny<CreateWorkflowDesignRequestGto>());
             //assert
             Assert.True(result.Result.IsSuccess);
         }
@@ -41,10 +41,10 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void CreateWorkflowDesign_ThrowException_Failed()
         {
             //assign
-            _mockWorkflowDesignRepository.Setup(x => x.CreateWorkflowDesign(It.IsAny<CreateWorkflowDesginRequestGto>()))
+            _mockWorkflowDesignRepository.Setup(x => x.CreateWorkflowDesign(It.IsAny<CreateWorkflowDesignRequestGto>()))
                 .ThrowsAsync(new Exception());
             //action
-            var result = _testObj.CreateAsync(It.IsAny<CreateWorkflowDesginRequestGto>());
+            var result = _testObj.CreateAsync(It.IsAny<CreateWorkflowDesignRequestGto>());
             //assert
             Assert.NotNull(result);
             Assert.False(result.Result.IsSuccess);
