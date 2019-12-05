@@ -27,9 +27,6 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
         {
             try
             {
-                if (createWorkflowDesignRequestGto.Steps.Count==0) {
-                    return ApiResponse.CreateFailed();
-                }
                 await _workflowDesignRepository.CreateWorkflowDesign(createWorkflowDesignRequestGto);
                 return ApiResponse.CreateSuccess();
             }
