@@ -16,9 +16,38 @@ namespace Incident.ApiTests.IncidentControllerTest
         public async void CreateWorkFlowDesign_Success()
         {
             var result = CreateWorkflowDesign();
+
             Assert.True(result.Result.IsSuccess);
+
             await DeleteWorkflowDesign();
         }
+
+        [Fact]
+        public async void CreateWorkFlowDesign_NoSteps_Failed()
+        {
+            var mockCreateWorkflowDesignRequestGto = new CreateWorkflowDesignRequestGto
+            {
+                Description = "This procedure shall be completed 48hours before any events.",
+                Name = "Event Prep Master 1",
+            };
+
+            var result = await WorkflowDesignGateWayApi.CreateAsync(mockCreateWorkflowDesignRequestGto);
+
+            Assert.False(result.IsSuccess);
+        }
+
+        [Fact]
+        public async void CreateWorkFlowDesign_NameDuplicate_Failed()
+        {
+
+            await CreateWorkflowDesign();
+            var result = CreateWorkflowDesign();
+        
+            Assert.False(result.Result.IsSuccess);
+
+            await DeleteWorkflowDesign();
+        }
+
 
         public async Task<ApiResponse> CreateWorkflowDesign()
         {
