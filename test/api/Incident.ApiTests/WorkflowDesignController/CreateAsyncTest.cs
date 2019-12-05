@@ -12,6 +12,7 @@ namespace Incident.ApiTests.IncidentControllerTest
         {
 
         }
+
         [Fact]
         public async void CreateWorkFlowDesign_Success()
         {
@@ -39,7 +40,6 @@ namespace Incident.ApiTests.IncidentControllerTest
         [Fact]
         public async void CreateWorkFlowDesign_NameDuplicate_Failed()
         {
-
             await CreateWorkflowDesign();
             var result = CreateWorkflowDesign();
         
