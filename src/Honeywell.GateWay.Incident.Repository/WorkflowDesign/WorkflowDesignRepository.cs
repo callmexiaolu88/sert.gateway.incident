@@ -13,8 +13,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Create;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Create;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
 
 namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
@@ -26,6 +28,27 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
         public WorkflowDesignRepository(IWorkflowDesignMicroApi workflowDesignApi)
         {
             _workflowDesignApi = workflowDesignApi;
+        }
+        public async Task CreateWorkflowDesign(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
+        {
+            var createWorkflowDesignRequestDto = new CreateWorkflowDesignRequestDto
+            {
+                Description = createWorkflowDesignRequestGto.Description,
+                Name = createWorkflowDesignRequestGto.Name
+            };
+            foreach (var step in createWorkflowDesignRequestGto.Steps)
+            {
+                var createWorkflowStepDesignDto = new CreateWorkflowStepDesignDto
+                {
+                    IsOptional = step.IsOptional,
+                    Instruction = step.Instruction,
+                    HelpText = step.HelpText
+                };
+                createWorkflowDesignRequestDto.Steps.Add(createWorkflowStepDesignDto);
+            }
+
+            var responseDtoList = await _workflowDesignApi.CreateAsync(createWorkflowDesignRequestDto);
+            ApiResponse.ThrowExceptionIfFailed(responseDtoList);
         }
 
         public async Task ImportWorkflowDesigns(Stream workflowDesignStream)

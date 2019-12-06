@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Create;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
@@ -20,6 +21,19 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
         public WorkflowDesignAppService(IWorkflowDesignRepository workflowDesignRepository)
         {
             _workflowDesignRepository = workflowDesignRepository;
+        }
+
+        public async Task<ApiResponse> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
+        {
+            try
+            {
+                await _workflowDesignRepository.CreateWorkflowDesign(createWorkflowDesignRequestGto);
+                return ApiResponse.CreateSuccess();
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.CreateFailed(ex);
+            }
         }
 
         public async Task<ApiResponse> ImportAsync(Stream workflowDesignStream)
