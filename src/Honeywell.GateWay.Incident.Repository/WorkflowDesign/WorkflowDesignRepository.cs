@@ -87,9 +87,10 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 
         public async Task<WorkflowDesignListGto[]> GetWorkflowDesignList(string condition)
         {
-            var isIncludedDescriptionEmpty = DefaultDescriptionEmptyShowText.Contains(condition);
+            var isDescriptionEmptyIncluded =
+                !string.IsNullOrEmpty(condition) && DefaultDescriptionEmptyShowText.Contains(condition);
             var workflowDesignListRequestDto = new WorkflowDesignListRequestDto()
-                {Condition = condition, IsIncludedDescriptionEmpty = isIncludedDescriptionEmpty };
+                {Condition = condition, IsDescriptionEmptyIncluded = isDescriptionEmptyIncluded };
 
             var result = await _workflowDesignApi.GetListAsync(workflowDesignListRequestDto);
 
