@@ -24,6 +24,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
     public class WorkflowDesignRepository : ApplicationService, IWorkflowDesignRepository
     {
         private readonly IWorkflowDesignMicroApi _workflowDesignApi;
+        private readonly string DefaultDescriptionEmptyShowText = "--";
 
         public WorkflowDesignRepository(IWorkflowDesignMicroApi workflowDesignApi)
         {
@@ -86,7 +87,11 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 
         public async Task<WorkflowDesignListGto[]> GetWorkflowDesignList(string condition)
         {
-            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto() { Condition = condition };
+            var isDescriptionEmptyIncluded =
+                !string.IsNullOrEmpty(condition) && DefaultDescriptionEmptyShowText.Contains(condition);
+            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto()
+                {Condition = condition, IsDescriptionEmptyIncluded = isDescriptionEmptyIncluded };
+
             var result = await _workflowDesignApi.GetListAsync(workflowDesignListRequestDto);
 
             ApiResponse.ThrowExceptionIfFailed(result);

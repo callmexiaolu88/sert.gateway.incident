@@ -22,7 +22,7 @@ namespace Incident.ApiTests.IncidentControllerTest
 
 
             int allWorkflowCount = workflowDesigns.Result.Length;
-            string conditon = "Fire/Safety";
+            var conditon = "Fire/Safety";
             workflowDesigns = GetAllWorkflowDesigns(conditon);
             Assert.NotNull(workflowDesigns);
             Assert.NotNull(workflowDesigns.Result);
@@ -30,6 +30,26 @@ namespace Incident.ApiTests.IncidentControllerTest
             foreach (var workflow in workflowDesigns.Result)
             {
                 Assert.True(workflow.Name.Contains(conditon) || workflow.Description.Contains(conditon));
+            }
+
+            await DeleteWorkflowDesign();
+        }
+
+        [Fact]
+        public async void GetAllWorkflowDesign_IsDescriptionEmptyIncluded()
+        {
+            await ImportWorkflowDesign();
+
+            var conditon = "--";
+            var workflowDesigns = GetAllWorkflowDesigns(conditon);
+
+            Assert.NotNull(workflowDesigns);
+            Assert.True(workflowDesigns.Result.Length > 0);
+            Assert.NotNull(workflowDesigns.Result);
+            foreach (var workflow in workflowDesigns.Result)
+            {
+                Assert.True(workflow.Name.Contains(conditon) || workflow.Description.Contains(conditon) ||
+                            string.IsNullOrEmpty(workflow.Description));
             }
 
             await DeleteWorkflowDesign();
