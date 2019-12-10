@@ -9,14 +9,15 @@ namespace Incident.ApiTests
 {
     public class DIFixture
     {
+        private const string EnvironmentKey = "environment";
         public ServiceProvider ServiceProvider { get; }
         public DIFixture()
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging();
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
+
+            var config = ConfigContext(serviceCollection);
+
             serviceCollection.AddSingleton<IConfiguration>(config);
             serviceCollection.AddHttpClient<ProWatchClient>()
                 .ConfigurePrimaryHttpMessageHandler(opt => new HttpClientHandler
@@ -44,6 +45,20 @@ namespace Incident.ApiTests
                     client.DefaultRequestHeaders.AcceptLanguage.Add(service.LoginLanaugeSetting());
                 });
             ServiceProvider = serviceCollection.BuildServiceProvider();
+        }
+
+        private IConfiguration ConfigContext(IServiceCollection serviceCollection)
+        {
+            var configBuilder = new ConfigurationBuilder().AddEnvironmentVariables(prefix: "ApiTest_");
+            var envConfig = configBuilder.Build().GetValue<string>(EnvironmentKey);
+            var config = configBuilder
+                .AddJsonFile("appsettings.json", true, true)
+                .AddJsonFile($"appsettings.{envConfig}.json", true, true)
+                .Build();
+
+            serviceCollection.AddSingleton(config);
+
+            return config;
         }
     }
 

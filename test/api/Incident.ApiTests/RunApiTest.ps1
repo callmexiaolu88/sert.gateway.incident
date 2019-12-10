@@ -9,6 +9,7 @@ param(
     [string]$Password
 )
 
+$env:ApiTest_environment=cd
 $resultContent =  dotnet vstest Incident.ApiTests.dll
 Set-Content -Path $AttachmentFile -Value $resultContent
 #send mail
