@@ -203,6 +203,18 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         public async Task<IncidentSummaryGto[]> GetList(PageRequest<GetListRequestGto> request)
         {
             Logger.LogInformation("call Incident api GetListAsync Start");
+            if (request == null)
+            {
+                var msg = $"request is null";
+                Logger.LogError(msg);
+                throw new ArgumentException(msg);
+            }
+            if (request.Value == null)
+            {
+                var msg = $"request getListRequestGto is null";
+                Logger.LogError(msg);
+                throw new ArgumentException(msg);
+            }
             var incidentListRequest = new GetIncidentListRequestDto
             { State = (IncidentState)request.Value.State, DeviceId = request.Value.DeviceId };
             var pageRequest = request.To(incidentListRequest);

@@ -517,6 +517,30 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
+        public async void GetActiveIncidentList_RequestIsNull_Failed()
+        {
+            //action
+            var act = new Func<Task>(async () => await _incidentRepository.GetList(null));
+
+            //assert
+            await Assert.ThrowsAsync<ArgumentException>(act);
+        }
+
+        [Fact]
+        public async void GetActiveIncidentList_RequestValueIsNull_Failed()
+        {
+            GetListRequestGto request = null;
+            var mockRequest = new PageRequest().To(request);
+
+            //action
+            var act = new Func<Task>(async () => await _incidentRepository.GetList(mockRequest));
+
+            //assert
+            await Assert.ThrowsAsync<ArgumentException>(act);
+        }
+
+
+        [Fact]
         public async Task GetActiveIncidentList_CallGetActiveList_Failed()
         {
             //assign
