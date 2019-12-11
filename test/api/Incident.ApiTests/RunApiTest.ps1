@@ -9,7 +9,7 @@ param(
     [string]$Password
 )
 
-[environment]::SetEnvironmentvariable("ApiTest__environment","cd", "Machine")
+[environment]::SetEnvironmentvariable("ApiTest_environment","cd", "Machine")
 $resultContent =  dotnet vstest Incident.ApiTests.dll
 Set-Content -Path $AttachmentFile -Value $resultContent
 #send mail
