@@ -200,23 +200,13 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             await NotificationActivity(incidentId);
         }
 
-        public async Task<IncidentSummaryGto[]> GetActiveIncidentList()
-        {
-            Logger.LogInformation("call Incident api GetActiveIncidentList Start");
-            var result = await _incidentMicroApi.GetListAsync(new GetIncidentListRequestDto { State = IncidentState.Active });
-            ApiResponse.ThrowExceptionIfFailed(result);
-
-            var workflowIds = result.Value.List.Select(x => x.WorkflowId).ToArray();
-            var workflowSummaries = await GetWorkflowSummary(workflowIds);
-            ApiResponse.ThrowExceptionIfFailed(workflowSummaries);
-
-            return MappingIncidentsGtos(result, workflowSummaries);
-        }
-
-        public async Task<IncidentSummaryGto[]> GetListAsync(int status, string deviceId)
+        public async Task<IncidentSummaryGto[]> GetList(PageRequest<GetListRequestGto> request)
         {
             Logger.LogInformation("call Incident api GetListAsync Start");
-            var result = await _incidentMicroApi.GetListAsync(new GetIncidentListRequestDto { State = (IncidentState)status, DeviceId = deviceId });
+            var incidentListRequest = new GetIncidentListRequestDto
+            { State = (IncidentState)request.Value.State, DeviceId = request.Value.DeviceId };
+            var pageRequest = request.To(incidentListRequest);
+            var result = await _incidentMicroApi.GetListAsync(pageRequest);
             ApiResponse.ThrowExceptionIfFailed(result);
 
             var workflowIds = result.Value.List.Select(x => x.WorkflowId).ToArray();
@@ -249,17 +239,17 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return result;
         }
 
-        public async Task<ActivityGto[]> GetActivitysAsync(string incidentId)
+        public async Task<ActivityGto[]> GetActivitys(string incidentId)
         {
 
-            Logger.LogInformation($"call Incident api {nameof(GetActivitysAsync)} Start");
+            Logger.LogInformation($"call Incident api {nameof(GetActivitys)} Start");
             var result = await GetIncidentById(incidentId);
             return result.IncidentActivities.ToArray();
         }
 
-        public async Task<IncidentStatisticsGto> GetStatisticsAsync(string deviceId)
+        public async Task<IncidentStatisticsGto> GetStatistics(string deviceId)
         {
-            Logger.LogInformation($"call GetStatisticsAsync {nameof(GetStatisticsAsync)} Start");
+            Logger.LogInformation($"call GetStatisticsAsync {nameof(GetStatistics)} Start");
             var response = await _incidentMicroApi.GetStatisticsAsync(new GetIncidentStatisticsRequestDto { DeviceIds = new[] { deviceId } });
             ApiResponse.ThrowExceptionIfFailed(response);
             var result = HoneyMapper.Map<IncidentStatisticsDto, IncidentStatisticsGto>(response.Value.StatisticsIncident[0]);
