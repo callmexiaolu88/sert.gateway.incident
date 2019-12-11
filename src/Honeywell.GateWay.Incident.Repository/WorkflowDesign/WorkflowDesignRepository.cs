@@ -13,8 +13,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Create;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Create;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
 
 namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
@@ -22,10 +24,32 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
     public class WorkflowDesignRepository : ApplicationService, IWorkflowDesignRepository
     {
         private readonly IWorkflowDesignMicroApi _workflowDesignApi;
+        private readonly string DefaultDescriptionEmptyShowText = "--";
 
         public WorkflowDesignRepository(IWorkflowDesignMicroApi workflowDesignApi)
         {
             _workflowDesignApi = workflowDesignApi;
+        }
+        public async Task CreateWorkflowDesign(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
+        {
+            var createWorkflowDesignRequestDto = new CreateWorkflowDesignRequestDto
+            {
+                Description = createWorkflowDesignRequestGto.Description,
+                Name = createWorkflowDesignRequestGto.Name
+            };
+            foreach (var step in createWorkflowDesignRequestGto.Steps)
+            {
+                var createWorkflowStepDesignDto = new CreateWorkflowStepDesignDto
+                {
+                    IsOptional = step.IsOptional,
+                    Instruction = step.Instruction,
+                    HelpText = step.HelpText
+                };
+                createWorkflowDesignRequestDto.Steps.Add(createWorkflowStepDesignDto);
+            }
+
+            var responseDtoList = await _workflowDesignApi.CreateAsync(createWorkflowDesignRequestDto);
+            ApiResponse.ThrowExceptionIfFailed(responseDtoList);
         }
 
         public async Task ImportWorkflowDesigns(Stream workflowDesignStream)
@@ -63,7 +87,11 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 
         public async Task<WorkflowDesignListGto[]> GetWorkflowDesignList(string condition)
         {
-            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto() { Condition = condition };
+            var isDescriptionEmptyIncluded =
+                !string.IsNullOrEmpty(condition) && DefaultDescriptionEmptyShowText.Contains(condition);
+            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto()
+                {Condition = condition, IsDescriptionEmptyIncluded = isDescriptionEmptyIncluded };
+
             var result = await _workflowDesignApi.GetListAsync(workflowDesignListRequestDto);
 
             ApiResponse.ThrowExceptionIfFailed(result);

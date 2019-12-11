@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Infra.Client.WebApi;
 using Microsoft.Extensions.Configuration;
@@ -9,14 +10,15 @@ namespace Incident.ApiTests
 {
     public class DIFixture
     {
+        private const string EnvironmentKey = "ApiTest_environment";
         public ServiceProvider ServiceProvider { get; }
         public DIFixture()
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging();
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
+
+            var config = ConfigContext(serviceCollection);
+
             serviceCollection.AddSingleton<IConfiguration>(config);
             serviceCollection.AddHttpClient<ProWatchClient>()
                 .ConfigurePrimaryHttpMessageHandler(opt => new HttpClientHandler
@@ -44,6 +46,18 @@ namespace Incident.ApiTests
                     client.DefaultRequestHeaders.AcceptLanguage.Add(service.LoginLanaugeSetting());
                 });
             ServiceProvider = serviceCollection.BuildServiceProvider();
+        }
+
+        private IConfiguration ConfigContext(IServiceCollection serviceCollection)
+        {
+            var envConfig = Environment.GetEnvironmentVariable(EnvironmentKey);
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", true, true)
+                .AddJsonFile($"appsettings.{envConfig}.json", true, true)
+                .Build();
+            serviceCollection.AddSingleton(config);
+
+            return config;
         }
     }
 
