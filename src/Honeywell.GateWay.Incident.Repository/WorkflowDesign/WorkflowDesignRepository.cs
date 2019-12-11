@@ -16,8 +16,10 @@ using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.Create;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Update;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Create;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Update;
 
 namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 {
@@ -49,6 +51,29 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
             }
 
             var responseDtoList = await _workflowDesignApi.CreateAsync(createWorkflowDesignRequestDto);
+            ApiResponse.ThrowExceptionIfFailed(responseDtoList);
+        }
+
+        public async Task UpdateWorkflowDesign(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto)
+        {
+            var updateWorkflowDesignRequestDto = new UpdateWorkflowDesignRequestDto
+            {
+                Description = updateWorkflowDesignRequestGto.Description,
+                Name = updateWorkflowDesignRequestGto.Name,
+                Id = updateWorkflowDesignRequestGto.Id
+            };
+            foreach (var step in updateWorkflowDesignRequestGto.Steps)
+            {
+                var createWorkflowStepDesignDto = new UpdateWorkflowStepDesignDto
+                {
+                    IsOptional = step.IsOptional,
+                    Instruction = step.Instruction,
+                    HelpText = step.HelpText
+                };
+                updateWorkflowDesignRequestDto.Steps.Add(createWorkflowStepDesignDto);
+            }
+
+            var responseDtoList = await _workflowDesignApi.UpdateAsync(updateWorkflowDesignRequestDto);
             ApiResponse.ThrowExceptionIfFailed(responseDtoList);
         }
 
@@ -90,7 +115,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
             var isDescriptionEmptyIncluded =
                 !string.IsNullOrEmpty(condition) && DefaultDescriptionEmptyShowText.Contains(condition);
             var workflowDesignListRequestDto = new WorkflowDesignListRequestDto()
-                {Condition = condition, IsDescriptionEmptyIncluded = isDescriptionEmptyIncluded };
+            { Condition = condition, IsDescriptionEmptyIncluded = isDescriptionEmptyIncluded };
 
             var result = await _workflowDesignApi.GetListAsync(workflowDesignListRequestDto);
 
@@ -169,7 +194,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
         {
             Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignDetails)} Start");
 
-            var workflowDesignRequest = new WorkflowDesignDetailsRequestDto {Ids = workflowDesignIds};
+            var workflowDesignRequest = new WorkflowDesignDetailsRequestDto { Ids = workflowDesignIds };
             var response = await _workflowDesignApi.GetDetailsAsync(workflowDesignRequest);
             ApiResponse.ThrowExceptionIfFailed(response);
 

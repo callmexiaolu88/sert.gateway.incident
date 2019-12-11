@@ -7,6 +7,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Update;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Api.Abstract;
@@ -45,6 +46,30 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 .ThrowsAsync(new Exception());
             //action
             var result = _testObj.CreateAsync(It.IsAny<CreateWorkflowDesignRequestGto>());
+            //assert
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void UpdateWorkflowDesign_Success()
+        {
+            //assign
+            _mockWorkflowDesignRepository.Setup(x => x.UpdateWorkflowDesign(It.IsAny<UpdateWorkflowDesignRequestGto>()));
+            //action
+            var result = _testObj.UpdateAsync(It.IsAny<UpdateWorkflowDesignRequestGto>());
+            //assert
+            Assert.True(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void UpdateWorkflowDesign_ThrowException_Failed()
+        {
+            //assign
+            _mockWorkflowDesignRepository.Setup(x => x.UpdateWorkflowDesign(It.IsAny<UpdateWorkflowDesignRequestGto>()))
+                .ThrowsAsync(new Exception());
+            //action
+            var result = _testObj.UpdateAsync(It.IsAny<UpdateWorkflowDesignRequestGto>());
             //assert
             Assert.NotNull(result);
             Assert.False(result.Result.IsSuccess);

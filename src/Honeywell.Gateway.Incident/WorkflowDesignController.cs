@@ -9,6 +9,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Update;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.Infra.Api.Abstract;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,13 @@ namespace Honeywell.Gateway.Incident
         public async Task<ApiResponse> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
         {
             var result = await _workflowDesignAppService.CreateAsync(createWorkflowDesignRequestGto);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<ApiResponse> UpdateAsync(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto)
+        {
+            var result = await _workflowDesignAppService.UpdateAsync(updateWorkflowDesignRequestGto);
             return result;
         }
 
