@@ -7,6 +7,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Gateway.Incident.Api.Incident.Statistics;
+using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
@@ -36,6 +37,6 @@ namespace Honeywell.GateWay.Incident.Repository
 
         Task<IncidentStatisticsGto> GetStatistics(string deviceId);
 
-        Task<IncidentSummaryGto[]> GetList(GetListRequestGto getListRequest);
+        Task<IncidentSummaryGto[]> GetList(PageRequest<GetListRequestGto> getListRequest);
     }
 }

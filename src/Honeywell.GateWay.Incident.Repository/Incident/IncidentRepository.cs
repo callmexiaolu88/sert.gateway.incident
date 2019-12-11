@@ -200,12 +200,12 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             await NotificationActivity(incidentId);
         }
 
-        public async Task<IncidentSummaryGto[]> GetList(GetListRequestGto request)
+        public async Task<IncidentSummaryGto[]> GetList(PageRequest<GetListRequestGto> request)
         {
             Logger.LogInformation("call Incident api GetListAsync Start");
             var incidentListRequest = new GetIncidentListRequestDto
-            { State = (IncidentState)request.State, DeviceId = request.DeviceId };
-            var pageRequest = new PageRequest(request.CurrentPage, request.PageSize).To(incidentListRequest);
+            { State = (IncidentState)request.Value.State, DeviceId = request.Value.DeviceId };
+            var pageRequest = request.To(incidentListRequest);
             var result = await _incidentMicroApi.GetListAsync(pageRequest);
             ApiResponse.ThrowExceptionIfFailed(result);
 

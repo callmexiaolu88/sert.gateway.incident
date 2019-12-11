@@ -82,7 +82,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync(GetListRequestGto getListRequest)
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync(PageRequest<GetListRequestGto> getListRequest)
         {
             try
             {

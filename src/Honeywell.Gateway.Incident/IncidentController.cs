@@ -49,7 +49,7 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync(GetListRequestGto getListRequest)
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync(PageRequest<GetListRequestGto> getListRequest)
         {
             var activeIncidents = await _incidentAppService.GetListAsync(getListRequest);
             return activeIncidents;

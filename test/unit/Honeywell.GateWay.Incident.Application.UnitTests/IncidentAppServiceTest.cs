@@ -11,6 +11,7 @@ using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.GateWay.Incident.Repository.Device;
+using Honeywell.Infra.Api.Abstract;
 using Moq;
 using Xunit;
 
@@ -514,13 +515,13 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.True(result.Result.Value[0].WorkflowDesignName == mockActiveIncidentGto.WorkflowDesignName);
         }
 
-        private GetListRequestGto MockGetListRequestGto()
+        private PageRequest<GetListRequestGto> MockGetListRequestGto()
         {
             var request = new GetListRequestGto
             {
-                CurrentPage = 1, PageSize = 500, State = 1, DeviceId = Guid.NewGuid().ToString()
+                State = 1, DeviceId = Guid.NewGuid().ToString()
             };
-            return request;
+            return new PageRequest().To(request);
         }
 
         [Fact]

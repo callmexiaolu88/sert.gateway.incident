@@ -752,10 +752,11 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.Equal(mockIncidentListItemDto.Priority.ToString(), activeIncidentGto.Priority.ToString());
         }
 
-        private GetListRequestGto MockGetIncidentListRequestDto(int state,string deviceId)
+        private PageRequest<GetListRequestGto> MockGetIncidentListRequestDto(int state,string deviceId)
         {
-            var request = new GetListRequestGto {CurrentPage = 1, PageSize = 500, State = state, DeviceId = deviceId};
-            return request;
+            var request = new GetListRequestGto {State = state, DeviceId = deviceId};
+            var pageRequest = new PageRequest().To(request);
+            return pageRequest;
         }
 
         [Fact]

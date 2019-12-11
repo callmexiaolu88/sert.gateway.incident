@@ -1,4 +1,5 @@
 ﻿using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Infra.Api.Abstract;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
@@ -43,16 +44,15 @@ namespace Incident.ApiTests.IncidentControllerTest
             await DeleteWorkflowDesign();
         }
 
-        private GetListRequestGto MockGetListRequestGto(int state,string deviceId)
+        private PageRequest<GetListRequestGto> MockGetListRequestGto(int state,string deviceId)
         {
             var request = new GetListRequestGto
             {
-                CurrentPage = 1,
-                PageSize = 500,
                 State = state,
                 DeviceId = deviceId
             };
-            return request;
+            var pageRequest = new PageRequest().To(request);
+            return pageRequest;
         }
 
     }
