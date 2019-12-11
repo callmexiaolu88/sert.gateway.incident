@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
@@ -30,8 +28,9 @@ namespace Incident.ApiTests.IncidentControllerTest
 
             var incidentId1 = await CreateIncident(device.DeviceId, device.DeviceType);
             var incidentId2 =  await CreateIncident(device.DeviceId, device.DeviceType);
+            var mockRequest = MockGetListRequestGto(0,device.DeviceId);
 
-            var getListResponse = await IncidentGateWayApi.GetListByDeviceAsync(0,device.DeviceId);
+            var getListResponse = await IncidentGateWayApi.GetListByDeviceAsync(mockRequest);
 
             Assert.True(getListResponse.IsSuccess);
             var list = getListResponse.Value;
@@ -43,5 +42,18 @@ namespace Incident.ApiTests.IncidentControllerTest
             await DeleteIncident(incidentId2);
             await DeleteWorkflowDesign();
         }
+
+        private GetListRequestGto MockGetListRequestGto(int state,string deviceId)
+        {
+            var request = new GetListRequestGto
+            {
+                CurrentPage = 1,
+                PageSize = 500,
+                State = state,
+                DeviceId = deviceId
+            };
+            return request;
+        }
+
     }
 }

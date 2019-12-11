@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
@@ -17,9 +18,9 @@ namespace Incident.ApiTests.IncidentControllerTest
             //assign
             await ImportWorkflowDesign();
             var incidentId = CreateIncident().Result;
-
+            var request = new GetListRequestGto {CurrentPage = 1, PageSize = 500};
             //action
-            var activeIncidentList = await IncidentGateWayApi.GetListAsync();
+            var activeIncidentList = await IncidentGateWayApi.GetListAsync(request);
 
             //assert
             Assert.True(activeIncidentList.IsSuccess);

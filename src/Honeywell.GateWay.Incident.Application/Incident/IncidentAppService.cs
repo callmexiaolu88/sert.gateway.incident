@@ -82,11 +82,11 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListByDeviceAsync(int status, string deviceId)
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListByDeviceAsync(GetListRequestGto getListRequest)
         {
             try
             {
-                return await _incidentRepository.GetListAsync(status, deviceId);
+                return await _incidentRepository.GetList(getListRequest);
             }
             catch (Exception ex)
             {
@@ -95,11 +95,11 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync()
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync(GetListRequestGto getListRequest)
         {
             try
             {
-                return await _incidentRepository.GetActiveIncidentList();
+                return await _incidentRepository.GetActiveIncidentList(getListRequest);
             }
             catch (Exception ex)
             {
@@ -226,7 +226,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             try
             {
-                return await _incidentRepository.GetActivitysAsync(incidentId);
+                return await _incidentRepository.GetActivitys(incidentId);
             }
             catch (Exception ex)
             {
@@ -239,7 +239,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             try
             {
-                return await _incidentRepository.GetStatisticsAsync(deviceId);
+                return await _incidentRepository.GetStatistics(deviceId);
             }
             catch (Exception ex)
             {

@@ -58,10 +58,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return incident.Id.ToString();
         }
 
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListByDeviceAsync(int status, string deviceId)
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListByDeviceAsync(GetListRequestGto gto)
         {
             var result = await StubDataAsync<List<IncidentSummaryGto>>();
-            return result.Where(x => x.DeviceId == deviceId).ToArray();
+            return result.Where(x => x.DeviceId == gto.DeviceId).ToArray();
         }
 
         public async Task<ApiResponse<SiteDeviceGto[]>> GetSiteDevicesAsync()
@@ -95,7 +95,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return ResponseRequest();
         }
 
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync()
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync(GetListRequestGto gto)
         {
             var result = await StubDataAsync<List<IncidentSummaryGto>>();
             return result.ToArray();
