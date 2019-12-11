@@ -523,7 +523,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var act = new Func<Task>(async () => await _incidentRepository.GetList(null));
 
             //assert
-            await Assert.ThrowsAsync<ArgumentException>(act);
+            await Assert.ThrowsAsync<ArgumentNullException>(act);
         }
 
         [Fact]
@@ -536,7 +536,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var act = new Func<Task>(async () => await _incidentRepository.GetList(mockRequest));
 
             //assert
-            await Assert.ThrowsAsync<ArgumentException>(act);
+            await Assert.ThrowsAsync<ArgumentNullException>(act);
         }
 
 
