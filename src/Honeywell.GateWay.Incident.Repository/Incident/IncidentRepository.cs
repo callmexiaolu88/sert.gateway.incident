@@ -200,21 +200,6 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             await NotificationActivity(incidentId);
         }
 
-        public async Task<IncidentSummaryGto[]> GetActiveIncidentList(GetListRequestGto request)
-        {
-            Logger.LogInformation("call Incident api GetActiveIncidentList Start");
-            var getListRequest = new GetIncidentListRequestDto { State = (IncidentState)request.State };
-            var pageRequest = new PageRequest(request.CurrentPage, request.PageSize).To(getListRequest);
-            var result = await _incidentMicroApi.GetListAsync(pageRequest);
-            ApiResponse.ThrowExceptionIfFailed(result);
-
-            var workflowIds = result.Value.List.Select(x => x.WorkflowId).ToArray();
-            var workflowSummaries = await GetWorkflowSummary(workflowIds);
-            ApiResponse.ThrowExceptionIfFailed(workflowSummaries);
-
-            return MappingIncidentsGtos(result, workflowSummaries);
-        }
-
         public async Task<IncidentSummaryGto[]> GetList(GetListRequestGto request)
         {
             Logger.LogInformation("call Incident api GetListAsync Start");

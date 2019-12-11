@@ -480,7 +480,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var getListRequest = MockGetIncidentListRequestDto(0, string.Empty);
 
             //action
-            var response = _incidentRepository.GetActiveIncidentList(getListRequest);
+            var response = _incidentRepository.GetList(getListRequest);
 
             //assert
             Assert.NotNull(response);
@@ -506,7 +506,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var getListRequest = MockGetIncidentListRequestDto(0, string.Empty);
 
             //action
-            var act = new Func<Task>(async () => await _incidentRepository.GetActiveIncidentList(getListRequest));
+            var act = new Func<Task>(async () => await _incidentRepository.GetList(getListRequest));
 
             //assert
             await Assert.ThrowsAsync<HoneywellException>(act);

@@ -276,7 +276,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 WorkflowDesignName = "test"
             };
             var mockRequest = MockGetListRequestGto();
-            _mockIncidentRepository.Setup(x => x.GetActiveIncidentList(mockRequest))
+            _mockIncidentRepository.Setup(x => x.GetList(mockRequest))
                 .ReturnsAsync(new[] {mockActiveIncidentGto});
             var result = _testObj.GetListAsync(mockRequest);
             Assert.NotNull(result);
@@ -289,7 +289,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void GetActiveIncidentList_ThrowException_Failed()
         {
             var mockRequest = MockGetListRequestGto();
-            _mockIncidentRepository.Setup(x => x.GetActiveIncidentList(mockRequest)).ThrowsAsync(new Exception());
+            _mockIncidentRepository.Setup(x => x.GetList(mockRequest)).ThrowsAsync(new Exception());
 
             var result = _testObj.GetListAsync(mockRequest);
 
@@ -507,7 +507,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockRequest = MockGetListRequestGto();
             _mockIncidentRepository.Setup(x => x.GetList(mockRequest))
                 .ReturnsAsync(new[] { mockActiveIncidentGto });
-            var result = _testObj.GetListByDeviceAsync(mockRequest);
+            var result = _testObj.GetListAsync(mockRequest);
             Assert.NotNull(result);
             Assert.True(result.Result.Value.Length == 1);
             Assert.True(result.Result.Value[0].WorkflowId == mockActiveIncidentGto.WorkflowId);
@@ -530,7 +530,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockRequest = MockGetListRequestGto();
             _mockIncidentRepository.Setup(x => x.GetList(mockRequest)).ThrowsAsync(new Exception());
 
-            var result = _testObj.GetListByDeviceAsync(mockRequest);
+            var result = _testObj.GetListAsync(mockRequest);
 
             Assert.NotNull(result);
             Assert.False(result.Result.IsSuccess);

@@ -30,7 +30,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             var incidentId2 =  await CreateIncident(device.DeviceId, device.DeviceType);
             var mockRequest = MockGetListRequestGto(0,device.DeviceId);
 
-            var getListResponse = await IncidentGateWayApi.GetListByDeviceAsync(mockRequest);
+            var getListResponse = await IncidentGateWayApi.GetListAsync(mockRequest);
 
             Assert.True(getListResponse.IsSuccess);
             var list = getListResponse.Value;

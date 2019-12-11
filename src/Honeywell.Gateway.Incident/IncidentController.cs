@@ -56,13 +56,6 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListByDeviceAsync(GetListRequestGto getListRequest)
-        {
-            var incidents = await _incidentAppService.GetListByDeviceAsync(getListRequest);
-            return incidents;
-        }
-
-        [HttpPost]
         public async Task<ApiResponse<SiteDeviceGto[]>> GetSiteDevicesAsync()
         {
             var devices = await _incidentAppService.GetSiteDevicesAsync();

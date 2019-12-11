@@ -27,9 +27,7 @@ namespace Honeywell.GateWay.Incident.Repository
         Task CompleteIncident(string incidentId);
 
         Task AddStepComment(AddStepCommentRequestGto addStepCommentGto);
-
-        Task<IncidentSummaryGto[]> GetActiveIncidentList(GetListRequestGto getListRequest);
-
+        
         Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests);
 
         Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds);

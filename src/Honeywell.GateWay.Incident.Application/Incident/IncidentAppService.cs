@@ -82,24 +82,11 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListByDeviceAsync(GetListRequestGto getListRequest)
-        {
-            try
-            {
-                return await _incidentRepository.GetList(getListRequest);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<IncidentSummaryGto[]>();
-            }
-        }
-
         public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync(GetListRequestGto getListRequest)
         {
             try
             {
-                return await _incidentRepository.GetActiveIncidentList(getListRequest);
+                return await _incidentRepository.GetList(getListRequest);
             }
             catch (Exception ex)
             {
