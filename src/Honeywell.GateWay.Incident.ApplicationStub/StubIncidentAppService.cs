@@ -98,7 +98,11 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
         public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync(GetListRequestGto gto)
         {
             var result = await StubDataAsync<List<IncidentSummaryGto>>();
-            return result.ToArray();
+            if (string.IsNullOrEmpty(gto.DeviceId))
+            {
+               return result.ToArray();
+            }
+            return result.Where(x => x.DeviceId == gto.DeviceId).ToArray();
         }
 
         public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(
