@@ -7,6 +7,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Update;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
@@ -28,6 +29,19 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             try
             {
                 await _workflowDesignRepository.CreateWorkflowDesign(createWorkflowDesignRequestGto);
+                return ApiResponse.CreateSuccess();
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.CreateFailed(ex);
+            }
+        }
+
+        public async Task<ApiResponse> UpdateAsync(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto)
+        {
+            try
+            {
+                await _workflowDesignRepository.UpdateWorkflowDesign(updateWorkflowDesignRequestGto);
                 return ApiResponse.CreateSuccess();
             }
             catch (Exception ex)
