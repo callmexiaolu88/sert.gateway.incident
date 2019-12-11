@@ -73,6 +73,25 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
+        public async Task UpdateWorkflowStepStatus_NotificationActivity_Exception()
+        {
+            //arrange
+            var stepStatusGto = MockStepStatusGto();
+            _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<IncidentActivities>())).Throws(new Exception("any error"));
+            _mockWorkflowMicroApi
+                .Setup(api => api.UpdateStepStatusAsync(It.IsAny<UpdateWorkflowStepStatusRequestDto>()))
+                .ReturnsAsync(new WorkflowActionResponseDto());
+
+            //act
+            await _incidentRepository.UpdateWorkflowStepStatus(stepStatusGto);
+
+            //assert
+            _mockLiveDataApi.Verify(api => api.SendEventData(It.IsAny<IncidentActivities>()), Times.Once);
+        }
+
+
+
+        [Fact]
         public async Task UpdateWorkflowStepStatus_Success()
         {
             //arrange
