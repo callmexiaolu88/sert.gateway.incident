@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.Create;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.DownloadTemplate;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
