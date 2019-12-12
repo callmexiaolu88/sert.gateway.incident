@@ -28,12 +28,37 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
+        public  void CreateWorkflowDesign_RequestIsNull_Failed()
+        {
+            //action
+            var result =  _testObj.CreateAsync(null);
+
+            // assert
+            Assert.False(result.Result.IsSuccess);
+        }
+
+
+        [Fact]
+        public void CreateWorkflowDesign_RequestStepsIsNull_Failed()
+        {
+            //assign
+            var mockCreateWorkflowDesignRequestGto = new CreateWorkflowDesignRequestGto {Steps = null};
+
+            //action
+            var result = _testObj.CreateAsync(mockCreateWorkflowDesignRequestGto);
+
+            // assert
+            Assert.False(result.Result.IsSuccess);
+        }
+
+        [Fact]
         public void CreateWorkflowDesign_Success()
         {
             //assign
+            var mockCreateWorkflowDesignRequestGto = new CreateWorkflowDesignRequestGto();
             _mockWorkflowDesignRepository.Setup(x => x.CreateWorkflowDesign(It.IsAny<CreateWorkflowDesignRequestGto>()));
             //action
-            var result = _testObj.CreateAsync(It.IsAny<CreateWorkflowDesignRequestGto>());
+            var result = _testObj.CreateAsync(mockCreateWorkflowDesignRequestGto);
             //assert
             Assert.True(result.Result.IsSuccess);
         }

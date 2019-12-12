@@ -34,6 +34,15 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
         }
         public async Task CreateWorkflowDesign(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
         {
+            if (createWorkflowDesignRequestGto == null)
+            {
+                throw new ArgumentNullException(nameof(createWorkflowDesignRequestGto));
+            }
+            if (createWorkflowDesignRequestGto.Steps == null)
+            {
+                throw new ArgumentNullException(nameof(createWorkflowDesignRequestGto.Steps));
+            }
+
             var createWorkflowDesignRequestDto = new CreateWorkflowDesignRequestDto
             {
                 Description = createWorkflowDesignRequestGto.Description,

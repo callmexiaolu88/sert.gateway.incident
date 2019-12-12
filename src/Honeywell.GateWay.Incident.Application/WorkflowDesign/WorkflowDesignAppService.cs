@@ -28,11 +28,21 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
         {
             try
             {
+                if (createWorkflowDesignRequestGto == null)
+                {
+                    throw new ArgumentNullException(nameof(createWorkflowDesignRequestGto));
+                }
+                if (createWorkflowDesignRequestGto.Steps == null)
+                {
+                    throw new ArgumentNullException(nameof(createWorkflowDesignRequestGto.Steps));
+                }
+
                 await _workflowDesignRepository.CreateWorkflowDesign(createWorkflowDesignRequestGto);
                 return ApiResponse.CreateSuccess();
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex.ToString());
                 return ApiResponse.CreateFailed(ex);
             }
         }

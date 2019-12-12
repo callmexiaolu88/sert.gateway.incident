@@ -526,6 +526,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             await Assert.ThrowsAsync<ArgumentNullException>(act);
         }
 
+
         [Fact]
         public async void GetActiveIncidentList_RequestValueIsNull_Failed()
         {
