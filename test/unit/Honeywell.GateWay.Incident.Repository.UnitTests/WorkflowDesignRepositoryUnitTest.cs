@@ -243,25 +243,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
-        public async Task CreateWorkFlowDesign_RequestStepsIsNull_Failed()
-        {
-            // arrange
-            var mockCreateWorkflowDesignRequestGto = new CreateWorkflowDesignRequestGto
-            {
-                Description = "This procedure shall be completed 48hours before any events.",
-                Name = "Event Prep Master 1",
-                Steps = null
-            };
-                
-            //action
-            var act = new Func<Task>(async () => await _incidentRepository.CreateWorkflowDesign(mockCreateWorkflowDesignRequestGto));
-
-            //assert
-            await Assert.ThrowsAsync<ArgumentNullException>(act);
-        }
-
-
-        [Fact]
         public async Task CreateWorkFlowDesign_Successful()
         {
             // arrange

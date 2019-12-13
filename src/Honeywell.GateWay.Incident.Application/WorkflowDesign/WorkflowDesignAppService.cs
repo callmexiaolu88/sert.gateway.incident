@@ -32,10 +32,6 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
                 {
                     throw new ArgumentNullException(nameof(createWorkflowDesignRequestGto));
                 }
-                if (createWorkflowDesignRequestGto.Steps == null)
-                {
-                    throw new ArgumentNullException(nameof(createWorkflowDesignRequestGto.Steps));
-                }
 
                 await _workflowDesignRepository.CreateWorkflowDesign(createWorkflowDesignRequestGto);
                 return ApiResponse.CreateSuccess();
