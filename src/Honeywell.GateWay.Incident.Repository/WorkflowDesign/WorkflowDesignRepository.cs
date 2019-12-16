@@ -32,7 +32,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
         {
             _workflowDesignApi = workflowDesignApi;
         }
-        public async Task CreateWorkflowDesign(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
+        public async Task<CreateWorkflowDesignResponseGto> CreateWorkflowDesign(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
         {
             if (createWorkflowDesignRequestGto == null)
             {
@@ -57,6 +57,8 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 
             var responseDtoList = await _workflowDesignApi.CreateAsync(createWorkflowDesignRequestDto);
             ApiResponse.ThrowExceptionIfFailed(responseDtoList);
+            
+            return new CreateWorkflowDesignResponseGto{Id = responseDtoList.Value.Id,WorkflowDesignName = responseDtoList.Value.WorkflowDesignName};
         }
 
         public async Task UpdateWorkflowDesign(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto)
