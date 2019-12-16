@@ -29,7 +29,7 @@ namespace Honeywell.Gateway.Incident
 
 
         [HttpPost]
-        public async Task<ApiResponse> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
+        public async Task<ApiResponse<CreateWorkflowDesignResponseGto>> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
         {
             var result = await _workflowDesignAppService.CreateAsync(createWorkflowDesignRequestGto);
             return result;

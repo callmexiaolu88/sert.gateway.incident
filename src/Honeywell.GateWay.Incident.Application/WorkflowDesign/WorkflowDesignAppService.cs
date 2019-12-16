@@ -24,7 +24,7 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             _workflowDesignRepository = workflowDesignRepository;
         }
 
-        public async Task<ApiResponse> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
+        public async Task<ApiResponse<CreateWorkflowDesignResponseGto>> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
         {
             try
             {
@@ -33,13 +33,12 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
                     throw new ArgumentNullException(nameof(createWorkflowDesignRequestGto));
                 }
 
-                await _workflowDesignRepository.CreateWorkflowDesign(createWorkflowDesignRequestGto);
-                return ApiResponse.CreateSuccess();
+                return await _workflowDesignRepository.CreateWorkflowDesign(createWorkflowDesignRequestGto);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex);
+                return ApiResponse.CreateFailed(ex).To<CreateWorkflowDesignResponseGto>();
             }
         }
 

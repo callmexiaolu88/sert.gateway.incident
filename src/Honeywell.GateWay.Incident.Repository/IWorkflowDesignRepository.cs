@@ -14,7 +14,7 @@ namespace Honeywell.GateWay.Incident.Repository
 {
     public interface IWorkflowDesignRepository
     {
-        Task CreateWorkflowDesign(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto);
+        Task<CreateWorkflowDesignResponseGto> CreateWorkflowDesign(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto);
 
         Task UpdateWorkflowDesign(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto);
 
