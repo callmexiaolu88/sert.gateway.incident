@@ -37,6 +37,6 @@ namespace Honeywell.GateWay.Incident.Repository
 
         Task<IncidentStatisticsGto> GetStatistics(string deviceId);
 
-        Task<IncidentSummaryGto[]> GetList(PageRequest<GetListRequestGto> request);
+        Task<IncidentSummaryGto[]> GetList(PageRequest<GetListRequestGto> getListRequest);
     }
 }
