@@ -89,14 +89,14 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return ResponseRequest();
         }
 
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync(PageRequest<GetListRequestGto> gto)
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync(PageRequest<GetListRequestGto> request)
         {
             var result = await StubDataAsync<List<IncidentSummaryGto>>();
-            if (string.IsNullOrEmpty(gto.Value.DeviceId))
+            if (string.IsNullOrEmpty(request.Value.DeviceId))
             {
                return result.ToArray();
             }
-            return result.Where(x => x.DeviceId == gto.Value.DeviceId).ToArray();
+            return result.Where(x => x.DeviceId == request.Value.DeviceId).ToArray();
         }
 
         public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(
