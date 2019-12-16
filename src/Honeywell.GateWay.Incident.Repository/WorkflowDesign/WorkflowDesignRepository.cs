@@ -63,6 +63,11 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 
         public async Task UpdateWorkflowDesign(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto)
         {
+            if (updateWorkflowDesignRequestGto == null)
+            {
+                throw new ArgumentNullException(nameof(updateWorkflowDesignRequestGto));
+            }
+
             var updateWorkflowDesignRequestDto = new UpdateWorkflowDesignRequestDto
             {
                 Description = updateWorkflowDesignRequestGto.Description,
@@ -121,7 +126,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
         {
             var isDescriptionEmptyIncluded =
                 !string.IsNullOrEmpty(condition) && DefaultDescriptionEmptyShowText.Contains(condition);
-            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto()
+            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto
             { Condition = condition, IsDescriptionEmptyIncluded = isDescriptionEmptyIncluded };
 
             var result = await _workflowDesignApi.GetListAsync(workflowDesignListRequestDto);
@@ -188,7 +193,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
         {
             Logger.LogInformation($"call Incident api {nameof(GetWorkflowDesignIds)} Start");
 
-            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto() { Condition = string.Empty };
+            var workflowDesignListRequestDto = new WorkflowDesignListRequestDto { Condition = string.Empty };
             var response = await _workflowDesignApi.GetListAsync(workflowDesignListRequestDto);
             ApiResponse.ThrowExceptionIfFailed(response);
 
