@@ -22,8 +22,4 @@
     <PackageReference Include="Honeywell.Infra.Core" Version="0.0.2.*" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="WorkflowDesign\Update\" />
-  </ItemGroup>
-
 </Project>
