@@ -5,5 +5,7 @@
         public int State { get; set; }
 
         public string DeviceId { get; set; }
+
+        public bool? HasOwner { get; set; }
     }
 }

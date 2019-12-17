@@ -5,6 +5,8 @@ namespace Honeywell.Gateway.Incident.Api.Incident.Statistics
     {
         public string DeviceId { get; set; }
 
+        public int UnAssignedCount { get; set; }
+
         public int ActiveCount { get; set; }
 
         public int CompletedCount { get; set; }

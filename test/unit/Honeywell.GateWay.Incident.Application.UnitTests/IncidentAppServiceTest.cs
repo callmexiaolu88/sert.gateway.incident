@@ -125,7 +125,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.True(result.Result.Value.DeviceDisplayName == mockDeviceResult.Config[0].Identifiers.Name);
             Assert.True(result.Result.Value.DeviceLocation == mockDeviceResult.Config[0].Identifiers.Tag[0]);
         }
-        
+
         [Fact]
         public void CreateIncident_Test()
         {
@@ -278,7 +278,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             };
             var mockRequest = MockGetListRequestGto();
             _mockIncidentRepository.Setup(x => x.GetList(mockRequest))
-                .ReturnsAsync(new[] {mockActiveIncidentGto});
+                .ReturnsAsync(new[] { mockActiveIncidentGto });
             var result = _testObj.GetListAsync(mockRequest);
             Assert.NotNull(result);
             Assert.True(result.Result.Value.Length == 1);
@@ -333,7 +333,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void AddStepComment_Successful()
         {
             var addStepComment = new AddStepCommentRequestGto()
-                {WorkflowStepId = It.IsAny<string>(), Comment = It.IsAny<string>()};
+            { WorkflowStepId = It.IsAny<string>(), Comment = It.IsAny<string>() };
 
             _mockIncidentRepository.Setup(x => x.AddStepComment(addStepComment));
 
@@ -381,7 +381,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //Arrange
             var id = Guid.NewGuid();
             _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto[]>()))
-                .ReturnsAsync(new []{id});
+                .ReturnsAsync(new[] { id });
 
             //Act
             var result = _testObj.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestGto[]>());
@@ -464,7 +464,11 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var deviceId = Guid.NewGuid().ToString();
             var incidentStatisticsGto = new IncidentStatisticsGto
             {
-                DeviceId = deviceId, ActiveCount = 1, CloseCount = 1, CompletedCount = 1
+                DeviceId = deviceId,
+                UnAssignedCount = 1,
+                ActiveCount = 1,
+                CloseCount = 1,
+                CompletedCount = 1
             };
             _mockIncidentRepository.Setup(x => x.GetStatistics(deviceId))
                 .ReturnsAsync(incidentStatisticsGto);
@@ -475,6 +479,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //Assert
             Assert.NotNull(result);
             Assert.True(result.Result.IsSuccess);
+            Assert.Equal(result.Result.Value.UnAssignedCount, incidentStatisticsGto.UnAssignedCount);
             Assert.Equal(result.Result.Value.ActiveCount, incidentStatisticsGto.ActiveCount);
             Assert.Equal(result.Result.Value.DeviceId, incidentStatisticsGto.DeviceId);
             Assert.Equal(result.Result.Value.CloseCount, incidentStatisticsGto.CloseCount);
@@ -519,7 +524,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         {
             var request = new GetListRequestGto
             {
-                State = 1, DeviceId = Guid.NewGuid().ToString()
+                State = 1,
+                DeviceId = Guid.NewGuid().ToString()
             };
             return new PageRequest().To(request);
         }

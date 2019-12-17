@@ -37,15 +37,20 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.True(closeResult.IsSuccess);
 
 
-            // create 2 active incident
+            // create 1 active incident
             var activitIncidentId1 = CreateIncident(deviceId, deviceType).Result;
-            var activitIncidentId2 = CreateIncident(deviceId, deviceType).Result;
+            var respondActiveResult = await IncidentGateWayApi.RespondAsync(activitIncidentId1);
+            Assert.True(respondActiveResult.IsSuccess);
+
+            //create 1 unassigned incident
+            var unAssignIncidentId = CreateIncident(deviceId, deviceType).Result;
 
             var result = await IncidentGateWayApi.GetStatisticsAsync(deviceId);
 
             Assert.NotNull(result);
             Assert.True(result.IsSuccess);
-            Assert.Equal(2,result.Value.ActiveCount);
+            Assert.Equal(1, result.Value.UnAssignedCount);
+            Assert.Equal(1,result.Value.ActiveCount);
             Assert.Equal(1, result.Value.CloseCount);
             Assert.Equal(1, result.Value.CompletedCount);
 
