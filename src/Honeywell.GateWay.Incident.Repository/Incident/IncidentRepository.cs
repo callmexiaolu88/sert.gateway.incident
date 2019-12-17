@@ -209,10 +209,14 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             }
             if (request.Value == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(request));
+            }
+            if (!string.IsNullOrEmpty(request.Value.DeviceId) && !request.Value.HasOwner.HasValue)
+            {
+                throw new ArgumentNullException(nameof(request));
             }
             var incidentListRequest = new GetIncidentListRequestDto
-            { State = (IncidentState)request.Value.State, DeviceId = request.Value.DeviceId };
+            { State = (IncidentState)request.Value.State, DeviceId = request.Value.DeviceId, HasOwner = request.Value.HasOwner };
             var pageRequest = request.To(incidentListRequest);
             var result = await _incidentMicroApi.GetListAsync(pageRequest);
             ApiResponse.ThrowExceptionIfFailed(result);

@@ -70,7 +70,8 @@ namespace Incident.ApiTests.IncidentControllerTest
             var request = new GetListRequestGto
             {
                 State = state,
-                DeviceId = deviceId
+                DeviceId = deviceId,
+                HasOwner = false
             };
             var pageRequest = new PageRequest().To(request);
             return pageRequest;
