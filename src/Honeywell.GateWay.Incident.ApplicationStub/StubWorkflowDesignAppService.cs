@@ -24,9 +24,9 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return await StubDataAsync<CreateWorkflowDesignResponseGto>();
         }
 
-        public Task<ApiResponse> UpdateAsync(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto)
+        public async Task<ApiResponse<UpdateWorkflowDesignResponseGto>> UpdateAsync(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto)
         {
-            return ResponseRequest();
+            return await StubDataAsync<UpdateWorkflowDesignResponseGto>();
         }
 
         public Task<ApiResponse> ImportAsync(Stream workflowDesignStream)

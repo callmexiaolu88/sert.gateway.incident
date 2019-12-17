@@ -57,11 +57,11 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 
             var responseDtoList = await _workflowDesignApi.CreateAsync(createWorkflowDesignRequestDto);
             ApiResponse.ThrowExceptionIfFailed(responseDtoList);
-            
-            return new CreateWorkflowDesignResponseGto{Id = responseDtoList.Value.Id,WorkflowDesignName = responseDtoList.Value.WorkflowDesignName};
+
+            return new CreateWorkflowDesignResponseGto { Id = responseDtoList.Value.Id, WorkflowDesignName = responseDtoList.Value.WorkflowDesignName };
         }
 
-        public async Task UpdateWorkflowDesign(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto)
+        public async Task<UpdateWorkflowDesignResponseGto> UpdateWorkflowDesign(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto)
         {
             if (updateWorkflowDesignRequestGto == null)
             {
@@ -87,6 +87,7 @@ namespace Honeywell.GateWay.Incident.Repository.WorkflowDesign
 
             var responseDtoList = await _workflowDesignApi.UpdateAsync(updateWorkflowDesignRequestDto);
             ApiResponse.ThrowExceptionIfFailed(responseDtoList);
+            return new UpdateWorkflowDesignResponseGto { Id = responseDtoList.Value.Id, WorkflowDesignName = responseDtoList.Value.WorkflowDesignName };
         }
 
         public async Task ImportWorkflowDesigns(Stream workflowDesignStream)

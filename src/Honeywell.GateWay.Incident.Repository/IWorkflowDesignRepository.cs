@@ -9,6 +9,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.Update;
 using Honeywell.Infra.Api.Abstract;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Update;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
@@ -16,7 +17,7 @@ namespace Honeywell.GateWay.Incident.Repository
     {
         Task<CreateWorkflowDesignResponseGto> CreateWorkflowDesign(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto);
 
-        Task UpdateWorkflowDesign(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto);
+        Task<UpdateWorkflowDesignResponseGto> UpdateWorkflowDesign(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto);
 
         Task ImportWorkflowDesigns(Stream workflowDesignStream);
 

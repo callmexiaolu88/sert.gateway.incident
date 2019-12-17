@@ -17,7 +17,7 @@ namespace Honeywell.Gateway.Incident.Api
     {
         Task<ApiResponse<CreateWorkflowDesignResponseGto>> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto);
 
-        Task<ApiResponse> UpdateAsync(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto);
+        Task<ApiResponse<UpdateWorkflowDesignResponseGto>> UpdateAsync(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto);
 
         Task<ApiResponse> ImportAsync(Stream workflowDesignStream);
 
