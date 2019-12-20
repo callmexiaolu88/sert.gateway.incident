@@ -7,6 +7,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Update;
 using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
@@ -23,16 +24,33 @@ namespace Honeywell.GateWay.Incident.Application.WorkflowDesign
             _workflowDesignRepository = workflowDesignRepository;
         }
 
-        public async Task<ApiResponse> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
+        public async Task<ApiResponse<CreateWorkflowDesignResponseGto>> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
         {
             try
             {
-                await _workflowDesignRepository.CreateWorkflowDesign(createWorkflowDesignRequestGto);
-                return ApiResponse.CreateSuccess();
+                if (createWorkflowDesignRequestGto == null)
+                {
+                    throw new ArgumentNullException(nameof(createWorkflowDesignRequestGto));
+                }
+
+                return await _workflowDesignRepository.CreateWorkflowDesign(createWorkflowDesignRequestGto);
             }
             catch (Exception ex)
             {
-                return ApiResponse.CreateFailed(ex);
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<CreateWorkflowDesignResponseGto>();
+            }
+        }
+
+        public async Task<ApiResponse<UpdateWorkflowDesignResponseGto>> UpdateAsync(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto)
+        {
+            try
+            {
+                return await _workflowDesignRepository.UpdateWorkflowDesign(updateWorkflowDesignRequestGto);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse.CreateFailed(ex).To<UpdateWorkflowDesignResponseGto>();
             }
         }
 

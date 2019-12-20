@@ -10,6 +10,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Update;
 using Honeywell.GateWay.Incident.Application.WorkflowDesign;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Common.Exceptions;
@@ -18,9 +19,14 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 {
     public class StubWorkflowDesignAppService : BaseIncidentStub, IWorkflowDesignAppService
     {
-        public Task<ApiResponse> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
+        public async Task<ApiResponse<CreateWorkflowDesignResponseGto>> CreateAsync(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto)
         {
-            return ResponseRequest();
+            return await StubDataAsync<CreateWorkflowDesignResponseGto>();
+        }
+
+        public async Task<ApiResponse<UpdateWorkflowDesignResponseGto>> UpdateAsync(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto)
+        {
+            return await StubDataAsync<UpdateWorkflowDesignResponseGto>();
         }
 
         public Task<ApiResponse> ImportAsync(Stream workflowDesignStream)

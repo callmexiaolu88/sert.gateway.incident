@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
@@ -66,10 +67,31 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             var gto = new UpdateStepStatusRequestGto
             {
-                IncidentId = Guid.NewGuid().ToString(), IsHandled = true, WorkflowStepId = Guid.NewGuid().ToString()
+                IncidentId = Guid.NewGuid().ToString(),
+                IsHandled = true,
+                WorkflowStepId = Guid.NewGuid().ToString()
             };
             return gto;
         }
+
+        [Fact]
+        public async Task UpdateWorkflowStepStatus_NotificationActivity_Exception()
+        {
+            //arrange
+            var stepStatusGto = MockStepStatusGto();
+            _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<IncidentActivities>())).Throws(new Exception("any error"));
+            _mockWorkflowMicroApi
+                .Setup(api => api.UpdateStepStatusAsync(It.IsAny<UpdateWorkflowStepStatusRequestDto>()))
+                .ReturnsAsync(new WorkflowActionResponseDto());
+
+            //act
+            await _incidentRepository.UpdateWorkflowStepStatus(stepStatusGto);
+
+            //assert
+            _mockLiveDataApi.Verify(api => api.SendEventData(It.IsAny<IncidentActivities>()), Times.Once);
+        }
+
+
 
         [Fact]
         public async Task UpdateWorkflowStepStatus_Success()
@@ -211,7 +233,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         [Fact]
         public async Task CreateIncident_InvalidRequestWorkflowDesignReferenceId_ReturnError()
         {
-            
+
             var request = new CreateIncidentRequestGto
             {
                 WorkflowDesignReferenceId = null
@@ -450,10 +472,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
             var mockIncidentResponse = new GetIncidentListResponseDto
             {
-                List = new List<IncidentListItemDto> {mockIncidentListItemDto}
+                List = new List<IncidentListItemDto> { mockIncidentListItemDto }
             };
 
-            _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<GetIncidentListRequestDto>())).ReturnsAsync(mockIncidentResponse);
+            _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<PageRequest<GetIncidentListRequestDto>>())).ReturnsAsync(mockIncidentResponse);
 
             var mockWorkflowSummary = new WorkflowSummaryDto
             {
@@ -476,9 +498,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                     x.GetSummariesAsync(
                         It.Is<WorkflowSummaryRequestDto>(request => request.WorkflowIds.Contains(workflowId))))
                 .ReturnsAsync(mockWorkflowSummaryResponse);
+            var getListRequest = MockGetIncidentListRequestDto(0, string.Empty);
 
             //action
-            var response = _incidentRepository.GetActiveIncidentList();
+            var response = _incidentRepository.GetList(getListRequest);
 
             //assert
             Assert.NotNull(response);
@@ -496,14 +519,53 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
+        public async void GetActiveIncidentList_RequestIsNull_Failed()
+        {
+            //action
+            var act = new Func<Task>(async () => await _incidentRepository.GetList(null));
+
+            //assert
+            await Assert.ThrowsAsync<ArgumentNullException>(act);
+        }
+
+
+        [Fact]
+        public async void GetActiveIncidentList_RequestValueIsNull_Failed()
+        {
+            GetListRequestGto request = null;
+            var mockRequest = new PageRequest().To(request);
+
+            //action
+            var act = new Func<Task>(async () => await _incidentRepository.GetList(mockRequest));
+
+            //assert
+            await Assert.ThrowsAsync<ArgumentNullException>(act);
+        }
+
+        [Fact]
+        public async void GetActiveIncidentList_RequestHasOwnerIsNull_Failed()
+        {
+            GetListRequestGto request = new GetListRequestGto { DeviceId = Guid.NewGuid().ToString(), HasOwner = null, State = 0 };
+            var mockRequest = new PageRequest().To(request);
+
+            //action
+            var act = new Func<Task>(async () => await _incidentRepository.GetList(mockRequest));
+
+            //assert
+            await Assert.ThrowsAsync<ArgumentNullException>(act);
+        }
+
+
+        [Fact]
         public async Task GetActiveIncidentList_CallGetActiveList_Failed()
         {
             //assign
             var mockIncidentListResponse = ApiResponse.CreateFailed().To<GetIncidentListResponseDto>();
-            _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<GetIncidentListRequestDto>())).ReturnsAsync(mockIncidentListResponse);
+            _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<PageRequest<GetIncidentListRequestDto>>())).ReturnsAsync(mockIncidentListResponse);
+            var getListRequest = MockGetIncidentListRequestDto(0, string.Empty);
 
             //action
-            var act = new Func<Task>(async () => await _incidentRepository.GetActiveIncidentList());
+            var act = new Func<Task>(async () => await _incidentRepository.GetList(getListRequest));
 
             //assert
             await Assert.ThrowsAsync<HoneywellException>(act);
@@ -538,12 +600,12 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                     Guid.NewGuid()
                 }
             };
-            
+
             _mockIncidentFacadeApi.Setup(api => api.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestDto>()))
                 .ReturnsAsync(createIncidentResponse);
 
             //act
-            var incidentIds = await _incidentRepository.CreateIncidentByAlarm(new[] {request});
+            var incidentIds = await _incidentRepository.CreateIncidentByAlarm(new[] { request });
 
             //assert
             Assert.NotNull(incidentIds);
@@ -596,7 +658,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _mockIncidentFacadeApi.Setup(f => f.GetDetailsAsync(It.IsAny<GetIncidentDetailsRequestDto>()))
                 .ReturnsAsync(mockGetDetailsResponseDto);
 
-            var result = await _incidentRepository.GetActivitysAsync(incidentId.ToString());
+            var result = await _incidentRepository.GetActivitys(incidentId.ToString());
 
             //var response = result.IncidentActivities.ToArray();
 
@@ -661,17 +723,18 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var deviceId = Guid.NewGuid().ToString();
-            var request = new GetIncidentStatisticsRequestDto {DeviceIds = new[] {deviceId}};
+            var request = new GetIncidentStatisticsRequestDto { DeviceIds = new[] { deviceId } };
             var response = new GetIncidentStatisticstResponseDto();
-            response.StatisticsIncident.Add(new IncidentStatisticsDto {ActiveCount = 1,CloseCount = 1,CompletedCount = 1,DeviceId = deviceId});
+            response.StatisticsIncident.Add(new IncidentStatisticsDto { UnAssignedCount = 1, ActiveCount = 1, CloseCount = 1, CompletedCount = 1, DeviceId = deviceId });
             _mockIncidentMicroApi.Setup(x => x.GetStatisticsAsync(It.IsAny<GetIncidentStatisticsRequestDto>())).ReturnsAsync(response);
 
             //act
-           var result =  await _incidentRepository.GetStatisticsAsync(deviceId);
+            var result = await _incidentRepository.GetStatistics(deviceId);
 
             //asser.
             Assert.NotNull(result);
             Assert.Equal(response.StatisticsIncident[0].DeviceId, result.DeviceId);
+            Assert.Equal(response.StatisticsIncident[0].UnAssignedCount, result.UnAssignedCount);
             Assert.Equal(response.StatisticsIncident[0].ActiveCount, result.ActiveCount);
             Assert.Equal(response.StatisticsIncident[0].CloseCount, result.CloseCount);
             Assert.Equal(response.StatisticsIncident[0].CompletedCount, result.CompletedCount);
@@ -703,9 +766,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 List = new List<IncidentListItemDto> { mockIncidentListItemDto }
             };
 
-            var request = new GetIncidentListRequestDto { State = IncidentState.Active,DeviceId = deviceId };
-
-            _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<GetIncidentListRequestDto>())).ReturnsAsync(mockIncidentResponse);
+            _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<PageRequest<GetIncidentListRequestDto>>())).ReturnsAsync(mockIncidentResponse);
 
             var mockWorkflowSummary = new WorkflowSummaryDto
             {
@@ -728,9 +789,11 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                     x.GetSummariesAsync(
                         It.Is<WorkflowSummaryRequestDto>(request => request.WorkflowIds.Contains(workflowId))))
                 .ReturnsAsync(mockWorkflowSummaryResponse);
+            var getListRequest = MockGetIncidentListRequestDto(0, deviceId);
+
 
             //action
-            var response = _incidentRepository.GetListAsync(0, deviceId);
+            var response = _incidentRepository.GetList(getListRequest);
 
             //assert
             Assert.NotNull(response);
@@ -747,14 +810,22 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.Equal(mockIncidentListItemDto.Priority.ToString(), activeIncidentGto.Priority.ToString());
         }
 
+        private PageRequest<GetListRequestGto> MockGetIncidentListRequestDto(int state, string deviceId)
+        {
+            var request = new GetListRequestGto { State = state, DeviceId = deviceId, HasOwner = false };
+            var pageRequest = new PageRequest().To(request);
+            return pageRequest;
+        }
+
         [Fact]
         public async Task GetList_CallGetIncidentsList_Failed()
         {
             //assign
             var mockIncidentListResponse = ApiResponse.CreateFailed().To<GetIncidentListResponseDto>();
-            _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<GetIncidentListRequestDto>())).ReturnsAsync(mockIncidentListResponse);
+            _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<PageRequest<GetIncidentListRequestDto>>())).ReturnsAsync(mockIncidentListResponse);
+            var getListRequest = MockGetIncidentListRequestDto(0, Guid.NewGuid().ToString());
             //action
-            var act = new Func<Task>(async () => await _incidentRepository.GetListAsync(0,Guid.NewGuid().ToString()));
+            var act = new Func<Task>(async () => await _incidentRepository.GetList(getListRequest));
 
             //assert
             await Assert.ThrowsAsync<HoneywellException>(act);
@@ -784,17 +855,18 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             {
                 List = new List<IncidentListItemDto> { mockIncidentListItemDto }
             };
-            
-            _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<GetIncidentListRequestDto>())).ReturnsAsync(mockIncidentResponse);
+
+            _mockIncidentMicroApi.Setup(x => x.GetListAsync(It.IsAny<PageRequest<GetIncidentListRequestDto>>())).ReturnsAsync(mockIncidentResponse);
 
             var mockIncidentListResponse = ApiResponse.CreateFailed().To<WorkflowSummaryResponseDto>();
             _mockWorkflowMicroApi.Setup(x =>
                     x.GetSummariesAsync(
                         It.Is<WorkflowSummaryRequestDto>(request => request.WorkflowIds.Contains(workflowId))))
                 .ReturnsAsync(mockIncidentListResponse);
+            var getListRequest = MockGetIncidentListRequestDto(0, Guid.NewGuid().ToString());
 
             //action
-            var act = new Func<Task>(async () => await _incidentRepository.GetListAsync(0, Guid.NewGuid().ToString()));
+            var act = new Func<Task>(async () => await _incidentRepository.GetList(getListRequest));
 
             //assert
             await Assert.ThrowsAsync<HoneywellException>(act);

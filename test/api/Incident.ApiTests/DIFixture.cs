@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using Honeywell.Gateway.Incident.Api;
 using Honeywell.Infra.Client.WebApi;
 using Microsoft.Extensions.Configuration;
@@ -9,7 +10,7 @@ namespace Incident.ApiTests
 {
     public class DIFixture
     {
-        private const string EnvironmentKey = "environment";
+        private const string EnvironmentKey = "ApiTest_environment";
         public ServiceProvider ServiceProvider { get; }
         public DIFixture()
         {
@@ -49,13 +50,11 @@ namespace Incident.ApiTests
 
         private IConfiguration ConfigContext(IServiceCollection serviceCollection)
         {
-            var configBuilder = new ConfigurationBuilder().AddEnvironmentVariables(prefix: "ApiTest_");
-            var envConfig = configBuilder.Build().GetValue<string>(EnvironmentKey);
-            var config = configBuilder
+            var envConfig = Environment.GetEnvironmentVariable(EnvironmentKey);
+            var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", true, true)
                 .AddJsonFile($"appsettings.{envConfig}.json", true, true)
                 .Build();
-
             serviceCollection.AddSingleton(config);
 
             return config;

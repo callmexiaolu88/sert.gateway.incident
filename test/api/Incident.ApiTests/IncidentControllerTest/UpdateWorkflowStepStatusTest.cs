@@ -24,7 +24,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             {
                 IncidentId = incidentId, IsHandled = true, WorkflowStepId = workflowStepId.ToString()
             };
-            var result = await IncidentGateWayApi.UpdateStepStatusAsync(updateWorkflowStepStatusGto);
+            var result =await IncidentGateWayApi.UpdateStepStatusAsync(updateWorkflowStepStatusGto);
             Assert.True(result.IsSuccess);
 
             await DeleteIncident(incidentId);

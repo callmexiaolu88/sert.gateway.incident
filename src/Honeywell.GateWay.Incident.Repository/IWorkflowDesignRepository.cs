@@ -7,13 +7,17 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Update;
 using Honeywell.Infra.Api.Abstract;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Update;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
     public interface IWorkflowDesignRepository
     {
-        Task CreateWorkflowDesign(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto);
+        Task<CreateWorkflowDesignResponseGto> CreateWorkflowDesign(CreateWorkflowDesignRequestGto createWorkflowDesignRequestGto);
+
+        Task<UpdateWorkflowDesignResponseGto> UpdateWorkflowDesign(UpdateWorkflowDesignRequestGto updateWorkflowDesignRequestGto);
 
         Task ImportWorkflowDesigns(Stream workflowDesignStream);
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.Create;
+using Honeywell.Gateway.Incident.Api.WorkflowDesign.Update;
 using Honeywell.GateWay.Incident.Repository.WorkflowDesign;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Common.Exceptions;
@@ -16,6 +17,7 @@ using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Export;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Import;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
+using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Update;
 using Moq;
 using Xunit;
 
@@ -231,6 +233,16 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
 
         [Fact]
+        public async Task CreateWorkFlowDesign_RequestIsNull_Failed()
+        {
+            //action
+            var act = new Func<Task>(async () => await _incidentRepository.CreateWorkflowDesign(null));
+
+            //assert
+            await Assert.ThrowsAsync<ArgumentNullException>(act);
+        }
+
+        [Fact]
         public async Task CreateWorkFlowDesign_Successful()
         {
             // arrange
@@ -256,6 +268,35 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
             // assert
             _workflowDesignMicroApiMock.Verify(x => x.CreateAsync(It.IsAny<CreateWorkflowDesignRequestDto>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateWorkFlowDesign_Successful()
+        {
+            // arrange
+            var mockUpdateWorkflowDesignRequestGto = new UpdateWorkflowDesignRequestGto
+            {
+                Description = "This procedure shall be completed 48hours before any events.",
+                Name = "Event Prep Master 1",
+                Id = Guid.NewGuid(),
+                Steps ={
+                    new UpdateWorkflowStepDesignGto(false,
+                        "Confirm with event manager on final event requirements and special needs",
+                        "View event booking calendar.On the calendar, link to event contract"),
+                    new UpdateWorkflowStepDesignGto(true,
+                        "If required by the event, engage Energy team for pre-event check.",
+                        "Any cabling on special electricity supply ? Backup generators ready ? ")
+                }
+            };
+            var mockUpdateWorkflowDesignResponse = new UpdateWorkflowDesignResponseDto("workflow1", Guid.NewGuid());
+            _workflowDesignMicroApiMock.Setup(x => x.UpdateAsync(It.IsAny<UpdateWorkflowDesignRequestDto>())).
+                ReturnsAsync(mockUpdateWorkflowDesignResponse);
+
+            // action
+            await _incidentRepository.UpdateWorkflowDesign(mockUpdateWorkflowDesignRequestGto);
+
+            // assert
+            _workflowDesignMicroApiMock.Verify(x => x.UpdateAsync(It.IsAny<UpdateWorkflowDesignRequestDto>()), Times.Once);
         }
 
         [Fact]

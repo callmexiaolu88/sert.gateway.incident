@@ -19,6 +19,8 @@ namespace Incident.ApiTests.IncidentControllerTest
             var result = CreateWorkflowDesign();
 
             Assert.True(result.Result.IsSuccess);
+            Assert.NotNull(result.Result.Value.Id.ToString());
+            Assert.Equal("Event Prep Master 1", result.Result.Value.WorkflowDesignName);
 
             await DeleteWorkflowDesign();
         }
@@ -49,7 +51,7 @@ namespace Incident.ApiTests.IncidentControllerTest
         }
 
 
-        public async Task<ApiResponse> CreateWorkflowDesign()
+        public async Task<ApiResponse<CreateWorkflowDesignResponseGto>> CreateWorkflowDesign()
         {
             var mockCreateWorkflowDesignRequestGto = new CreateWorkflowDesignRequestGto
             {

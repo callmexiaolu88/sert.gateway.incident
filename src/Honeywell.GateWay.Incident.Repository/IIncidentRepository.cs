@@ -7,6 +7,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Gateway.Incident.Api.Incident.Statistics;
+using Honeywell.Infra.Api.Abstract;
 
 namespace Honeywell.GateWay.Incident.Repository
 {
@@ -27,16 +28,15 @@ namespace Honeywell.GateWay.Incident.Repository
         Task CompleteIncident(string incidentId);
 
         Task AddStepComment(AddStepCommentRequestGto addStepCommentGto);
-
-        Task<IncidentSummaryGto[]> GetActiveIncidentList();
-
+        
         Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests);
 
         Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds);
 
-        Task<ActivityGto[]> GetActivitysAsync(string incidentId);
+        Task<ActivityGto[]> GetActivitys(string incidentId);
 
-        Task<IncidentStatisticsGto> GetStatisticsAsync(string deviceId);
-        Task<IncidentSummaryGto[]> GetListAsync(int status, string deviceId);
+        Task<IncidentStatisticsGto> GetStatistics(string deviceId);
+
+        Task<IncidentSummaryGto[]> GetList(PageRequest<GetListRequestGto> request);
     }
 }

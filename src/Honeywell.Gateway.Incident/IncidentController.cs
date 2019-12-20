@@ -5,7 +5,6 @@ using Honeywell.GateWay.Incident.Application.Incident;
 using Microsoft.AspNetCore.Mvc;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Infra.Api.Abstract;
-using Microsoft.Extensions.Logging;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
@@ -27,7 +26,7 @@ namespace Honeywell.Gateway.Incident
             _incidentAppService = incidentAppService;
         }
 
-   
+
         [HttpPost]
         public async Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updateWorkflowStepStatusGto)
         {
@@ -50,17 +49,10 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync()
+        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListAsync(PageRequest<GetListRequestGto> getListRequest)
         {
-            var activeIncidents = await _incidentAppService.GetListAsync();
+            var activeIncidents = await _incidentAppService.GetListAsync(getListRequest);
             return activeIncidents;
-        }
-
-        [HttpPost]
-        public async Task<ApiResponse<IncidentSummaryGto[]>> GetListByDeviceAsync(int status, string deviceId)
-        {
-            var incidents = await _incidentAppService.GetListByDeviceAsync(status, deviceId);
-            return incidents;
         }
 
         [HttpPost]
