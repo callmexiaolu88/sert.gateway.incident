@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="powershell -ExecutionPolicy Unrestricted ^&#xD;&#xA;-File &quot;$(SolutionDir)..\..\sert.devops\Dev\PostBuildEvent.ps1&quot; ^&#xD;&#xA;-SolutionDir $(SolutionDir) ^&#xD;&#xA;-SolutionName $(SolutionName) ^&#xD;&#xA;-ConfigurationName $(ConfigurationName) ^&#xD;&#xA;-TargetDir $(TargetDir) ^&#xD;&#xA;-TargetName $(TargetName)" />
+    <Exec Command="powershell -ExecutionPolicy Unrestricted ^&#xD;&#xA;-File &quot;$(SolutionDir)..\..\sert.devops\Dev\PostBuildEvent.ps1&quot; ^&#xD;&#xA;-SolutionDir $(SolutionDir) ^&#xD;&#xA;-PluginName $(ProjectName) ^&#xD;&#xA;-ConfigurationName $(ConfigurationName) ^&#xD;&#xA;-TargetDir $(TargetDir) ^&#xD;&#xA;-TargetName $(TargetName)" />
   </Target>
 
 </Project>
