@@ -1,12 +1,10 @@
 ﻿using Honeywell.Facade.Services.Incident.Api;
 using Honeywell.Infra.Core.Modular.Steps;
-using Honeywell.Infra.HoneyMapper.AutoMapper;
 using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Workflow.Api;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Xunit;
 namespace Honeywell.GateWay.Incident.Repository.UnitTests
 {
@@ -31,7 +29,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.Contains(sc, s => s.ServiceType == typeof(IIncidentRepository));
             Assert.Contains(sc, s => s.ServiceType == typeof(IWorkflowDesignRepository));
             Assert.Contains(sc, s => s.ServiceType == typeof(IConfiguration));
-            Assert.Contains(sc, s => s.ServiceType == typeof(IDeviceApi));
             Assert.Contains(sc, s => s.ServiceType == typeof(IWorkflowDesignMicroApi));
             Assert.Contains(sc, s => s.ServiceType == typeof(IWorkflowMicroApi));
             Assert.Contains(sc, s => s.ServiceType == typeof(IIncidentMicroApi));

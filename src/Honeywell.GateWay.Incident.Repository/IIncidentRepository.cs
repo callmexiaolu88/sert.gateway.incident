@@ -5,6 +5,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Gateway.Incident.Api.Incident.Statistics;
 using Honeywell.Infra.Api.Abstract;

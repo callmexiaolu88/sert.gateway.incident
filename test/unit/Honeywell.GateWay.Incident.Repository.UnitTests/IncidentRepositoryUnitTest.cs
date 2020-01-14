@@ -31,7 +31,6 @@ using Xunit;
 using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
 using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
 using IncidentStatus = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentStatus;
-using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
 
 namespace Honeywell.GateWay.Incident.Repository.UnitTests

@@ -47,5 +47,11 @@ namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
 
         public AlarmData AlarmData { get; set; }
 
+        public string TriggerId { get; set; }
+
+        public string CameraId { get; set; }
+
+        public long EventTimeStamp { get; set; }
+
     }
 }
