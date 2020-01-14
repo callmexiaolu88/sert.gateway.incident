@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Honeywell.Gateway.Incident.Api;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
@@ -106,27 +107,42 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         }
 
         [Fact]
-        public void GetIncidentById_ValidDevice_Succeed()
+        public void GetIncidentById_ValidDevice_AlarmTrigger_Succeed()
         {
             //arrange
             var mockDeviceResult = MockDeviceEntities();
             var device = mockDeviceResult.config[0];
+            var eventTimestamp = 4542351231231;
+            var alarmId = "432543353454235";
             var mockIncident = new IncidentDetailGto
             {
                 Description = "Test Incident Description",
                 DeviceId = device.identifiers.id,
                 DeviceLocation = device.identifiers.tag[0],
-                DeviceDisplayName = device.identifiers.name
+                DeviceDisplayName = device.identifiers.name,
+                TriggerType = IncidentTriggerType.Alarm,
+                TriggerId = alarmId,
+                AlarmData =  new AlarmData { AlarmTimestamp = eventTimestamp, AlarmType = "fasdfasd"}
+                
             };
+
+            var cameraInfo = new GetCameraInfo()
+                {CameraInfo = new CameraInfo {CameraNum = "1", CameraId = "1", CameraName = "1" } };
 
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .ReturnsAsync(mockIncident);
+
+            _mockDeviceMicroApi.Setup(x => x.GetDeviceDetails(It.IsAny<string>(), It.IsAny<DataFilters>()))
+                .Returns(mockDeviceResult.config[0]);
+
+            _mockCameraFacadeApi.Setup(x => x.GetCameraByAlarmId(It.IsAny<string>())).Returns(cameraInfo);
 
             //act
             var result = _testObj.GetDetailAsync(It.IsAny<string>());
 
             //assert
             Assert.NotNull(result);
+            Assert.True(result.Result.Value.CameraId == cameraInfo.CameraInfo.CameraId);
             Assert.True(result.Result.Value.Description == mockIncident.Description);
             Assert.True(result.Result.Value.DeviceDisplayName == mockDeviceResult.config[0].identifiers.name);
             Assert.True(result.Result.Value.DeviceLocation == mockDeviceResult.config[0].identifiers.tag[0]);
