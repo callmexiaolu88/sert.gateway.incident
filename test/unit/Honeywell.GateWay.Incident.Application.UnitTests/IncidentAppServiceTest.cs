@@ -148,6 +148,48 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.True(result.Result.Value.DeviceLocation == mockDeviceResult.config[0].identifiers.tag[0]);
         }
 
+        [Fact]
+        public void GetIncidentById_ValidDevice_GetCameraFailed()
+        {
+            //arrange
+            var mockDeviceResult = MockDeviceEntities();
+            var device = mockDeviceResult.config[0];
+            var alarmId = "432543353454235";
+            var createDate = DateTime.Now;
+            var eventTimeStamp = new DateTimeOffset(createDate).ToUnixTimeMilliseconds();
+            var mockIncident = new IncidentDetailGto
+            {
+                Description = "Test Incident Description",
+                DeviceId = device.identifiers.id,
+                DeviceLocation = device.identifiers.tag[0],
+                DeviceDisplayName = device.identifiers.name,
+                TriggerType = IncidentTriggerType.Manual,
+                TriggerId = alarmId,
+                CreateAtUtc = createDate
+            };
+
+            var cameraInfo = ApiResponse.CreateFailed().To<GetCameraInfo>();
+
+            _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
+                .ReturnsAsync(mockIncident);
+
+            _mockDeviceFacadeApi.Setup(x => x.GetDeviceDetails(It.IsAny<string>(), It.IsAny<DataFilters>()))
+                .Returns(mockDeviceResult.config[0]);
+
+            _mockCameraFacadeApi.Setup(x => x.GetCameraByLogicDeviceId(It.IsAny<string>())).Returns(cameraInfo);
+
+            //act
+            var result = _testObj.GetDetailAsync(It.IsAny<string>());
+
+            //assert
+            Assert.NotNull(result);
+            Assert.True(result.Result.Value.EventTimeStamp == eventTimeStamp);
+            Assert.True(result.Result.Value.Description == mockIncident.Description);
+            Assert.True(result.Result.Value.DeviceDisplayName == mockDeviceResult.config[0].identifiers.name);
+            Assert.True(result.Result.Value.DeviceLocation == mockDeviceResult.config[0].identifiers.tag[0]);
+            Assert.Null(result.Result.Value.CameraNumber);
+        }
+
 
         [Fact]
         public void GetIncidentById_ValidDevice_ManualTrigger_Succeed()

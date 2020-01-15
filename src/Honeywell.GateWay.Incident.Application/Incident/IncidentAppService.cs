@@ -91,7 +91,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
         private void MappingCameraId(IncidentDetailGto gto, ApiResponse<GetCameraInfo> getCameraInfo)
         {
-            if (getCameraInfo.IsSuccess && getCameraInfo.Value != null)
+            if (getCameraInfo.IsSuccess)
             {
                 gto.CameraNumber = getCameraInfo.Value.CameraNum;
             }

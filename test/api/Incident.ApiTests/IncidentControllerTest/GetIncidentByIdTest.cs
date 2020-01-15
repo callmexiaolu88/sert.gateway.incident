@@ -62,6 +62,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.True(getDetailResponse.IsSuccess);
             var detail = getDetailResponse.Value;
             Assert.Equal(detail.Id.ToString(), incidentId);
+            Assert.Equal(detail.TriggerId, device.DeviceId);
             Assert.Equal(detail.DeviceDisplayName, device.DeviceDisplayName);
             Assert.Equal(detail.DeviceLocation, device.DeviceLocation);
             Assert.False(string.IsNullOrEmpty(detail.CameraNumber));
