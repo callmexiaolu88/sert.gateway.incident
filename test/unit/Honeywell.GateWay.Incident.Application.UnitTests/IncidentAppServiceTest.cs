@@ -14,6 +14,7 @@ using Honeywell.GateWay.Incident.Repository;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Services.Isom.Api;
 using Honeywell.Infra.Services.Isom.Api.Custom;
+using Honeywell.Infra.Services.Isom.Api.Custom.Camera.GetCamera;
 using Honeywell.Security.Isom.Common;
 using Moq;
 using Proxy.Honeywell.Security.ISOM.Devices;
@@ -35,8 +36,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _mockDeviceMicroApi = new Mock<IDeviceMicroApi>();
             _mockCameraFacadeApi = new Mock<ICameraFacadeApi>();
             _testObj = new IncidentAppService(
-                _mockIncidentRepository.Object, 
-                _mockCameraFacadeApi.Object, 
+                _mockIncidentRepository.Object,
+                _mockCameraFacadeApi.Object,
                 _mockDeviceMicroApi.Object);
         }
 
@@ -122,12 +123,10 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 DeviceDisplayName = device.identifiers.name,
                 TriggerType = IncidentTriggerType.Alarm,
                 TriggerId = alarmId,
-                AlarmData =  new AlarmData { AlarmTimestamp = eventTimestamp, AlarmType = "fasdfasd"}
-                
+                AlarmData = new AlarmData { AlarmTimestamp = eventTimestamp, AlarmType = "fasdfasd" }
             };
 
-            var cameraInfo = new GetCameraInfo()
-                {CameraInfo = new CameraInfo {CameraNum = "1", CameraId = "1", CameraName = "1" } };
+            var cameraInfo = new GetCameraInfo() { CameraNum = "1", CameraId = "1", CameraName = "1" };
 
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .ReturnsAsync(mockIncident);
@@ -142,7 +141,51 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             //assert
             Assert.NotNull(result);
-            Assert.True(result.Result.Value.CameraId == cameraInfo.CameraInfo.CameraId);
+            Assert.True(result.Result.Value.CameraId == cameraInfo.CameraId);
+            Assert.True(result.Result.Value.EventTimeStamp == mockIncident.AlarmData.AlarmTimestamp);
+            Assert.True(result.Result.Value.Description == mockIncident.Description);
+            Assert.True(result.Result.Value.DeviceDisplayName == mockDeviceResult.config[0].identifiers.name);
+            Assert.True(result.Result.Value.DeviceLocation == mockDeviceResult.config[0].identifiers.tag[0]);
+        }
+
+
+        [Fact]
+        public void GetIncidentById_ValidDevice_ManualTrigger_Succeed()
+        {
+            //arrange
+            var mockDeviceResult = MockDeviceEntities();
+            var device = mockDeviceResult.config[0];
+            var alarmId = "432543353454235";
+            var createDate = DateTime.Now;
+            var eventTimeStamp = new DateTimeOffset(createDate).ToUnixTimeMilliseconds();
+            var mockIncident = new IncidentDetailGto
+            {
+                Description = "Test Incident Description",
+                DeviceId = device.identifiers.id,
+                DeviceLocation = device.identifiers.tag[0],
+                DeviceDisplayName = device.identifiers.name,
+                TriggerType = IncidentTriggerType.Manual,
+                TriggerId = alarmId,
+                CreateAtUtc = createDate
+            };
+
+            var cameraInfo = new GetCameraInfo { CameraNum = "1", CameraId = "1", CameraName = "1" };
+
+            _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
+                .ReturnsAsync(mockIncident);
+
+            _mockDeviceMicroApi.Setup(x => x.GetDeviceDetails(It.IsAny<string>(), It.IsAny<DataFilters>()))
+                .Returns(mockDeviceResult.config[0]);
+
+            _mockCameraFacadeApi.Setup(x => x.GetCameraByLogicDeviceId(It.IsAny<string>())).Returns(cameraInfo);
+
+            //act
+            var result = _testObj.GetDetailAsync(It.IsAny<string>());
+
+            //assert
+            Assert.NotNull(result);
+            Assert.True(result.Result.Value.CameraId == cameraInfo.CameraId);
+            Assert.True(result.Result.Value.EventTimeStamp == eventTimeStamp);
             Assert.True(result.Result.Value.Description == mockIncident.Description);
             Assert.True(result.Result.Value.DeviceDisplayName == mockDeviceResult.config[0].identifiers.name);
             Assert.True(result.Result.Value.DeviceLocation == mockDeviceResult.config[0].identifiers.tag[0]);
@@ -393,7 +436,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 relation = new[] { new DeviceRelation { entityId = "Geili Site", id = "Generaic Device" } }.ToList(),
                 type = DeviceType.Door
             };
-            return new DeviceConfigList { config = new List<DeviceConfig>{ deviceEntity } };
+            return new DeviceConfigList { config = new List<DeviceConfig> { deviceEntity } };
         }
 
         [Fact]

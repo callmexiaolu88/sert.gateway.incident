@@ -14,6 +14,7 @@ using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Infra.Services.Isom.Api;
 using Honeywell.Infra.Services.Isom.Api.Custom;
+using Honeywell.Infra.Services.Isom.Api.Custom.Camera.GetCamera;
 using Microsoft.Extensions.Logging;
 
 namespace Honeywell.GateWay.Incident.Application.Incident
@@ -92,7 +93,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             if (getCameraInfo.IsSuccess && getCameraInfo.Value != null)
             {
-                gto.CameraId = getCameraInfo.Value.CameraInfo.CameraNum;
+                gto.CameraId = getCameraInfo.Value.CameraNum;
             }
         }
 
