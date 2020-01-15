@@ -26,19 +26,19 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
     {
         private readonly IIncidentAppService _testObj;
         private readonly Mock<IIncidentRepository> _mockIncidentRepository;
-        private readonly Mock<IDeviceMicroApi> _mockDeviceMicroApi;
+        private readonly Mock<IDeviceFacadeApi> _mockDeviceFacadeApi;
         private readonly Mock<ICameraFacadeApi> _mockCameraFacadeApi;
 
 
         public IncidentAppServiceTest()
         {
             _mockIncidentRepository = new Mock<IIncidentRepository>();
-            _mockDeviceMicroApi = new Mock<IDeviceMicroApi>();
+            _mockDeviceFacadeApi = new Mock<IDeviceFacadeApi>();
             _mockCameraFacadeApi = new Mock<ICameraFacadeApi>();
             _testObj = new IncidentAppService(
                 _mockIncidentRepository.Object,
                 _mockCameraFacadeApi.Object,
-                _mockDeviceMicroApi.Object);
+                _mockDeviceFacadeApi.Object);
         }
 
         [Fact]
@@ -131,7 +131,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .ReturnsAsync(mockIncident);
 
-            _mockDeviceMicroApi.Setup(x => x.GetDeviceDetails(It.IsAny<string>(), It.IsAny<DataFilters>()))
+            _mockDeviceFacadeApi.Setup(x => x.GetDeviceDetails(It.IsAny<string>(), It.IsAny<DataFilters>()))
                 .Returns(mockDeviceResult.config[0]);
 
             _mockCameraFacadeApi.Setup(x => x.GetCameraByAlarmId(It.IsAny<string>())).Returns(cameraInfo);
@@ -141,7 +141,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             //assert
             Assert.NotNull(result);
-            Assert.True(result.Result.Value.CameraNum == cameraInfo.CameraId);
+            Assert.True(result.Result.Value.CameraNumber == cameraInfo.CameraId);
             Assert.True(result.Result.Value.EventTimeStamp == mockIncident.AlarmData.AlarmTimestamp);
             Assert.True(result.Result.Value.Description == mockIncident.Description);
             Assert.True(result.Result.Value.DeviceDisplayName == mockDeviceResult.config[0].identifiers.name);
@@ -174,7 +174,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _mockIncidentRepository.Setup(x => x.GetIncidentById(It.IsAny<string>()))
                 .ReturnsAsync(mockIncident);
 
-            _mockDeviceMicroApi.Setup(x => x.GetDeviceDetails(It.IsAny<string>(), It.IsAny<DataFilters>()))
+            _mockDeviceFacadeApi.Setup(x => x.GetDeviceDetails(It.IsAny<string>(), It.IsAny<DataFilters>()))
                 .Returns(mockDeviceResult.config[0]);
 
             _mockCameraFacadeApi.Setup(x => x.GetCameraByLogicDeviceId(It.IsAny<string>())).Returns(cameraInfo);
@@ -184,7 +184,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             //assert
             Assert.NotNull(result);
-            Assert.True(result.Result.Value.CameraNum == cameraInfo.CameraId);
+            Assert.True(result.Result.Value.CameraNumber == cameraInfo.CameraId);
             Assert.True(result.Result.Value.EventTimeStamp == eventTimeStamp);
             Assert.True(result.Result.Value.Description == mockIncident.Description);
             Assert.True(result.Result.Value.DeviceDisplayName == mockDeviceResult.config[0].identifiers.name);
@@ -277,7 +277,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void GetDevices_Test()
         {
             var mockDevice = MockDeviceEntities();
-            _mockDeviceMicroApi.Setup(x => x.GetDeviceList(It.IsAny<DataFilters>())).Returns(mockDevice);
+            _mockDeviceFacadeApi.Setup(x => x.GetDeviceList(It.IsAny<DataFilters>())).Returns(mockDevice);
             var result = _testObj.GetSiteDevicesAsync();
             Assert.NotNull(result);
             Assert.True(result.Result.Value.Length == 1);
@@ -293,7 +293,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void GetDevices_ThrowException_Failed()
         {
             var mockDevice = MockDeviceEntities();
-            _mockDeviceMicroApi.Setup(x => x.GetDeviceList(It.IsAny<DataFilters>())).Throws(new Exception());
+            _mockDeviceFacadeApi.Setup(x => x.GetDeviceList(It.IsAny<DataFilters>())).Throws(new Exception());
 
             var result = _testObj.GetSiteDevicesAsync();
 

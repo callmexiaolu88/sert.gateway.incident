@@ -25,14 +25,14 @@ namespace Honeywell.GateWay.Incident.Application.Incident
     {
         private readonly IIncidentRepository _incidentRepository;
         private readonly ICameraFacadeApi _cameraFacadeApi;
-        private readonly IDeviceMicroApi _deviceMicroApi;
+        private readonly IDeviceFacadeApi _deviceFacadeApi;
 
         public IncidentAppService(IIncidentRepository incidentRepository,
             ICameraFacadeApi cameraFacadeApi,
-            IDeviceMicroApi deviceMicroApi)
+            IDeviceFacadeApi deviceFacadeApi)
         {
             _cameraFacadeApi = cameraFacadeApi;
-            _deviceMicroApi = deviceMicroApi;
+            _deviceFacadeApi = deviceFacadeApi;
             _incidentRepository = incidentRepository;
         }
 
@@ -60,7 +60,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                     return incidentInfo;
                 }
 
-                var deviceInfo = _deviceMicroApi.GetDeviceDetails(incidentInfo.DeviceId, null);
+                var deviceInfo = _deviceFacadeApi.GetDeviceDetails(incidentInfo.DeviceId, null);
                 incidentInfo.DeviceDisplayName = deviceInfo.identifiers.name;
                 incidentInfo.DeviceLocation = deviceInfo.identifiers.tag[0];
 
@@ -93,7 +93,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             if (getCameraInfo.IsSuccess && getCameraInfo.Value != null)
             {
-                gto.CameraNum = getCameraInfo.Value.CameraNum;
+                gto.CameraNumber = getCameraInfo.Value.CameraNum;
             }
         }
 
@@ -128,7 +128,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             try
             {
                 Logger.LogInformation("call Incident api GetDevices Start");
-                var deviceConfigs = _deviceMicroApi.GetDeviceList(null);
+                var deviceConfigs = _deviceFacadeApi.GetDeviceList(null);
                 var devices = deviceConfigs.config.GroupBy(item => new { item.relation[0].id, item.relation[0].entityId })
                     .Select(group => new SiteDeviceGto
                     {
@@ -143,7 +143,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                         }).ToArray()
                     });
                 Logger.LogInformation("call Incident api GetDevices end");
-                return devices.ToArray();
+                return await Task.FromResult(devices.ToArray());
             }
             catch (Exception ex)
             {
