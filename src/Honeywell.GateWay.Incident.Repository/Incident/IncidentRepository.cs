@@ -86,6 +86,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return result;
         }
 
+       
+
         public async Task<string> CreateIncident(CreateIncidentRequestGto request)
         {
             Logger.LogInformation("call Incident api CreateIncident Start");
@@ -227,6 +229,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             return MappingIncidentsGtos(result, workflowSummaries);
         }
+
 
         public async Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests)
         {

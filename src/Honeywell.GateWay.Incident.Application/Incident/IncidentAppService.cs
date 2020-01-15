@@ -10,9 +10,11 @@ using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.Gateway.Incident.Api.Incident.Statistics;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.GateWay.Incident.Repository;
-using Honeywell.GateWay.Incident.Repository.Device;
 using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Core.Ddd.Application;
+using Honeywell.Infra.Services.Isom.Api;
+using Honeywell.Infra.Services.Isom.Api.Custom;
+using Honeywell.Infra.Services.Isom.Api.Custom.Camera.GetCamera;
 using Microsoft.Extensions.Logging;
 
 namespace Honeywell.GateWay.Incident.Application.Incident
@@ -21,14 +23,17 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         ApplicationService,
         IIncidentAppService
     {
-        private readonly IDeviceRepository _deviceRepository;
         private readonly IIncidentRepository _incidentRepository;
+        private readonly ICameraFacadeApi _cameraFacadeApi;
+        private readonly IDeviceFacadeApi _deviceFacadeApi;
 
         public IncidentAppService(IIncidentRepository incidentRepository,
-            IDeviceRepository deviceRepository)
+            ICameraFacadeApi cameraFacadeApi,
+            IDeviceFacadeApi deviceFacadeApi)
         {
+            _cameraFacadeApi = cameraFacadeApi;
+            _deviceFacadeApi = deviceFacadeApi;
             _incidentRepository = incidentRepository;
-            _deviceRepository = deviceRepository;
         }
 
         public async Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updateWorkflowStepStatusGto)
@@ -50,15 +55,30 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             try
             {
                 var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
-              
                 if (string.IsNullOrEmpty(incidentInfo.DeviceId))
                 {
                     return incidentInfo;
                 }
 
-                var deviceInfo = await _deviceRepository.GetDeviceById(incidentInfo.DeviceId);
-                incidentInfo.DeviceDisplayName = deviceInfo.Config[0].Identifiers.Name;
-                incidentInfo.DeviceLocation = deviceInfo.Config[0].Identifiers.Tag[0];
+                var deviceInfo = _deviceFacadeApi.GetDeviceDetails(incidentInfo.DeviceId, null);
+                incidentInfo.DeviceDisplayName = deviceInfo.identifiers.name;
+                incidentInfo.DeviceLocation = deviceInfo.identifiers.tag[0];
+
+                if (incidentInfo.TriggerType == Gateway.Incident.Api.IncidentTriggerType.Alarm)
+                {
+                    incidentInfo.EventTimeStamp = incidentInfo.AlarmData.AlarmTimestamp;
+                    var getCameraInfo = _cameraFacadeApi.GetCameraByAlarmId(incidentInfo.TriggerId);
+                    MappingCameraId(incidentInfo, getCameraInfo);
+                }
+
+                if (incidentInfo.TriggerType == Gateway.Incident.Api.IncidentTriggerType.Manual)
+                {
+                    var getCameraInfo = _cameraFacadeApi.GetCameraByLogicDeviceId(incidentInfo.TriggerId);
+                    MappingCameraId(incidentInfo, getCameraInfo);
+                    if (incidentInfo.CreateAtUtc != null)
+                        incidentInfo.EventTimeStamp =
+                            new DateTimeOffset(incidentInfo.CreateAtUtc.Value).ToUnixTimeMilliseconds();
+                }
 
                 return incidentInfo;
             }
@@ -66,6 +86,14 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             {
                 Logger.LogError(ex.ToString());
                 return ApiResponse.CreateFailed(ex).To<IncidentDetailGto>();
+            }
+        }
+
+        private void MappingCameraId(IncidentDetailGto gto, ApiResponse<GetCameraInfo> getCameraInfo)
+        {
+            if (getCameraInfo.IsSuccess)
+            {
+                gto.CameraNumber = getCameraInfo.Value.CameraNum;
             }
         }
 
@@ -99,26 +127,23 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             try
             {
-                Logger.LogInformation("call Incident api GetDeviceList Start");
-                var result = await _deviceRepository.GetDevices();
-
-                var devices = result.Config.GroupBy(item => new {item.Relation[0].Id, item.Relation[0].EntityId})
+                Logger.LogInformation("call Incident api GetDevices Start");
+                var deviceConfigs = _deviceFacadeApi.GetDeviceList(null);
+                var devices = deviceConfigs.config.GroupBy(item => new { item.relation[0].id, item.relation[0].entityId })
                     .Select(group => new SiteDeviceGto
                     {
-                        SiteId = group.Key.Id,
-                        SiteDisplayName = group.Key.EntityId,
+                        SiteId = group.Key.id,
+                        SiteDisplayName = group.Key.entityId,
                         Devices = group.Select(x => new DeviceGto
-                            {
-                                DeviceDisplayName = x.Identifiers.Name,
-                                DeviceId = x.Identifiers.Id,
-                                DeviceType = x.Type,
-                                DeviceLocation = x.Identifiers.Tag[0]
-                            })
-                            .ToArray()
+                        {
+                            DeviceDisplayName = x.identifiers.name,
+                            DeviceId = x.identifiers.id,
+                            DeviceType = DeviceTypeHelper.GetSystemDeviceType(x.type.ToString()),
+                            DeviceLocation = x.identifiers.tag[0]
+                        }).ToArray()
                     });
-
-                Logger.LogInformation("call Incident api GetDeviceList end");
-                return devices.ToArray();
+                Logger.LogInformation("call Incident api GetDevices end");
+                return await Task.FromResult(devices.ToArray());
             }
             catch (Exception ex)
             {
@@ -133,7 +158,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             {
                 await _incidentRepository.RespondIncident(incidentId);
                 return ApiResponse.CreateSuccess();
-            } 
+            }
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
@@ -182,7 +207,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 return ApiResponse.CreateFailed(ex);
             }
         }
-        
+
         public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests)
         {
             try
