@@ -141,7 +141,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             //assert
             Assert.NotNull(result);
-            Assert.True(result.Result.Value.CameraId == cameraInfo.CameraId);
+            Assert.True(result.Result.Value.CameraNum == cameraInfo.CameraId);
             Assert.True(result.Result.Value.EventTimeStamp == mockIncident.AlarmData.AlarmTimestamp);
             Assert.True(result.Result.Value.Description == mockIncident.Description);
             Assert.True(result.Result.Value.DeviceDisplayName == mockDeviceResult.config[0].identifiers.name);
@@ -184,7 +184,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
 
             //assert
             Assert.NotNull(result);
-            Assert.True(result.Result.Value.CameraId == cameraInfo.CameraId);
+            Assert.True(result.Result.Value.CameraNum == cameraInfo.CameraId);
             Assert.True(result.Result.Value.EventTimeStamp == eventTimeStamp);
             Assert.True(result.Result.Value.Description == mockIncident.Description);
             Assert.True(result.Result.Value.DeviceDisplayName == mockDeviceResult.config[0].identifiers.name);

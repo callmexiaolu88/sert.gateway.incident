@@ -49,7 +49,7 @@ namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
 
         public string TriggerId { get; set; }
 
-        public string CameraId { get; set; }
+        public string CameraNum { get; set; }
 
         public long EventTimeStamp { get; set; }
 

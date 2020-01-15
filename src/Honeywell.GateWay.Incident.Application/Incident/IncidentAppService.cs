@@ -93,7 +93,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             if (getCameraInfo.IsSuccess && getCameraInfo.Value != null)
             {
-                gto.CameraId = getCameraInfo.Value.CameraNum;
+                gto.CameraNum = getCameraInfo.Value.CameraNum;
             }
         }
 
