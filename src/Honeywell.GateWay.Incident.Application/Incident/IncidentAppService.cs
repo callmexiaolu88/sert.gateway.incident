@@ -66,7 +66,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
                 if (incidentInfo.TriggerType == Gateway.Incident.Api.IncidentTriggerType.Alarm)
                 {
-                    incidentInfo.EventTimeStamp = incidentInfo.AlarmData.AlarmTimestamp;
+                    incidentInfo.EventTimeStamp = new DateTimeOffset(incidentInfo.AlarmData.AlarmUtcDateTime).ToUnixTimeMilliseconds();
                     var getCameraInfo = _cameraFacadeApi.GetCameraByAlarmId(incidentInfo.TriggerId);
                     MappingCameraId(incidentInfo, getCameraInfo);
                 }
