@@ -113,7 +113,6 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //arrange
             var mockDeviceResult = MockDeviceEntities();
             var device = mockDeviceResult.config[0];
-            var eventTimestamp = 4542351231231;
             var alarmId = "432543353454235";
             var mockIncident = new IncidentDetailGto
             {
@@ -123,7 +122,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
                 DeviceDisplayName = device.identifiers.name,
                 TriggerType = IncidentTriggerType.Alarm,
                 TriggerId = alarmId,
-                AlarmData = new AlarmData { AlarmTimestamp = eventTimestamp, AlarmType = "fasdfasd" }
+                AlarmData = new AlarmData { AlarmUtcDateTime = DateTime.UtcNow, AlarmType = "fasdfasd" }
             };
 
             var cameraInfo = new GetCameraInfo() { CameraNum = "1", CameraId = "1", CameraName = "1" };
@@ -142,7 +141,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //assert
             Assert.NotNull(result);
             Assert.True(result.Result.Value.CameraNumber == cameraInfo.CameraId);
-            Assert.True(result.Result.Value.EventTimeStamp == mockIncident.AlarmData.AlarmTimestamp);
+            Assert.True(result.Result.Value.EventTimeStamp == new DateTimeOffset(mockIncident.AlarmData.AlarmUtcDateTime).ToUnixTimeMilliseconds());
             Assert.True(result.Result.Value.Description == mockIncident.Description);
             Assert.True(result.Result.Value.DeviceDisplayName == mockDeviceResult.config[0].identifiers.name);
             Assert.True(result.Result.Value.DeviceLocation == mockDeviceResult.config[0].identifiers.tag[0]);
