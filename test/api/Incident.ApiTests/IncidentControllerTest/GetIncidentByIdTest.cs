@@ -66,7 +66,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.Equal(detail.DeviceDisplayName, device.DeviceDisplayName);
             Assert.Equal(detail.DeviceLocation, device.DeviceLocation);
             Assert.False(string.IsNullOrEmpty(detail.CameraNumber));
-            Assert.Equal(detail.EventTimeStamp, new DateTimeOffset(detail.CreateAtUtc.Value).ToUnixTimeMilliseconds());
+            Assert.Equal(detail.EventTimeStamp, new DateTimeOffset(detail.CreateAtUtc.Value, TimeSpan.Zero).ToUnixTimeMilliseconds());
 
             await DeleteIncident(incidentId);
             await DeleteWorkflowDesign();

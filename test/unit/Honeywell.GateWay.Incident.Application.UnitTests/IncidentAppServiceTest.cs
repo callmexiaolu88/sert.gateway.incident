@@ -141,7 +141,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             //assert
             Assert.NotNull(result);
             Assert.True(result.Result.Value.CameraNumber == cameraInfo.CameraId);
-            Assert.True(result.Result.Value.EventTimeStamp == new DateTimeOffset(mockIncident.AlarmData.AlarmUtcDateTime).ToUnixTimeMilliseconds());
+            Assert.True(result.Result.Value.EventTimeStamp == new DateTimeOffset(mockIncident.AlarmData.AlarmUtcDateTime, TimeSpan.Zero).ToUnixTimeMilliseconds());
             Assert.True(result.Result.Value.Description == mockIncident.Description);
             Assert.True(result.Result.Value.DeviceDisplayName == mockDeviceResult.config[0].identifiers.name);
             Assert.True(result.Result.Value.DeviceLocation == mockDeviceResult.config[0].identifiers.tag[0]);
