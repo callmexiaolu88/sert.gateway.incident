@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -6,9 +6,9 @@
 
   <ItemGroup>
     <PackageReference Include="Honeywell.Facade.Services.Incident.Api" Version="0.0.2.*" />
-    <PackageReference Include="Honeywell.Infra.Client.WebApi" Version="0.0.2.*" />
-    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.2.*" />
-    <PackageReference Include="Honeywell.Infra.HoneyMapper.AutoMapper" Version="0.0.2.*" />
+    <PackageReference Include="Honeywell.Infra.Client.WebApi" Version="0.0.3.*" />
+    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.3.*" />
+    <PackageReference Include="Honeywell.Infra.HoneyMapper.AutoMapper" Version="0.0.3.*" />
     <PackageReference Include="Honeywell.Infra.Services.Isom.Api" Version="0.0.1.*" />
     <PackageReference Include="Honeywell.Micro.Services.Incident.Api" Version="0.0.2.*" />
     <PackageReference Include="Honeywell.Micro.Services.Workflow.Api" Version="0.0.2.*" />

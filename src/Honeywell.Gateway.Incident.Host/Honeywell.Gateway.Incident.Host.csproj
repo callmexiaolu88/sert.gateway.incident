@@ -7,10 +7,10 @@
 
   <ItemGroup>
     <PackageReference Include="Honeywell.Infra.AspNetCore" Version="0.0.3.*" />
-    <PackageReference Include="Honeywell.Infra.Client.WebApi" Version="0.0.2.*" />
-    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.2.*" />
-    <PackageReference Include="Honeywell.Infra.Ddd.EfCore" Version="0.0.2.*" />
-    <PackageReference Include="Honeywell.Infra.HoneyMapper.AutoMapper" Version="0.0.2.*" />
+    <PackageReference Include="Honeywell.Infra.Client.WebApi" Version="0.0.3.*" />
+    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.3.*" />
+    <PackageReference Include="Honeywell.Infra.Ddd.EfCore" Version="0.0.3.*" />
+    <PackageReference Include="Honeywell.Infra.HoneyMapper.AutoMapper" Version="0.0.3.*" />
     <PackageReference Include="Honeywell.Micro.Services.Workflow.Api" Version="0.0.2.*" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.1" />
     <PackageReference Include="NLog" Version="4.6.6" />
