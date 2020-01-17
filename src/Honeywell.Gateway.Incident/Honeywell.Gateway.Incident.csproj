@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Honeywell.Infra.AspNetCore" Version="0.0.2.*" />
+    <PackageReference Include="Honeywell.Infra.AspNetCore" Version="0.0.3.*" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
