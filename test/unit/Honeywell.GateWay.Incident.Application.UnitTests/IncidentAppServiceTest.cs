@@ -154,8 +154,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockDeviceResult = MockDeviceEntities();
             var device = mockDeviceResult.config[0];
             var alarmId = "432543353454235";
-            var createDate = DateTime.Now;
-            var eventTimeStamp = new DateTimeOffset(createDate).ToUnixTimeMilliseconds();
+            var createDate = DateTime.UtcNow;
+            var eventTimeStamp = new DateTimeOffset(createDate, TimeSpan.Zero).ToUnixTimeMilliseconds();
             var mockIncident = new IncidentDetailGto
             {
                 Description = "Test Incident Description",
@@ -197,8 +197,8 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockDeviceResult = MockDeviceEntities();
             var device = mockDeviceResult.config[0];
             var alarmId = "432543353454235";
-            var createDate = DateTime.Now;
-            var eventTimeStamp = new DateTimeOffset(createDate).ToUnixTimeMilliseconds();
+            var createDate = DateTime.UtcNow;
+            var eventTimeStamp = new DateTimeOffset(createDate,TimeSpan.Zero).ToUnixTimeMilliseconds();
             var mockIncident = new IncidentDetailGto
             {
                 Description = "Test Incident Description",
