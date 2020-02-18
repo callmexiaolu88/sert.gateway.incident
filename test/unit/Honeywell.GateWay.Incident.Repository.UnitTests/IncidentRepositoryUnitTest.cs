@@ -1,6 +1,3 @@
-using Honeywell.Facade.Services.Incident.Api;
-using Honeywell.Facade.Services.Incident.Api.Incident.Create;
-using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.GateWay.Incident.Repository.Incident;
@@ -32,6 +29,7 @@ using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
 using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
 using IncidentStatus = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentStatus;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
+using Honeywell.Micro.Services.Incident.Api.Incident.Create;
 
 namespace Honeywell.GateWay.Incident.Repository.UnitTests
 {
@@ -39,7 +37,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
     {
         private readonly Mock<IIncidentMicroApi> _mockIncidentMicroApi;
         private readonly Mock<IWorkflowMicroApi> _mockWorkflowMicroApi;
-        private readonly Mock<IIncidentFacadeApi> _mockIncidentFacadeApi;
         private readonly Mock<ILiveDataApi> _mockLiveDataApi;
 
         private readonly IIncidentRepository _incidentRepository;
@@ -48,12 +45,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             _mockIncidentMicroApi = new Mock<IIncidentMicroApi>();
             _mockWorkflowMicroApi = new Mock<IWorkflowMicroApi>();
-            _mockIncidentFacadeApi = new Mock<IIncidentFacadeApi>();
             _mockLiveDataApi = new Mock<ILiveDataApi>();
             _incidentRepository = new IncidentRepository(
                 _mockIncidentMicroApi.Object,
                 _mockWorkflowMicroApi.Object,
-                _mockIncidentFacadeApi.Object,
                 _mockLiveDataApi.Object);
         }
 
@@ -138,9 +133,9 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //assign
             var incidentId = Guid.NewGuid();
             var incidentDto = MockIncidentDetailDto(incidentId);
-            var mockGetDetailsResponseDto = new GetDetailsResponseDto { Details = incidentDto };
+            var mockGetDetailsResponseDto = new GetIncidentDetailsResponseDto { Details = incidentDto };
 
-            _mockIncidentFacadeApi.Setup(f => f.GetDetailsAsync(It.IsAny<GetIncidentDetailsRequestDto>()))
+            _mockIncidentMicroApi.Setup(f => f.GetDetailsAsync(It.IsAny<GetIncidentDetailsRequestDto>()))
                 .ReturnsAsync(mockGetDetailsResponseDto);
 
             //action
@@ -177,8 +172,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var incidentId = Guid.NewGuid().ToString();
-            var mockResponse = ApiResponse.CreateFailed().To<GetDetailsResponseDto>();
-            _mockIncidentFacadeApi.Setup(x => x.GetDetailsAsync(It.IsAny<GetIncidentDetailsRequestDto>()))
+            var mockResponse = ApiResponse.CreateFailed().To<GetIncidentDetailsResponseDto>();
+            _mockIncidentMicroApi.Setup(x => x.GetDetailsAsync(It.IsAny<GetIncidentDetailsRequestDto>()))
                 .ReturnsAsync(mockResponse);
 
             //act
@@ -219,7 +214,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 }
             };
 
-            _mockIncidentFacadeApi.Setup(api => api.CreateAsync(It.IsAny<CreateIncidentRequestDto>()))
+            _mockIncidentMicroApi.Setup(api => api.CreateAsync(It.IsAny<CreateIncidentRequestDto>()))
                 .ReturnsAsync(createIncidentResponse);
 
             //act
@@ -256,14 +251,14 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var incidentId = Guid.NewGuid();
-            _mockIncidentFacadeApi.Setup(api => api.RespondAsync(It.IsAny<IncidentActionRequestDto>()))
+            _mockIncidentMicroApi.Setup(api => api.RespondAsync(It.IsAny<IncidentActionRequestDto>()))
                 .ReturnsAsync(new IncidentActionResponseDto());
 
             //act
             _incidentRepository.RespondIncident(incidentId.ToString()).Wait();
 
             //assert
-            _mockIncidentFacadeApi.Verify(api => api.RespondAsync(It.IsAny<IncidentActionRequestDto>()), Times.Once);
+            _mockIncidentMicroApi.Verify(api => api.RespondAsync(It.IsAny<IncidentActionRequestDto>()), Times.Once);
         }
 
         [Fact]
@@ -285,7 +280,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var incidentId = Guid.NewGuid();
             var mockResponse = ApiResponse.CreateFailed().To<IncidentActionResponseDto>();
-            _mockIncidentFacadeApi
+            _mockIncidentMicroApi
                 .Setup(api =>
                     api.RespondAsync(It.Is<IncidentActionRequestDto>(request => request.IncidentId == incidentId)))
                 .ReturnsAsync(mockResponse);
@@ -304,7 +299,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             MockLiveData();
             var incidentId = Guid.NewGuid();
-            _mockIncidentFacadeApi
+            _mockIncidentMicroApi
                 .Setup(api =>
                     api.TakeoverAsync(
                         It.Is<IncidentActionRequestDto>(request => request.IncidentId == incidentId)))
@@ -314,7 +309,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _incidentRepository.TakeoverIncident(incidentId.ToString()).Wait();
 
             //assert
-            _mockIncidentFacadeApi.Verify(
+            _mockIncidentMicroApi.Verify(
                 api => api.TakeoverAsync(It.IsAny<IncidentActionRequestDto>()), Times.Once);
         }
 
@@ -337,7 +332,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var incidentId = Guid.NewGuid();
             var mockResponse = ApiResponse.CreateFailed().To<IncidentActionResponseDto>();
-            _mockIncidentFacadeApi
+            _mockIncidentMicroApi
                 .Setup(api =>
                     api.TakeoverAsync(
                         It.Is<IncidentActionRequestDto>(request => request.IncidentId == incidentId)))
@@ -357,7 +352,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             MockLiveData();
             var incidentId = Guid.NewGuid();
             var reason = "close reason";
-            _mockIncidentFacadeApi
+            _mockIncidentMicroApi
                 .Setup(api =>
                     api.CloseAsync(It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
                 .ReturnsAsync(new IncidentActionResponseDto());
@@ -366,7 +361,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             _incidentRepository.CloseIncident(incidentId.ToString(), reason).Wait();
 
             //assert
-            _mockIncidentFacadeApi.Verify(api => api.CloseAsync(It.IsAny<CloseIncidentRequestDto>()), Times.Once);
+            _mockIncidentMicroApi.Verify(api => api.CloseAsync(It.IsAny<CloseIncidentRequestDto>()), Times.Once);
         }
 
         [Fact]
@@ -390,7 +385,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             var incidentId = Guid.NewGuid();
             var reason = "close reason";
             var mockResponse = ApiResponse.CreateFailed().To<IncidentActionResponseDto>();
-            _mockIncidentFacadeApi
+            _mockIncidentMicroApi
                 .Setup(api =>
                     api.CloseAsync(
                         It.Is<CloseIncidentRequestDto>(request => request.IncidentId == incidentId)))
@@ -409,7 +404,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             MockLiveData();
             var incidentId = Guid.NewGuid();
-            _mockIncidentFacadeApi.Setup(api =>
+            _mockIncidentMicroApi.Setup(api =>
                     api.CompleteAsync(It.Is<IncidentActionRequestDto>(request => request.IncidentId == incidentId)))
                 .ReturnsAsync(new IncidentActionResponseDto());
 
@@ -418,7 +413,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
 
             //assert
-            _mockIncidentFacadeApi.Verify(api => api.CompleteAsync(It.IsAny<IncidentActionRequestDto>()), Times.Once);
+            _mockIncidentMicroApi.Verify(api => api.CompleteAsync(It.IsAny<IncidentActionRequestDto>()), Times.Once);
         }
 
         [Fact]
@@ -440,7 +435,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var incidentId = Guid.NewGuid();
             var mockResponse = ApiResponse.CreateFailed().To<IncidentActionResponseDto>();
-            _mockIncidentFacadeApi
+            _mockIncidentMicroApi
                 .Setup(api =>
                     api.CompleteAsync(
                         It.Is<IncidentActionRequestDto>(request => request.IncidentId == incidentId)))
@@ -600,7 +595,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 }
             };
 
-            _mockIncidentFacadeApi.Setup(api => api.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestDto>()))
+            _mockIncidentMicroApi.Setup(api => api.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestDto>()))
                 .ReturnsAsync(createIncidentResponse);
 
             //act
@@ -652,9 +647,9 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             var incidentId = Guid.NewGuid();
             var incidentDto = MockIncidentDetailDto(incidentId);
-            var mockGetDetailsResponseDto = new GetDetailsResponseDto { Details = incidentDto };
+            var mockGetDetailsResponseDto = new GetIncidentDetailsResponseDto { Details = incidentDto };
 
-            _mockIncidentFacadeApi.Setup(f => f.GetDetailsAsync(It.IsAny<GetIncidentDetailsRequestDto>()))
+            _mockIncidentMicroApi.Setup(f => f.GetDetailsAsync(It.IsAny<GetIncidentDetailsRequestDto>()))
                 .ReturnsAsync(mockGetDetailsResponseDto);
 
             var result = await _incidentRepository.GetActivitys(incidentId.ToString());
