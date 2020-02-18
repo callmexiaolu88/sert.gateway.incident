@@ -1,5 +1,4 @@
-﻿using Honeywell.Facade.Services.Incident.Api;
-using Honeywell.Infra.Core.Modular.Steps;
+﻿using Honeywell.Infra.Core.Modular.Steps;
 using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api;
 using Honeywell.Micro.Services.Workflow.Api;
@@ -32,7 +31,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.Contains(sc, s => s.ServiceType == typeof(IWorkflowDesignMicroApi));
             Assert.Contains(sc, s => s.ServiceType == typeof(IWorkflowMicroApi));
             Assert.Contains(sc, s => s.ServiceType == typeof(IIncidentMicroApi));
-            Assert.Contains(sc, s => s.ServiceType == typeof(IIncidentFacadeApi));
             Assert.Contains(sc, s => s.ServiceType == typeof(ILiveDataApi));
         }
     }
