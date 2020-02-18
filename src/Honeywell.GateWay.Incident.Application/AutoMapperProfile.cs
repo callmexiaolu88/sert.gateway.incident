@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Honeywell.Facade.Services.Incident.Api.Incident.Details;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
@@ -9,6 +8,7 @@ using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetDetail;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetList;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetSelector;
 using Honeywell.Gateway.Incident.Api.WorkflowDesign.GetIds;
+using Honeywell.Micro.Services.Incident.Api.Incident.Create;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.List;
 using Honeywell.Micro.Services.Incident.Api.Incident.Statistics;
@@ -18,7 +18,6 @@ using Honeywell.Micro.Services.Workflow.Api.Workflow.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Details;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
-using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
 using WorkflowStepDto = Honeywell.Micro.Services.Workflow.Api.Workflow.Details.WorkflowStepDto;
 
@@ -38,7 +37,7 @@ namespace Honeywell.GateWay.Incident.Application
 
             CreateMap<IncidentListItemDto, IncidentSummaryGto>();
 
-            CreateMap<IncidentDto, IncidentDetailGto>();
+            CreateMap<IncidentDetailDto, IncidentDetailGto>();
             CreateMap<WorkflowDto, IncidentDetailGto>()
                 .ForMember(dest => dest.WorkflowName, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.WorkflowDescription, opt => opt.MapFrom(src => src.Description))
@@ -50,7 +49,7 @@ namespace Honeywell.GateWay.Incident.Application
             CreateMap<WorkflowStepDto, IncidentStepGto>();
 
             CreateMap<ActivityDto, ActivityGto>();
-            CreateMap<Facade.Services.Incident.Api.Incident.Details.WorkflowStepDto, IncidentStepGto>();
+            CreateMap<Micro.Services.Incident.Api.Incident.Details.WorkflowStepDto, IncidentStepGto>();
 
             CreateMap<IncidentDetailDto, IncidentDetailGto>()
                 .ForMember(dest => dest.IncidentSteps, opt => opt.MapFrom(src => src.WorkflowSteps));
@@ -58,9 +57,9 @@ namespace Honeywell.GateWay.Incident.Application
             CreateMap<StepCommentDto, StepCommentGto>();
 
             //CreateIncidentByAlarm Request
-            CreateMap<CreateIncidentByAlarmRequestGto, FacadeApi.CreateIncidentByAlarmDto>();
-            CreateMap<IncidentPriority, FacadeApi.IncidentPriority>();
-            CreateMap<AlarmData, FacadeApi.AlarmData>();
+            CreateMap<CreateIncidentByAlarmRequestGto, CreateIncidentByAlarmDto>();
+            CreateMap<IncidentPriority, IncidentPriority>();
+            CreateMap<AlarmData, Micro.Services.Incident.Api.Incident.Trigger.AlarmData>();
 
             //GetWorkflowDesignIds Response
             CreateMap<WorkflowDesignListDto, WorkflowDesignIdGto>()
@@ -77,7 +76,7 @@ namespace Honeywell.GateWay.Incident.Application
                 .ForMember(dest => dest.AlarmId, opt => opt.MapFrom(src => src.TriggerId));
             CreateMap<IncidentState, IncidentStatus>();
 
-            CreateMap<Honeywell.Facade.Services.Incident.Api.Incident.Create.AlarmData, AlarmData>();
+            CreateMap<Micro.Services.Incident.Api.Incident.Trigger.AlarmData, AlarmData>();
 
             CreateMap<IncidentActivityDto, ActivityGto>()
                 .ForMember(dest => dest.Operator, opt => opt.MapFrom(src => src.Manipulator));

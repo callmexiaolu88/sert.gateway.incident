@@ -1,5 +1,4 @@
-﻿using Honeywell.Facade.Services.Incident.Api;
-using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+﻿using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.Infra.Api.Abstract;
@@ -15,7 +14,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Honeywell.Facade.Services.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.Statistics;
@@ -23,11 +21,13 @@ using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
 using Honeywell.Infra.Core.Common.Exceptions;
 using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Actions;
+using Honeywell.Micro.Services.Incident.Api.Incident.Create;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.Statistics;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
-using FacadeApi = Honeywell.Facade.Services.Incident.Api.Incident;
-
+using CreateIncidentByAlarmDto = Honeywell.Micro.Services.Incident.Api.Incident.Create.CreateIncidentByAlarmDto;
+using CreateIncidentByAlarmRequestDto = Honeywell.Micro.Services.Incident.Api.Incident.Create.CreateIncidentByAlarmRequestDto;
+using CreateIncidentRequestDto = Honeywell.Micro.Services.Incident.Api.Incident.Create.CreateIncidentRequestDto;
 
 namespace Honeywell.GateWay.Incident.Repository.Incident
 {
@@ -36,18 +36,15 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
     {
         private readonly IIncidentMicroApi _incidentMicroApi;
         private readonly IWorkflowMicroApi _workflowMicroApi;
-        private readonly IIncidentFacadeApi _incidentFacadeApi;
         private readonly ILiveDataApi _liveDataApi;
 
         public IncidentRepository(
             IIncidentMicroApi incidentMicroApi,
             IWorkflowMicroApi workflowMicroApi,
-            IIncidentFacadeApi incidentFacadeApi,
             ILiveDataApi liveDataApi)
         {
             _incidentMicroApi = incidentMicroApi;
             _workflowMicroApi = workflowMicroApi;
-            _incidentFacadeApi = incidentFacadeApi;
             _liveDataApi = liveDataApi;
         }
 
@@ -79,7 +76,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var result = new IncidentDetailGto();
             var requestId = new[] { guid };
-            var response = await _incidentFacadeApi.GetDetailsAsync(new GetIncidentDetailsRequestDto { Ids = requestId });
+            var response = await _incidentMicroApi.GetDetailsAsync(new GetIncidentDetailsRequestDto { Ids = requestId });
             ApiResponse.ThrowExceptionIfFailed(response);
 
             HoneyMapper.Map(response.Value.Details[0], result);
@@ -98,18 +95,18 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 throw new ArgumentException(msg);
             }
 
-            if (!Enum.TryParse<FacadeApi.Create.IncidentPriority>(request.Priority, true, out var priority))
+            if (!Enum.TryParse<Micro.Services.Incident.Domain.Shared.IncidentPriority>(request.Priority, true, out var priority))
             {
                 var msg = $"wrong priority value: {request.Priority}";
                 Logger.LogError(msg);
                 throw new ArgumentException(msg);
             }
 
-            var facadeRequest = new CreateIncidentRequestDto
+            var incidentRequest = new CreateIncidentRequestDto
             {
-                CreateIncidentDtos = new[]
+                CreateIncidentDatas = new[]
                 {
-                    new CreateIncidentDto
+                    new CreateIncidentDataDto
                     {
                         WorkflowDesignReferenceId = workflowDesignReferenceId,
                         Priority = priority,
@@ -120,8 +117,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 }
             };
 
-            var response = await _incidentFacadeApi.CreateAsync(facadeRequest);
-
+            var response = await _incidentMicroApi.CreateAsync(incidentRequest);
+            Console.WriteLine();
             ApiResponse.ThrowExceptionIfFailed(response);
 
             return response.Value.IncidentIds.First().ToString();
@@ -139,7 +136,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var request = new IncidentActionRequestDto { IncidentId = incidentGuid };
 
-            var response = await _incidentFacadeApi.RespondAsync(request);
+            var response = await _incidentMicroApi.RespondAsync(request);
             ApiResponse.ThrowExceptionIfFailed(response);
 
             await NotificationActivity(incidentId);
@@ -157,7 +154,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var request = new IncidentActionRequestDto { IncidentId = incidentGuid };
 
-            var response = await _incidentFacadeApi.TakeoverAsync(request);
+            var response = await _incidentMicroApi.TakeoverAsync(request);
 
             ApiResponse.ThrowExceptionIfFailed(response);
 
@@ -176,7 +173,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var request = new CloseIncidentRequestDto { IncidentId = incidentGuid, Reason = reason };
 
-            var response = await _incidentFacadeApi.CloseAsync(request);
+            var response = await _incidentMicroApi.CloseAsync(request);
 
             ApiResponse.ThrowExceptionIfFailed(response);
 
@@ -195,7 +192,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var request = new IncidentActionRequestDto { IncidentId = incidentGuid };
 
-            var response = await _incidentFacadeApi.CompleteAsync(request);
+            var response = await _incidentMicroApi.CompleteAsync(request);
 
             ApiResponse.ThrowExceptionIfFailed(response);
 
@@ -234,10 +231,10 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         public async Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests)
         {
             Logger.LogInformation($"call Incident api {nameof(CreateIncidentByAlarm)} Start");
-            var facadeRequest =
+            var incidentRequest =
                 HoneyMapper.Map<CreateIncidentByAlarmRequestGto[], CreateIncidentByAlarmDto[]>(requests);
 
-            var response = await _incidentFacadeApi.CreateByAlarmAsync(new CreateIncidentByAlarmRequestDto { CreateIncidentDatas = facadeRequest });
+            var response = await _incidentMicroApi.CreateByAlarmAsync(new CreateIncidentByAlarmRequestDto { CreateIncidentDatas = incidentRequest });
             ApiResponse.ThrowExceptionIfFailed(response);
 
             return response.Value.IncidentIds.ToArray();
