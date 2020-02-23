@@ -587,16 +587,21 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 }
             };
 
-            var createIncidentResponse = new CreateIncidentResponseDto
+            var createIncidentByAlarmResponseDto = new CreateIncidentByAlarmResponseDto
             {
-                IncidentIds = new List<Guid>
+                IncidentAlarmInfos = new List<IncidentAlarmDto>
                 {
-                    Guid.NewGuid()
+                    new IncidentAlarmDto()
+                    {
+                        IncidentId=Guid.NewGuid(),
+                        AlarmId=Guid.NewGuid().ToString()
+                    }
+
                 }
             };
 
             _mockIncidentMicroApi.Setup(api => api.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestDto>()))
-                .ReturnsAsync(createIncidentResponse);
+                .ReturnsAsync(createIncidentByAlarmResponseDto);
 
             //act
             var incidentIds = await _incidentRepository.CreateIncidentByAlarm(new[] { request });
@@ -604,7 +609,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //assert
             Assert.NotNull(incidentIds);
             Assert.True(incidentIds.Any());
-            Assert.Equal(createIncidentResponse.IncidentIds.First(), incidentIds.First());
+            Assert.Equal(createIncidentByAlarmResponseDto.IncidentAlarmInfos.First().IncidentId, incidentIds.First());
         }
 
         [Fact]
