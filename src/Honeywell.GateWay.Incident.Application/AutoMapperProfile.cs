@@ -37,6 +37,9 @@ namespace Honeywell.GateWay.Incident.Application
 
             CreateMap<IncidentListItemDto, IncidentSummaryGto>();
 
+            CreateMap<CreateIncidentByAlarmResponseDto, CreateIncidentByAlarmResponseGto>();
+            CreateMap<IncidentAlarmDto, IncidentAlarmGto>();
+
             CreateMap<IncidentDetailDto, IncidentDetailGto>();
             CreateMap<WorkflowDto, IncidentDetailGto>()
                 .ForMember(dest => dest.WorkflowName, opt => opt.MapFrom(src => src.Name))
