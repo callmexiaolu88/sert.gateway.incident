@@ -1,5 +1,4 @@
-﻿using System;
-using Honeywell.Gateway.Incident.Api;
+﻿using Honeywell.Gateway.Incident.Api;
 using System.Threading.Tasks;
 using Honeywell.GateWay.Incident.Application.Incident;
 using Microsoft.AspNetCore.Mvc;
@@ -91,7 +90,7 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
-        public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests)
+        public async Task<ApiResponse<CreateIncidentByAlarmResponseGto>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests)
         {
             var result = await _incidentAppService.CreateByAlarmAsync(requests);
             return result;

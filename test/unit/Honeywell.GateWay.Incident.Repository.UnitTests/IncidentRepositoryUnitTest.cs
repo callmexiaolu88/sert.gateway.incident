@@ -570,6 +570,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var workflowDesignReferenceId = Guid.NewGuid();
+            var alarmId = Guid.NewGuid().ToString();
 
             var request = new CreateIncidentByAlarmRequestGto
             {
@@ -578,7 +579,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 Description = "incident description",
                 DeviceId = Guid.NewGuid().ToString(),
                 DeviceType = "Door",
-                AlarmId = Guid.NewGuid().ToString(),
+                AlarmId = alarmId,
                 AlarmData = new IncidentGTO.Create.AlarmData
                 {
                     AlarmType = "AlarmType",
@@ -593,8 +594,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 {
                     new IncidentAlarmDto()
                     {
-                        IncidentId=Guid.NewGuid(),
-                        AlarmId=Guid.NewGuid().ToString()
+                        IncidentId = Guid.NewGuid(),
+                        AlarmId = alarmId
                     }
 
                 }
@@ -604,12 +605,13 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 .ReturnsAsync(createIncidentByAlarmResponseDto);
 
             //act
-            var incidentIds = await _incidentRepository.CreateIncidentByAlarm(new[] { request });
+            var responseGto = await _incidentRepository.CreateIncidentByAlarm(new[] { request });
 
             //assert
-            Assert.NotNull(incidentIds);
-            Assert.True(incidentIds.Any());
-            Assert.Equal(createIncidentByAlarmResponseDto.IncidentAlarmInfos.First().IncidentId, incidentIds.First());
+            Assert.NotNull(responseGto);
+            Assert.True(responseGto.IncidentAlarmInfos.Any());
+            Assert.Equal(createIncidentByAlarmResponseDto.IncidentAlarmInfos.First().AlarmId,
+                responseGto.IncidentAlarmInfos.First().AlarmId);
         }
 
         [Fact]

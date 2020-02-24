@@ -22,8 +22,9 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.NotNull(result);
             Assert.True(result.IsSuccess);
             Assert.NotNull(result.Value);
-            Assert.NotNull(result.Value);
-            var incidentId = result.Value.First();
+            Assert.True(result.Value.IncidentAlarmInfos.Count > 0);
+            Assert.Equal(alarmId, result.Value.IncidentAlarmInfos.First().AlarmId);
+            var incidentId = result.Value.IncidentAlarmInfos.First().IncidentId;
 
          
             var incidentStatusResponse = await IncidentGateWayApi.GetStatusByAlarmAsync(new[] { alarmId });

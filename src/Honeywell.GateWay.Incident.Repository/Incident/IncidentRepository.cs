@@ -228,7 +228,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         }
 
 
-        public async Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests)
+        public async Task<CreateIncidentByAlarmResponseGto> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests)
         {
             Logger.LogInformation($"call Incident api {nameof(CreateIncidentByAlarm)} Start");
             var incidentRequest =
@@ -243,10 +243,9 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 }
             }
 
-            var resultValue=HoneyMapper.Map<CreateIncidentByAlarmResponseDto, CreateIncidentByAlarmResponseGto>(response.Value);
-            var incidentIds = resultValue.IncidentAlarmInfos.Select(item => item.IncidentId);
+            var result=HoneyMapper.Map<CreateIncidentByAlarmResponseDto, CreateIncidentByAlarmResponseGto>(response.Value);
 
-            return incidentIds.ToArray();
+            return result;
         }
 
         public async Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds)

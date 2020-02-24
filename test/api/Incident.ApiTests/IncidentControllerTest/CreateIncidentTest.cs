@@ -29,7 +29,8 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.NotNull(result);
             Assert.True(result.IsSuccess);
             Assert.NotNull(result.Value);
-            var incidentId = result.Value.First();
+            Assert.True(result.Value.IncidentAlarmInfos.Count > 0);
+            var incidentId = result.Value.IncidentAlarmInfos.First().IncidentId;
             await DeleteIncident(incidentId.ToString());
             await DeleteWorkflowDesign();
         }
