@@ -228,25 +228,25 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
         }
 
 
-        public async Task<Guid[]> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests)
+        public async Task<ApiResponse<CreateIncidentByAlarmResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests)
         {
             Logger.LogInformation($"call Incident api {nameof(CreateIncidentByAlarm)} Start");
             var incidentRequest =
                 HoneyMapper.Map<CreateIncidentByAlarmRequestGto[], CreateIncidentByAlarmDto[]>(requests);
 
             var response = await _incidentMicroApi.CreateByAlarmAsync(new CreateIncidentByAlarmRequestDto { CreateIncidentDatas = incidentRequest });
-            foreach(var messageInfo in response.Messages)
+            foreach (var messageInfo in response.Messages)
             {
-                if(messageInfo.MessageCode!= CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication)
+                if (messageInfo.MessageCode != CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication &&
+                    messageInfo.MessageCode != CreateIncidentByAlarmResponseDto.MessageCodeWorkflowNotExist)
                 {
                     ApiResponse.ThrowExceptionIfFailed(response);
                 }
             }
 
-            var resultValue=HoneyMapper.Map<CreateIncidentByAlarmResponseDto, CreateIncidentByAlarmResponseGto>(response.Value);
-            var incidentIds = resultValue.IncidentAlarmInfos.Select(item => item.IncidentId);
+            var result=HoneyMapper.Map<CreateIncidentByAlarmResponseDto, CreateIncidentByAlarmResponseGto>(response.Value);
 
-            return incidentIds.ToArray();
+            return response.To(result);
         }
 
         public async Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds)

@@ -247,8 +247,6 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         [Fact]
         public void CreateIncident_ThrowException_Failed()
         {
-
-            var id = Guid.NewGuid().ToString();
             _mockIncidentRepository.Setup(x => x.CreateIncident(It.IsAny<CreateIncidentRequestGto>()))
                 .ThrowsAsync(new Exception());
 
@@ -333,7 +331,6 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         [Fact]
         public void GetDevices_ThrowException_Failed()
         {
-            var mockDevice = MockDeviceEntities();
             _mockDeviceFacadeApi.Setup(x => x.GetDeviceList(It.IsAny<DataFilters>())).Throws(new Exception());
 
             var result = _testObj.GetSiteDevicesAsync();
@@ -484,9 +481,22 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         public void CreateByAlarm_Successful()
         {
             //Arrange
-            var id = Guid.NewGuid();
+            var alarmId = Guid.NewGuid().ToString();
+            var incidentId = Guid.NewGuid();
+            var createIncidentByAlarmResponseDto = new CreateIncidentByAlarmResponseGto
+            {
+                IncidentAlarmInfos = new List<IncidentAlarmGto>
+                {
+                    new IncidentAlarmGto()
+                    {
+                        IncidentId = incidentId,
+                        AlarmId = alarmId
+                    }
+
+                }
+            };
             _mockIncidentRepository.Setup(x => x.CreateIncidentByAlarm(It.IsAny<CreateIncidentByAlarmRequestGto[]>()))
-                .ReturnsAsync(new[] { id });
+                .ReturnsAsync(createIncidentByAlarmResponseDto);
 
             //Act
             var result = _testObj.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestGto[]>());
@@ -495,8 +505,9 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             Assert.NotNull(result);
             Assert.NotNull(result.Result.Value);
             Assert.True(result.Result.IsSuccess);
-            Assert.True(result.Result.Value.Any());
-            Assert.True(result.Result.Value.First() == id);
+            Assert.True(result.Result.Value.IncidentAlarmInfos.Any());
+            Assert.True(result.Result.Value.IncidentAlarmInfos.First().AlarmId == alarmId);
+            Assert.True(result.Result.Value.IncidentAlarmInfos.First().IncidentId == incidentId);
         }
 
         [Fact]

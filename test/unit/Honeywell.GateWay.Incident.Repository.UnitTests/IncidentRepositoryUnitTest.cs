@@ -12,7 +12,6 @@ using Honeywell.Micro.Services.Workflow.Api;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Actions;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.AddComment;
 using Honeywell.Micro.Services.Workflow.Api.Workflow.Summary;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.Selector;
 using Honeywell.Micro.Services.Workflow.Domain.Shared;
 using Moq;
 using System;
@@ -21,6 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
+using Honeywell.Infra.Core;
 using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.Statistics;
@@ -28,7 +28,6 @@ using Xunit;
 using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
 using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
 using IncidentStatus = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentStatus;
-using Honeywell.Micro.Services.Workflow.Api.WorkflowDesign.List;
 using Honeywell.Micro.Services.Incident.Api.Incident.Create;
 
 namespace Honeywell.GateWay.Incident.Repository.UnitTests
@@ -570,6 +569,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var workflowDesignReferenceId = Guid.NewGuid();
+            var alarmId = Guid.NewGuid().ToString();
 
             var request = new CreateIncidentByAlarmRequestGto
             {
@@ -578,8 +578,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 Description = "incident description",
                 DeviceId = Guid.NewGuid().ToString(),
                 DeviceType = "Door",
-                AlarmId = Guid.NewGuid().ToString(),
-                AlarmData = new IncidentGTO.Create.AlarmData
+                AlarmId = alarmId,
+                AlarmData = new AlarmData
                 {
                     AlarmType = "AlarmType",
                     Description = "alarm description",
@@ -593,8 +593,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 {
                     new IncidentAlarmDto()
                     {
-                        IncidentId=Guid.NewGuid(),
-                        AlarmId=Guid.NewGuid().ToString()
+                        IncidentId = Guid.NewGuid(),
+                        AlarmId = alarmId
                     }
 
                 }
@@ -604,12 +604,111 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 .ReturnsAsync(createIncidentByAlarmResponseDto);
 
             //act
-            var incidentIds = await _incidentRepository.CreateIncidentByAlarm(new[] { request });
+            var responseGto = await _incidentRepository.CreateIncidentByAlarm(new[] { request });
 
             //assert
-            Assert.NotNull(incidentIds);
-            Assert.True(incidentIds.Any());
-            Assert.Equal(createIncidentByAlarmResponseDto.IncidentAlarmInfos.First().IncidentId, incidentIds.First());
+            Assert.NotNull(responseGto);
+            Assert.True(responseGto.IsSuccess);
+            Assert.NotNull(responseGto.Value);
+            Assert.True(responseGto.Value.IncidentAlarmInfos.Any());
+            Assert.Equal(createIncidentByAlarmResponseDto.IncidentAlarmInfos.First().AlarmId,
+                responseGto.Value.IncidentAlarmInfos.First().AlarmId);
+        }
+
+        [Fact]
+        public async Task CreateIncidentByAlarm_AlarmRepeat()
+        {
+            //arrange
+            var workflowDesignReferenceId = Guid.NewGuid();
+            var alarmId = Guid.NewGuid().ToString();
+
+            var request = new CreateIncidentByAlarmRequestGto
+            {
+                WorkflowDesignReferenceId = workflowDesignReferenceId,
+                Priority = IncidentPriority.High,
+                Description = "incident description",
+                DeviceId = Guid.NewGuid().ToString(),
+                DeviceType = "Door",
+                AlarmId = alarmId,
+                AlarmData = new AlarmData
+                {
+                    AlarmType = "AlarmType",
+                    Description = "alarm description",
+                    AlarmUtcDateTime = DateTime.UtcNow
+                }
+            };
+
+            var createIncidentByAlarmResponseDto = new CreateIncidentByAlarmResponseDto
+            {
+                IncidentAlarmInfos = new List<IncidentAlarmDto>
+                {
+                    new IncidentAlarmDto()
+                    {
+                        IncidentId = Guid.Empty,
+                        AlarmId = alarmId
+                    }
+
+                }
+            };
+
+            _mockIncidentMicroApi.Setup(api => api.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestDto>()))
+                .ReturnsAsync(ApiResponse
+                    .CreateFailed(new MessageInfo("", false,
+                        CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication))
+                    .To(createIncidentByAlarmResponseDto));
+
+            //act
+            var responseGto = await _incidentRepository.CreateIncidentByAlarm(new[] {request});
+
+            //assert
+            Assert.NotNull(responseGto);
+            Assert.False(responseGto.IsSuccess);
+            Assert.True(responseGto.Messages.Any());
+            Assert.Equal(CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication,
+                responseGto.Messages.First().MessageCode);
+            Assert.NotNull(responseGto.Value);
+            Assert.True(responseGto.Value.IncidentAlarmInfos.Count > 0);
+            Assert.False(responseGto.Value.IncidentAlarmInfos.First().IsCreatedAtThisRequest);
+            Assert.Equal(alarmId, responseGto.Value.IncidentAlarmInfos.First().AlarmId);
+        }
+
+        [Fact]
+        public async Task CreateIncidentByAlarm_WorkflowNotExist()
+        {
+            //arrange
+            var workflowDesignReferenceId = Guid.NewGuid();
+            var alarmId = Guid.NewGuid().ToString();
+
+            var request = new CreateIncidentByAlarmRequestGto
+            {
+                WorkflowDesignReferenceId = workflowDesignReferenceId,
+                Priority = IncidentPriority.High,
+                Description = "incident description",
+                DeviceId = Guid.NewGuid().ToString(),
+                DeviceType = "Door",
+                AlarmId = alarmId,
+                AlarmData = new AlarmData
+                {
+                    AlarmType = "AlarmType",
+                    Description = "alarm description",
+                    AlarmUtcDateTime = DateTime.UtcNow
+                }
+            };
+            _mockIncidentMicroApi.Setup(api => api.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestDto>()))
+                .ReturnsAsync(ApiResponse
+                    .CreateFailed(new MessageInfo("", false,
+                        CreateIncidentByAlarmResponseDto.MessageCodeWorkflowNotExist))
+                    .To<CreateIncidentByAlarmResponseDto>());
+
+            //act
+            var responseGto = await _incidentRepository.CreateIncidentByAlarm(new[] { request });
+
+            //assert
+            Assert.NotNull(responseGto);
+            Assert.False(responseGto.IsSuccess);
+            Assert.True(responseGto.Messages.Any());
+            Assert.Equal(CreateIncidentByAlarmResponseDto.MessageCodeWorkflowNotExist,
+                responseGto.Messages.First().MessageCode);
         }
 
         [Fact]
@@ -722,7 +821,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var deviceId = Guid.NewGuid().ToString();
-            var request = new GetIncidentStatisticsRequestDto { DeviceIds = new[] { deviceId } };
             var response = new GetIncidentStatisticstResponseDto();
             response.StatisticsIncident.Add(new IncidentStatisticsDto { UnAssignedCount = 1, ActiveCount = 1, CloseCount = 1, CompletedCount = 1, DeviceId = deviceId });
             _mockIncidentMicroApi.Setup(x => x.GetStatisticsAsync(It.IsAny<GetIncidentStatisticsRequestDto>())).ReturnsAsync(response);
@@ -896,41 +994,6 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 }
             };
         }
-
-        private WorkflowDesignListResponseDto MockWorkflowDesignListResponseDto()
-        {
-            var listResponseDto = new WorkflowDesignListResponseDto
-            {
-                Lists = new List<WorkflowDesignListDto>
-                {
-                    new WorkflowDesignListDto
-                    {
-                        Id=Guid.NewGuid(),
-                        Name = "workflow design 1",
-                        Description = "workflow design 1 description"
-                    }
-                }
-            };
-            return listResponseDto;
-        }
-
-        private WorkflowDesignSelectorResponseDto MockWorkflowDesignSelectorResponseDto()
-        {
-            var selectorResponseDto = new WorkflowDesignSelectorResponseDto
-            {
-                Selectors = new List<WorkflowDesignSelectorDto>
-                {
-                    new WorkflowDesignSelectorDto
-                    {
-                        Id=Guid.NewGuid(),
-                        Name = "workflow design 1",
-                        ReferenceId = Guid.NewGuid()
-                    }
-                }
-            };
-            return selectorResponseDto;
-        }
-
 
         #endregion
 

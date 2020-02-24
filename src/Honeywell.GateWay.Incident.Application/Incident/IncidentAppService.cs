@@ -215,7 +215,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
-        public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests)
+        public async Task<ApiResponse<CreateIncidentByAlarmResponseGto>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests)
         {
             try
             {
@@ -224,7 +224,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<Guid[]>();
+                return ApiResponse.CreateFailed(ex).To<CreateIncidentByAlarmResponseGto>();
             }
         }
 

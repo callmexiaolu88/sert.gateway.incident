@@ -99,7 +99,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return result.Where(x => x.DeviceId == request.Value.DeviceId).ToArray();
         }
 
-        public async Task<ApiResponse<Guid[]>> CreateByAlarmAsync(
+        public async Task<ApiResponse<CreateIncidentByAlarmResponseGto>> CreateByAlarmAsync(
             CreateIncidentByAlarmRequestGto[] requests)
         {
             try
@@ -108,9 +108,10 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                 {
                     throw new ArgumentNullException(nameof(requests));
                 }
-                var result = new List<Guid>();
+                var result = new List<IncidentAlarmGto>();
                 foreach (var request in requests)
                 {
+                    var item = new IncidentAlarmGto {AlarmId = request.AlarmId};
                     var workflowName = (await StubDataAsync<WorkflowDesignDetailGto[]>())
                         .FirstOrDefault(m => m.Id == request.WorkflowDesignReferenceId)?.Name;
 
@@ -118,18 +119,22 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
 
                     if (incident != null)
                     {
-                        result.Add(incident.Id);
+                        item.IncidentId = incident.Id;
+                        item.IsCreatedAtThisRequest = true;
+                        result.Add(item);
                     }
                     else
                     {
                         throw new Exception("cannot found the incident");
                     }
+
                 }
-                return result.ToArray();
+
+                return new CreateIncidentByAlarmResponseGto {IncidentAlarmInfos = result};
             }
             catch (Exception ex)
             {
-                return ApiResponse.CreateFailed(ex).To<Guid[]>();
+                return ApiResponse.CreateFailed(ex).To<CreateIncidentByAlarmResponseGto>();
             }
         }
 

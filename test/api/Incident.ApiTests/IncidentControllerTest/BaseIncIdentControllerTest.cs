@@ -92,7 +92,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             return result.Value;
         }
 
-        protected async Task<ApiResponse<Guid[]>> CreateIncidentByAlarm(string alarmId = null)
+        protected async Task<ApiResponse<CreateIncidentByAlarmResponseGto>> CreateIncidentByAlarm(string alarmId = null)
         {
             alarmId = string.IsNullOrEmpty(alarmId) ? Guid.NewGuid().ToString() : alarmId;
             var workflowDesignReferenceId = await GetFirstWorkflowDesignReferenceId();

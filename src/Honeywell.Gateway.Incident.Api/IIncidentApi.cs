@@ -1,5 +1,4 @@
-﻿using System;
-using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
+﻿using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
@@ -35,7 +34,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ApiResponse> AddStepCommentAsync(AddStepCommentRequestGto addStepCommentGto);
 
-        Task<ApiResponse<Guid[]>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests);
+        Task<ApiResponse<CreateIncidentByAlarmResponseGto>> CreateByAlarmAsync(CreateIncidentByAlarmRequestGto[] requests);
 
         Task<ApiResponse<IncidentStatusInfoGto[]>> GetStatusByAlarmAsync(string[] alarmIds);
 
