@@ -616,6 +616,54 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
+        public async Task CreateIncidentByAlarm_Exception()
+        {
+            //arrange
+            var workflowDesignReferenceId = Guid.NewGuid();
+            var alarmId = Guid.NewGuid().ToString();
+
+            var request = new CreateIncidentByAlarmRequestGto
+            {
+                WorkflowDesignReferenceId = workflowDesignReferenceId,
+                Priority = IncidentPriority.High,
+                Description = "incident description",
+                DeviceId = Guid.NewGuid().ToString(),
+                DeviceType = "Door",
+                AlarmId = alarmId,
+                AlarmData = new AlarmData
+                {
+                    AlarmType = "AlarmType",
+                    Description = "alarm description",
+                    AlarmUtcDateTime = DateTime.UtcNow
+                }
+            };
+
+            var createIncidentByAlarmResponseDto = new CreateIncidentByAlarmResponseDto
+            {
+                IncidentAlarmInfos = new List<IncidentAlarmDto>
+                {
+                    new IncidentAlarmDto()
+                    {
+                        IncidentId = Guid.NewGuid(),
+                        AlarmId = alarmId
+                    }
+
+                }
+            };
+
+            var response = new ApiResponse<CreateIncidentByAlarmResponseDto>(createIncidentByAlarmResponseDto, ApiResponse.CreateFailed());
+
+            _mockIncidentMicroApi.Setup(api => api.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestDto>()))
+                .ReturnsAsync(response);
+
+            //act
+            var act = new Func<Task>(async () => await _incidentRepository.CreateIncidentByAlarm(new[] { request }));
+
+            //assert
+            await Assert.ThrowsAsync<HoneywellException>(act);
+        }
+
+        [Fact]
         public async Task CreateIncidentByAlarm_AlarmRepeat()
         {
             //arrange
@@ -658,7 +706,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                     .To(createIncidentByAlarmResponseDto));
 
             //act
-            var responseGto = await _incidentRepository.CreateIncidentByAlarm(new[] {request});
+            var responseGto = await _incidentRepository.CreateIncidentByAlarm(new[] { request });
 
             //assert
             Assert.NotNull(responseGto);
@@ -815,6 +863,16 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
         }
 
+        [Fact]
+        public async void AddStepComment_ArgumentNullException()
+        {
+            //action
+            var act = new Func<Task>(async () => await _incidentRepository.AddStepComment(null));
+
+            //assert
+            await Assert.ThrowsAsync<ArgumentNullException>(act);
+        }
+
 
         [Fact]
         public async Task GetStatisticsAsync_Success()
@@ -890,13 +948,12 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
 
             //action
-            var response = _incidentRepository.GetList(getListRequest);
+            var response = await _incidentRepository.GetList(getListRequest);
 
             //assert
             Assert.NotNull(response);
-            Assert.NotNull(response.Result);
-            Assert.True(1 == response.Result.Length);
-            var activeIncidentGto = response.Result[0];
+            Assert.True(1 == response.Length);
+            var activeIncidentGto = response[0];
             Assert.Equal(workflowId, activeIncidentGto.WorkflowId);
             Assert.Equal(mockWorkflowSummary.WorkflowDesignName, activeIncidentGto.WorkflowDesignName);
             Assert.Equal(mockWorkflowSummary.TotalSteps, activeIncidentGto.TotalSteps);
