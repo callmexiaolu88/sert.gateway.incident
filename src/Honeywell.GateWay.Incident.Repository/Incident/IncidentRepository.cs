@@ -237,7 +237,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             foreach (var messageInfo in response.Messages)
             {
                 if (messageInfo.MessageCode == CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication ||
-                    messageInfo.MessageCode != CreateIncidentByAlarmResponseDto.MessageCodeWorkflowNotExist)
+                    messageInfo.MessageCode == CreateIncidentByAlarmResponseDto.MessageCodeWorkflowNotExist)
                 {
                     continue;
                 }
