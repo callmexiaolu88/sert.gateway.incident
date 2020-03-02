@@ -118,7 +118,6 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             };
 
             var response = await _incidentMicroApi.CreateAsync(incidentRequest);
-            Console.WriteLine();
             ApiResponse.ThrowExceptionIfFailed(response);
 
             return response.Value.IncidentIds.First().ToString();
