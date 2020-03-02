@@ -815,6 +815,16 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
         }
 
+        [Fact]
+        public async void AddStepComment_ArgumentNullException()
+        {
+            //action
+            var act = new Func<Task>(async () => await _incidentRepository.AddStepComment(null));
+
+            //assert
+            await Assert.ThrowsAsync<ArgumentNullException>(act);
+        }
+
 
         [Fact]
         public async Task GetStatisticsAsync_Success()

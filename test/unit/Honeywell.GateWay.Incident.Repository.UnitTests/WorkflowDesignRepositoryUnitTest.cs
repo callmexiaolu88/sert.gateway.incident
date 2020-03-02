@@ -300,6 +300,16 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
+        public async Task UpdateWorkFlowDesign_ArgumentNullException()
+        {
+            //action
+            var act = new Func<Task>(async () => await _incidentRepository.UpdateWorkflowDesign(null));
+
+            //assert
+            await Assert.ThrowsAsync<ArgumentNullException>(act);
+        }
+
+        [Fact]
         public async Task DownloadWorkflowTemplate_Success()
         {
             // arrange
