@@ -58,7 +58,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.Equal(alarmId, secondResult.Value.IncidentAlarmInfos.First().AlarmId);
             Assert.True(secondResult.Messages.Count > 0);
             Assert.Equal(CreateIncidentByAlarmResponseGto.MessageCodeAlarmDuplication,
-                secondResult.Messages.First().Message);
+                secondResult.Messages.First().MessageCode);
 
             await DeleteIncident(incidentId.ToString());
             await DeleteWorkflowDesign();
