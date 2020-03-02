@@ -93,7 +93,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                     }
                     else
                     {
-                        throw new Exception($"cannot found the workflow design by id:{id}");
+                        throw new HoneywellException($"cannot found the workflow design by id:{id}");
                     }
 
                 }
@@ -122,7 +122,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                     return result.ToArray();
                 }
 
-                throw new Exception("cannot found any workflow design");
+                throw new HoneywellException("cannot found any workflow design");
             }
             catch (Exception ex)
             {

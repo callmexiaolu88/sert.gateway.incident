@@ -118,7 +118,6 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             };
 
             var response = await _incidentMicroApi.CreateAsync(incidentRequest);
-            Console.WriteLine();
             ApiResponse.ThrowExceptionIfFailed(response);
 
             return response.Value.IncidentIds.First().ToString();
@@ -309,6 +308,11 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
         public async Task AddStepComment(AddStepCommentRequestGto addStepCommentGto)
         {
+            if (addStepCommentGto == null)
+            {
+                throw new ArgumentNullException(nameof(addStepCommentGto));
+            }
+
             Logger.LogInformation(
                 $"call Incident api AddStepComment Start,workflowStepId:{addStepCommentGto.WorkflowStepId},comment:{addStepCommentGto.Comment}");
 
