@@ -306,6 +306,11 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
         public async Task AddStepComment(AddStepCommentRequestGto addStepCommentGto)
         {
+            if (addStepCommentGto == null)
+            {
+                throw new ArgumentNullException(nameof(addStepCommentGto));
+            }
+
             Logger.LogInformation(
                 $"call Incident api AddStepComment Start,workflowStepId:{addStepCommentGto.WorkflowStepId},comment:{addStepCommentGto.Comment}");
 

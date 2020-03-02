@@ -125,7 +125,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                     }
                     else
                     {
-                        throw new Exception("cannot found the incident");
+                        throw new NullReferenceException("cannot found the incident");
                     }
 
                 }
@@ -152,7 +152,7 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
                     var incident = (await StubDataAsync<IncidentDetailGto[]>()).FirstOrDefault((m => m.DeviceId == id));
                     if (incident == null)
                     {
-                        throw new Exception($"cannot found the incident associates with alarm id {id}");
+                        throw new NullReferenceException($"cannot found the incident associates with alarm id {id}");
                     }
 
                     var statusInfoGto = new IncidentStatusInfoGto

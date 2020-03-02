@@ -658,7 +658,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                     .To(createIncidentByAlarmResponseDto));
 
             //act
-            var responseGto = await _incidentRepository.CreateIncidentByAlarm(new[] {request});
+            var responseGto = await _incidentRepository.CreateIncidentByAlarm(new[] { request });
 
             //assert
             Assert.NotNull(responseGto);
@@ -890,13 +890,12 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
 
             //action
-            var response = _incidentRepository.GetList(getListRequest);
+            var response = await _incidentRepository.GetList(getListRequest);
 
             //assert
             Assert.NotNull(response);
-            Assert.NotNull(response.Result);
-            Assert.True(1 == response.Result.Length);
-            var activeIncidentGto = response.Result[0];
+            Assert.True(1 == response.Length);
+            var activeIncidentGto = response[0];
             Assert.Equal(workflowId, activeIncidentGto.WorkflowId);
             Assert.Equal(mockWorkflowSummary.WorkflowDesignName, activeIncidentGto.WorkflowDesignName);
             Assert.Equal(mockWorkflowSummary.TotalSteps, activeIncidentGto.TotalSteps);
