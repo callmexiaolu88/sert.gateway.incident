@@ -616,6 +616,54 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
+        public async Task CreateIncidentByAlarm_Exception()
+        {
+            //arrange
+            var workflowDesignReferenceId = Guid.NewGuid();
+            var alarmId = Guid.NewGuid().ToString();
+
+            var request = new CreateIncidentByAlarmRequestGto
+            {
+                WorkflowDesignReferenceId = workflowDesignReferenceId,
+                Priority = IncidentPriority.High,
+                Description = "incident description",
+                DeviceId = Guid.NewGuid().ToString(),
+                DeviceType = "Door",
+                AlarmId = alarmId,
+                AlarmData = new AlarmData
+                {
+                    AlarmType = "AlarmType",
+                    Description = "alarm description",
+                    AlarmUtcDateTime = DateTime.UtcNow
+                }
+            };
+
+            var createIncidentByAlarmResponseDto = new CreateIncidentByAlarmResponseDto
+            {
+                IncidentAlarmInfos = new List<IncidentAlarmDto>
+                {
+                    new IncidentAlarmDto()
+                    {
+                        IncidentId = Guid.NewGuid(),
+                        AlarmId = alarmId
+                    }
+
+                }
+            };
+
+            var response = new ApiResponse<CreateIncidentByAlarmResponseDto>(createIncidentByAlarmResponseDto, ApiResponse.CreateFailed());
+
+            _mockIncidentMicroApi.Setup(api => api.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestDto>()))
+                .ReturnsAsync(response);
+
+            //act
+            var act = new Func<Task>(async () => await _incidentRepository.CreateIncidentByAlarm(new[] { request }));
+
+            //assert
+            await Assert.ThrowsAsync<HoneywellException>(act);
+        }
+
+        [Fact]
         public async Task CreateIncidentByAlarm_AlarmRepeat()
         {
             //arrange
