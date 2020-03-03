@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using Honeywell.Micro.Services.Incident.Api.Incident.Status;
 using Xunit;
 
 namespace Incident.ApiTests.IncidentControllerTest
@@ -71,6 +72,7 @@ namespace Incident.ApiTests.IncidentControllerTest
 
             for (int i = 3; i < 5; i++)
             {
+                Assert.Contains(incidentStatusResponse.Messages, msg => msg.MessageCode == GetIncidentStatusResponseDto.MessageCodeIncidentNotFound);
                 Assert.Contains(incidentStatusResponse.Messages, msg => msg.Message.Contains(alarmIds[i]));
             }
 
