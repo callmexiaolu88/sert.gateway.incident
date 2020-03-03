@@ -787,11 +787,11 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
             //assert
             Assert.NotNull(statusWithAlarmId);
-            Assert.NotNull(statusWithAlarmId);
-            Assert.True(statusWithAlarmId.Any());
-            Assert.Equal(getIncidentStatusResponse.IncidentStatusInfos.First().TriggerId, statusWithAlarmId.First().AlarmId);
-            Assert.Equal(IncidentStatus.Active, statusWithAlarmId.First().Status);
-            Assert.Equal(incidentId, statusWithAlarmId.First().IncidentId);
+            Assert.NotNull(statusWithAlarmId.Value);
+            Assert.True(statusWithAlarmId.Value.Any());
+            Assert.Equal(getIncidentStatusResponse.IncidentStatusInfos.First().TriggerId, statusWithAlarmId.Value.First().AlarmId);
+            Assert.Equal(IncidentStatus.Active, statusWithAlarmId.Value.First().Status);
+            Assert.Equal(incidentId, statusWithAlarmId.Value.First().IncidentId);
         }
 
         [Fact]

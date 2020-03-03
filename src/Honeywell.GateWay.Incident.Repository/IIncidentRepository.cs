@@ -30,7 +30,7 @@ namespace Honeywell.GateWay.Incident.Repository
         
         Task<ApiResponse<CreateIncidentByAlarmResponseGto>> CreateIncidentByAlarm(CreateIncidentByAlarmRequestGto[] requests);
 
-        Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds);
+        Task<ApiResponse<IncidentStatusInfoGto[]>> GetIncidentStatusByAlarm(string[] alarmIds);
 
         Task<ActivityGto[]> GetActivitys(string incidentId);
 
