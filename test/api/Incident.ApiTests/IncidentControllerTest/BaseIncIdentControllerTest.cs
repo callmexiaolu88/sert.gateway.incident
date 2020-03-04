@@ -116,5 +116,29 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.NotNull(result);
             return result;
         }
+
+        protected async Task<ApiResponse<CreateIncidentByAlarmResponseGto>> CreateIncidentsByAlarms(string[] alarmIds)
+        {
+            var workflowDesignReferenceId = await GetFirstWorkflowDesignReferenceId();
+            var requests = alarmIds.Select(alarmId => new CreateIncidentByAlarmRequestGto
+            {
+                WorkflowDesignReferenceId = new Guid(workflowDesignReferenceId),
+                Priority = IncidentPriority.High,
+                Description = "incident description",
+                DeviceId = Guid.NewGuid().ToString(),
+                DeviceType = "Door",
+                AlarmId = alarmId,
+                AlarmData = new AlarmData
+                {
+                    AlarmType = "AlarmType",
+                    Description = "alarm description",
+                    AlarmUtcDateTime = DateTime.UtcNow
+                }
+            });
+
+            var result = await IncidentGateWayApi.CreateByAlarmAsync(requests.ToArray());
+            Assert.NotNull(result);
+            return result;
+        }
     }
 }

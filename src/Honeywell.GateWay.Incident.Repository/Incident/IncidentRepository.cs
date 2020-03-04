@@ -244,15 +244,23 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             return response.To(result);
         }
 
-        public async Task<IncidentStatusInfoGto[]> GetIncidentStatusByAlarm(string[] alarmIds)
+        public async Task<ApiResponse<IncidentStatusInfoGto[]>> GetIncidentStatusByAlarm(string[] alarmIds)
         {
             Logger.LogInformation($"call Incident api {nameof(GetIncidentStatusByAlarm)} Start");
 
             var response = await _incidentMicroApi.GetStatusByTriggerAsync(new GetIncidentStatusRequestDto { TriggerIds = alarmIds });
-            ApiResponse.ThrowExceptionIfFailed(response);
+            foreach (var messageInfo in response.Messages)
+            {
+                if (messageInfo.MessageCode == GetIncidentStatusResponseDto.MessageCodeIncidentNotFound)
+                {
+                    continue;
+                }
+
+                ApiResponse.ThrowExceptionIfFailed(response);
+            }
 
             var result = HoneyMapper.Map<IncidentStatusDto[], IncidentStatusInfoGto[]>(response.Value.IncidentStatusInfos.ToArray());
-            return result;
+            return response.To(result);
         }
 
         public async Task<ActivityGto[]> GetActivitys(string incidentId)
