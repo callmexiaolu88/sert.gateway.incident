@@ -249,15 +249,10 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             Logger.LogInformation($"call Incident api {nameof(GetIncidentStatusByAlarm)} Start");
 
             var response = await _incidentMicroApi.GetStatusByTriggerAsync(new GetIncidentStatusRequestDto { TriggerIds = alarmIds });
-            foreach (var messageInfo in response.Messages)
-            {
-                if (messageInfo.MessageCode == GetIncidentStatusResponseDto.MessageCodeIncidentNotFound)
-                {
-                    continue;
-                }
 
-                ApiResponse.ThrowExceptionIfFailed(response);
-            }
+            ApiResponse.ThrowExceptionIfFailed(response,new string[]{
+                 GetIncidentStatusResponseDto.MessageCodeIncidentNotFound
+            });
 
             var result = HoneyMapper.Map<IncidentStatusDto[], IncidentStatusInfoGto[]>(response.Value.IncidentStatusInfos.ToArray());
             return response.To(result);

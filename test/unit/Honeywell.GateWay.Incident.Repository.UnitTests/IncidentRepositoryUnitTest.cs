@@ -744,8 +744,8 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             };
             _mockIncidentMicroApi.Setup(api => api.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestDto>()))
                 .ReturnsAsync(ApiResponse
-                    .CreateFailed(new MessageInfo("", false,
-                        CreateIncidentByAlarmResponseDto.MessageCodeWorkflowNotExist))
+                    .CreateFailed(new MessageInfo("sdfd", false,
+                        CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication))
                     .To<CreateIncidentByAlarmResponseDto>());
 
             //act
@@ -755,7 +755,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.NotNull(responseGto);
             Assert.False(responseGto.IsSuccess);
             Assert.True(responseGto.Messages.Any());
-            Assert.Equal(CreateIncidentByAlarmResponseDto.MessageCodeWorkflowNotExist,
+            Assert.Equal(CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication,
                 responseGto.Messages.First().MessageCode);
         }
 
