@@ -234,16 +234,10 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
                 HoneyMapper.Map<CreateIncidentByAlarmRequestGto[], CreateIncidentByAlarmDto[]>(requests);
 
             var response = await _incidentMicroApi.CreateByAlarmAsync(new CreateIncidentByAlarmRequestDto { CreateIncidentDatas = incidentRequest });
-            foreach (var messageInfo in response.Messages)
-            {
-                if (messageInfo.MessageCode == CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication ||
-                    messageInfo.MessageCode == CreateIncidentByAlarmResponseDto.MessageCodeWorkflowNotExist)
-                {
-                    continue;
-                }
 
-                ApiResponse.ThrowExceptionIfFailed(response);
-            }
+            ApiResponse.ThrowExceptionIfFailed(response,new string[] {
+                CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication
+            });
 
             var result=HoneyMapper.Map<CreateIncidentByAlarmResponseDto, CreateIncidentByAlarmResponseGto>(response.Value);
 

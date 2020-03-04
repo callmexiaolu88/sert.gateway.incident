@@ -699,11 +699,10 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
                 }
             };
 
+            var response = ApiResponse.CreateSuccess("Iam success")
+                .MakeFailed(new MessageInfo("", false,CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication));
             _mockIncidentMicroApi.Setup(api => api.CreateByAlarmAsync(It.IsAny<CreateIncidentByAlarmRequestDto>()))
-                .ReturnsAsync(ApiResponse
-                    .CreateFailed(new MessageInfo("", false,
-                        CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication))
-                    .To(createIncidentByAlarmResponseDto));
+                .ReturnsAsync(response.To(createIncidentByAlarmResponseDto));
 
             //act
             var responseGto = await _incidentRepository.CreateIncidentByAlarm(new[] { request });
@@ -712,8 +711,9 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             Assert.NotNull(responseGto);
             Assert.False(responseGto.IsSuccess);
             Assert.True(responseGto.Messages.Any());
-            Assert.Equal(CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication,
-                responseGto.Messages.First().MessageCode);
+            Assert.Contains(responseGto.Messages,
+                msg => msg.MessageCode == CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication
+            );
             Assert.NotNull(responseGto.Value);
             Assert.True(responseGto.Value.IncidentAlarmInfos.Count > 0);
             Assert.False(responseGto.Value.IncidentAlarmInfos.First().IsCreatedAtThisRequest);
