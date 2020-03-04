@@ -795,6 +795,47 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         }
 
         [Fact]
+        public async Task GetIncidentStatusWithAlarmId_IncidentNotFound_Failed()
+        {
+            //arrange
+            var alarmId = Guid.NewGuid().ToString();
+
+            var apiResponse = ApiResponse.CreateFailed(new MessageInfo($"{alarmId} not found", false, GetIncidentStatusResponseDto.MessageCodeIncidentNotFound));
+
+            _mockIncidentMicroApi.Setup(api => api.GetStatusByTriggerAsync(It.IsAny<GetIncidentStatusRequestDto>()))
+                .ReturnsAsync(apiResponse.To(new GetIncidentStatusResponseDto()));
+
+            //act
+            var response = await _incidentRepository.GetIncidentStatusByAlarm(new[] { alarmId });
+
+            //assert
+            Assert.False(response.IsSuccess);
+            Assert.NotNull(response);
+            Assert.NotNull(response.Value);
+            Assert.Empty(response.Value);
+            Assert.NotEmpty(response.Messages);
+            Assert.Contains(response.Messages, msg => msg.MessageCode == GetIncidentStatusResponseDto.MessageCodeIncidentNotFound);
+        }
+
+        [Fact]
+        public async Task GetIncidentStatusWithAlarmId_ThrowException()
+        {
+            //arrange
+            var alarmId = Guid.NewGuid().ToString();
+
+            var apiResponse = ApiResponse.CreateFailed();
+
+            _mockIncidentMicroApi.Setup(api => api.GetStatusByTriggerAsync(It.IsAny<GetIncidentStatusRequestDto>()))
+                .ReturnsAsync(apiResponse.To<GetIncidentStatusResponseDto>());
+
+            //act
+            var act = new Func<Task>(async () => await _incidentRepository.GetIncidentStatusByAlarm(new[] { alarmId }));
+
+            //assert
+            await Assert.ThrowsAsync<HoneywellException>(act);
+        }
+
+        [Fact]
         public async Task GetActivitysAsync_Success()
         {
             var incidentId = Guid.NewGuid();
