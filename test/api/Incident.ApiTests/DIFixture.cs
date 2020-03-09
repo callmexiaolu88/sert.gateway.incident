@@ -10,7 +10,7 @@ namespace Incident.ApiTests
 {
     public class DIFixture
     {
-        private const string EnvironmentKey = "ApiTest_environment";
+        public const string EnvironmentKey = "ApiTest_environment";
         public ServiceProvider ServiceProvider { get; }
         public DIFixture()
         {

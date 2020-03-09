@@ -59,7 +59,10 @@ namespace Incident.ApiTests
 
         private void InitParameterData()
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var envConfig = Environment.GetEnvironmentVariable(DIFixture.EnvironmentKey);
+            envConfig = string.IsNullOrEmpty(envConfig) ? "" : envConfig + ".";
+            
+            var config = new ConfigurationBuilder().AddJsonFile($"appsettings.{envConfig}json", true, true).Build();
             config.Providers.First().TryGet("RemoteServicesConfig:DefaultUrl", out _address);
             config.Providers.First().TryGet("ProWatchIsomUrl", out _host);
             config.Providers.First().TryGet("UserName", out _username);
