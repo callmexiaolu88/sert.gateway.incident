@@ -14,12 +14,10 @@ namespace Incident.ApiTests.IncidentControllerTest
 {
     public class BaseIncIdentControllerTest : TestOfBase
     {
-        protected ServiceProvider ServiceProvider { get; }
         protected IIncidentApi IncidentGateWayApi { get; }
         protected IWorkflowDesignApi WorkflowDesignGateWayApi { get; }
-        public BaseIncIdentControllerTest(DIFixture dIFixture)
+        public BaseIncIdentControllerTest(DIFixture dIFixture):base(dIFixture)
         {
-            ServiceProvider = dIFixture.ServiceProvider;
             IncidentGateWayApi = ServiceProvider.GetService<IIncidentApi>();
             WorkflowDesignGateWayApi = ServiceProvider.GetService<IWorkflowDesignApi>();
         }

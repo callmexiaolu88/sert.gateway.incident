@@ -1,9 +1,13 @@
-﻿namespace Incident.ApiTests
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Incident.ApiTests
 {
     public class TestOfBase
     {
-        protected TestOfBase()
+        protected ServiceProvider ServiceProvider { get; }
+        protected TestOfBase(DIFixture dIFixture)
         {
+            ServiceProvider = dIFixture.ServiceProvider;
         }
     }
 }
