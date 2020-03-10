@@ -17,11 +17,14 @@ namespace Incident.ApiTests.IncidentControllerTest
         protected ServiceProvider ServiceProvider { get; }
         protected IIncidentApi IncidentGateWayApi { get; }
         protected IWorkflowDesignApi WorkflowDesignGateWayApi { get; }
+        protected HttpClientHelper HttpClient { get; }
+
         public BaseIncIdentControllerTest(DIFixture dIFixture)
         {
             ServiceProvider = dIFixture.ServiceProvider;
             IncidentGateWayApi = ServiceProvider.GetService<IIncidentApi>();
             WorkflowDesignGateWayApi = ServiceProvider.GetService<IWorkflowDesignApi>();
+            HttpClient = ServiceProvider.GetService<HttpClientHelper>();
         }
 
         protected string GetFirstWorkflowDesignId()

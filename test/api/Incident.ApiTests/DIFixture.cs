@@ -10,7 +10,7 @@ namespace Incident.ApiTests
 {
     public class DIFixture
     {
-        public const string EnvironmentKey = "ApiTest_environment";
+        private const string EnvironmentKey = "ApiTest_environment";
         public ServiceProvider ServiceProvider { get; }
         public DIFixture()
         {
@@ -32,6 +32,13 @@ namespace Incident.ApiTests
                 o.DefaultTokenRetriever = proWatchClient.GetDefaultToken;
                 config.GetSection("RemoteServicesConfig").Bind(o);
             });
+
+            HttpClientHelper clientHelper = new HttpClientHelper(config, new HttpClient(new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true,
+            }));
+            serviceCollection.AddSingleton<HttpClientHelper>(clientHelper);
+
 
             serviceCollection.AddHttpClient(typeof(IIncidentApi).GUID.ToString())
                 .ConfigureHttpClient((provider, client) =>
