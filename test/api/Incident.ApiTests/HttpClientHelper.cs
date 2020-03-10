@@ -1,43 +1,33 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using static Incident.ApiTests.ProWatchClient;
 
 namespace Incident.ApiTests
 {
-    public class HttpClientHelper
+    public class HttpClientHelper : ProWatchClient
     {
         private readonly HttpClient _client;
-        private string _address;
-        private string _host;
-        private string _username;
-        private string _password;
+        private IConfiguration _iConfiguration;
 
-        public HttpClientHelper()
+        public HttpClientHelper(IConfiguration configuration, HttpClient httpClient) : base(configuration, httpClient)
         {
-            _client = new HttpClient(new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true,
-            });
-
-            InitParameterData();
+            _client = httpClient;
+            _iConfiguration = configuration;
         }
 
-        public async Task<HttpResponseMessage> PostAsync(string apiUri, HttpContent content,
-            Dictionary<string, string> headers)
+        public async Task<HttpResponseMessage> PostAsync(string apiUri, HttpContent content)
         {
             _client.DefaultRequestHeaders.Clear();
+            var headers = InitHeader();
             foreach (var header in headers)
             {
                 _client.DefaultRequestHeaders.Add(header.Key, header.Value);
             }
 
-            var url = new Uri($"{_address}{apiUri}");
+            string address=_iConfiguration.GetValue<string>("RemoteServicesConfig:DefaultUrl");
+            var url = new Uri($"{address}{apiUri}");
             var response = await _client.PostAsync(url, content);
             if (!response.IsSuccessStatusCode)
             {
@@ -47,52 +37,15 @@ namespace Incident.ApiTests
             return response;
         }
 
-        public Dictionary<string, string> InitHeader()
+        private Dictionary<string, string> InitHeader()
         {
-            var tokenHeader = $"Bearer {GetToken()}";
+            var tokenHeader = $"Bearer {GetDefaultToken()}";
             var headers = new Dictionary<string, string>
             {
                 {"Authorization", tokenHeader}, {"Accept-Language", "en-us"}
             };
             return headers;
         }
-
-        private void InitParameterData()
-        {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            config.Providers.First().TryGet("RemoteServicesConfig:DefaultUrl", out _address);
-            config.Providers.First().TryGet("ProWatchIsomUrl", out _host);
-            config.Providers.First().TryGet("UserName", out _username);
-            config.Providers.First().TryGet("Password", out _password);
-        }
-
-        private string GetToken()
-        {
-            var tokenString = JsonConvert.DeserializeObject<TokenResult>(RequestTokenAsync(_host, _username, _password).Result);
-            return tokenString.AccessToken;
-        }
-        private async Task<string> RequestTokenAsync(string host, string username, string password)
-        {
-            var aaUrl = new Uri($"{host}/AuthenticationAuthorizationService/api/AuthenticationAuthorization/AuthenticateClientRequest");
-            var bodyContent = MockDefaultHttpContent(username, password);
-            var content = new StringContent(JsonConvert.SerializeObject(bodyContent), Encoding.UTF8, "application/json");
-            var response = _client.PostAsync(aaUrl, content).Result;
-            var result = await response.Content.ReadAsStringAsync();
-            return result;
-        }
-
-        private RequestContent MockDefaultHttpContent(string username, string password)
-        {
-            var content = new RequestContent
-            {
-                Username = username,
-                Password = password,
-                Workspace = "",
-                ClientId = "ProWatchWebClient",
-                ClientSecret = "secret",
-                Scope = "prowatch offline_access"
-            };
-            return content;
-        }
     }
+
 }

@@ -20,12 +20,11 @@ namespace Incident.ApiTests.IncidentControllerTest
             await ImportWorkflowDesign();
             var workflowDesigns = GetAllWorkflowDesigns();
 
-            var httpClient = new HttpClientHelper();
             HttpContent content = new StringContent(JsonConvert.SerializeObject(workflowDesigns.Result.Select(m => m.Id.ToString())
                 .ToArray()), Encoding.UTF8, "application/json");
 
             var response =
-                await httpClient.PostAsync($"/api/WorkflowDesign/Exports", content, httpClient.InitHeader());
+                await HttpClient.PostAsync($"/api/WorkflowDesign/Exports", content);
             var resultData = await response.Content.ReadAsStreamAsync();
             Assert.True(resultData.Length > 100);
 

@@ -33,6 +33,13 @@ namespace Incident.ApiTests
                 config.GetSection("RemoteServicesConfig").Bind(o);
             });
 
+            HttpClientHelper clientHelper = new HttpClientHelper(config, new HttpClient(new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true,
+            }));
+            serviceCollection.AddSingleton<HttpClientHelper>(clientHelper);
+
+
             serviceCollection.AddHttpClient(typeof(IIncidentApi).GUID.ToString())
                 .ConfigureHttpClient((provider, client) =>
                 {

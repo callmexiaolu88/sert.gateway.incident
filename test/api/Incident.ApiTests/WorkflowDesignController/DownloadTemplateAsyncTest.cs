@@ -2,16 +2,19 @@
 
 namespace Incident.ApiTests.IncidentControllerTest
 {
-
-    public class DownloadTemplateAsyncTest
+    [Collection(Colections.DICollection)]
+    public class DownloadTemplateAsyncTest: BaseIncIdentControllerTest
     {
+        public DownloadTemplateAsyncTest(DIFixture dIFixture) : base(dIFixture)
+        {
+        }
+
         [Fact]
         public async void DownloadWorkflowTemplate_Success()
         {
-            var httpClient = new HttpClientHelper();
-            var response = await httpClient.PostAsync($"/api/WorkflowDesign/DownloadTemplate", null, httpClient.InitHeader());
+            var response = await HttpClient.PostAsync($"/api/WorkflowDesign/DownloadTemplate", null);
             var resultData = await response.Content.ReadAsStreamAsync();
-            
+
             Assert.True(resultData.Length > 100);
         }
     }
