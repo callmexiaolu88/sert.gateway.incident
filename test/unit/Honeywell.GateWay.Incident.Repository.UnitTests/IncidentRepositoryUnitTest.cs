@@ -29,6 +29,7 @@ using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
 using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
 using IncidentStatus = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentStatus;
 using Honeywell.Micro.Services.Incident.Api.Incident.Create;
+using Honeywell.Micro.Services.Incident.Api.Incident.Summary;
 
 namespace Honeywell.GateWay.Incident.Repository.UnitTests
 {
@@ -60,7 +61,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             var gto = new UpdateStepStatusRequestGto
             {
-                IncidentId = Guid.NewGuid().ToString(),
+                WorkflowId = Guid.NewGuid().ToString(),
                 IsHandled = true,
                 WorkflowStepId = Guid.NewGuid().ToString()
             };
@@ -72,6 +73,9 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             var stepStatusGto = MockStepStatusGto();
+
+            _mockIncidentMicroApi.Setup(api => api.GetIncidentByWorkflowIdAsync(It.IsAny<GetIncidentByWorkflowIdRequestDto>()))
+                .ReturnsAsync(new GetIncidentByWorkflowIdResponseDto { Incidents = new List<IncidentBriefDto> { new IncidentBriefDto() } });
             _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<IncidentActivities>())).Throws(new Exception("any error"));
             _mockWorkflowMicroApi
                 .Setup(api => api.UpdateStepStatusAsync(It.IsAny<UpdateWorkflowStepStatusRequestDto>()))
@@ -92,6 +96,9 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var stepStatusGto = MockStepStatusGto();
             MockLiveData();
+
+            _mockIncidentMicroApi.Setup(api => api.GetIncidentByWorkflowIdAsync(It.IsAny<GetIncidentByWorkflowIdRequestDto>()))
+                .ReturnsAsync(new GetIncidentByWorkflowIdResponseDto { Incidents = new List<IncidentBriefDto> { new IncidentBriefDto() } });
             _mockWorkflowMicroApi
                 .Setup(api => api.UpdateStepStatusAsync(It.IsAny<UpdateWorkflowStepStatusRequestDto>()))
                 .ReturnsAsync(new WorkflowActionResponseDto());
@@ -109,6 +116,9 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             //arrange
             var stepStatusGto = MockStepStatusGto();
             var mockResponse = ApiResponse.CreateFailed().To<WorkflowActionResponseDto>();
+
+            _mockIncidentMicroApi.Setup(api => api.GetIncidentByWorkflowIdAsync(It.IsAny<GetIncidentByWorkflowIdRequestDto>()))
+                .ReturnsAsync(new GetIncidentByWorkflowIdResponseDto { Incidents = new List<IncidentBriefDto> { new IncidentBriefDto() } });
             _mockWorkflowMicroApi
                 .Setup(api => api.UpdateStepStatusAsync(It.IsAny<UpdateWorkflowStepStatusRequestDto>()))
                 .ReturnsAsync(mockResponse);
@@ -860,47 +870,27 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
         {
             //arrange
             MockLiveData();
-            var response = new WorkflowActionResponseDto();
-
-            _mockWorkflowMicroApi.Setup(api => api.AddStepCommentAsync(It.IsAny<AddStepCommentRequestDto>()))
-                .ReturnsAsync(response);
-
-            //act
             var addStepCommentGto = new AddStepCommentRequestGto()
             {
                 WorkflowStepId = Guid.NewGuid().ToString(),
                 Comment = "this is comment",
-                IncidentId = Guid.NewGuid().ToString()
+                WorkflowId = Guid.NewGuid().ToString()
             };
+
+            var response = new WorkflowActionResponseDto();
+
+            _mockIncidentMicroApi.Setup(api => api.GetIncidentByWorkflowIdAsync(It.IsAny<GetIncidentByWorkflowIdRequestDto>()))
+                .ReturnsAsync(new GetIncidentByWorkflowIdResponseDto {Incidents = new List<IncidentBriefDto> {new IncidentBriefDto()}});
+            _mockWorkflowMicroApi.Setup(api => api.AddStepCommentAsync(It.IsAny<AddStepCommentRequestDto>()))
+                .ReturnsAsync(response);
+
+            //act
+
             await _incidentRepository.AddStepComment(addStepCommentGto);
 
             //assert
             _mockWorkflowMicroApi.Verify(api => api.AddStepCommentAsync(It.IsAny<AddStepCommentRequestDto>()), Times.Once);
 
-
-        }
-
-        [Fact]
-        public async Task AddStepComment_IncidentIdException_Success()
-        {
-            //arrange
-            MockLiveData();
-            var response = new WorkflowActionResponseDto();
-
-            _mockWorkflowMicroApi.Setup(api => api.AddStepCommentAsync(It.IsAny<AddStepCommentRequestDto>()))
-                .ReturnsAsync(response);
-
-            //act
-            var addStepCommentGto = new AddStepCommentRequestGto()
-            {
-                WorkflowStepId = Guid.NewGuid().ToString(),
-                Comment = "this is comment",
-                IncidentId = "wrong incidentId"
-            };
-            await _incidentRepository.AddStepComment(addStepCommentGto);
-
-            //assert
-            _mockWorkflowMicroApi.Verify(api => api.AddStepCommentAsync(It.IsAny<AddStepCommentRequestDto>()), Times.Once);
 
         }
 

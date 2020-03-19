@@ -27,6 +27,8 @@ namespace Honeywell.Gateway.Incident.Api.Incident.GetDetail
 
         public IncidentStatus State { get; set; }
 
+        public Guid WorkflowId { get; set; }
+
         public string WorkflowName { get; set; }
 
         public string WorkflowDescription { get; set; }

@@ -24,6 +24,7 @@ using Honeywell.Micro.Services.Incident.Api.Incident.Actions;
 using Honeywell.Micro.Services.Incident.Api.Incident.Create;
 using Honeywell.Micro.Services.Incident.Api.Incident.Details;
 using Honeywell.Micro.Services.Incident.Api.Incident.Statistics;
+using Honeywell.Micro.Services.Incident.Api.Incident.Summary;
 using Honeywell.Micro.Services.Incident.Domain.Shared;
 using CreateIncidentByAlarmDto = Honeywell.Micro.Services.Incident.Api.Incident.Create.CreateIncidentByAlarmDto;
 using CreateIncidentByAlarmRequestDto = Honeywell.Micro.Services.Incident.Api.Incident.Create.CreateIncidentByAlarmRequestDto;
@@ -56,14 +57,22 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             }
             Logger.LogInformation("call workflow design api UpdateWorkflowStepStatus Start");
             var workflowStepGuid = Guid.Parse(updateWorkflowStepStatusGto.WorkflowStepId);
+            var workflowId = Guid.Parse(updateWorkflowStepStatusGto.WorkflowId);
+            var incident = await GetIncidentByWorkflowId(workflowId);
 
-            var request = new UpdateWorkflowStepStatusRequestDto { WorkflowStepId = workflowStepGuid, IsHandled = updateWorkflowStepStatusGto.IsHandled };
+            var request = new UpdateWorkflowStepStatusRequestDto
+            {
+                WorkflowId = workflowId,
+                IncidentNumber = (int)incident.Number,
+                WorkflowStepId = workflowStepGuid, 
+                IsHandled = updateWorkflowStepStatusGto.IsHandled
+            };
 
             var response = await _workflowMicroApi.UpdateStepStatusAsync(request);
 
             ApiResponse.ThrowExceptionIfFailed(response);
 
-            await NotificationActivity(updateWorkflowStepStatusGto.IncidentId);
+            await NotificationActivity(incident.Id.ToString());
         }
 
         public async Task<IncidentDetailGto> GetIncidentById(string incidentId)
@@ -82,8 +91,6 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             HoneyMapper.Map(response.Value.Details[0], result);
             return result;
         }
-
-       
 
         public async Task<string> CreateIncident(CreateIncidentRequestGto request)
         {
@@ -313,8 +320,13 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             Logger.LogInformation(
                 $"call Incident api AddStepComment Start,workflowStepId:{addStepCommentGto.WorkflowStepId},comment:{addStepCommentGto.Comment}");
 
+            var workflowId = Guid.Parse(addStepCommentGto.WorkflowId);
+            var incident = await GetIncidentByWorkflowId(workflowId);
+
             AddStepCommentRequestDto requestDto = new AddStepCommentRequestDto
             {
+                WorkflowId = Guid.Parse(addStepCommentGto.WorkflowId),
+                IncidentNumber = (int)incident.Number,
                 WorkflowStepId = Guid.Parse(addStepCommentGto.WorkflowStepId),
                 Comment = addStepCommentGto.Comment
             };
@@ -322,7 +334,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var response = await _workflowMicroApi.AddStepCommentAsync(requestDto);
 
             ApiResponse.ThrowExceptionIfFailed(response);
-            await NotificationActivity(addStepCommentGto.IncidentId);
+            await NotificationActivity(incident.Id.ToString());
         }
 
         private async Task NotificationActivity(string incidentId)
@@ -341,6 +353,14 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             {
                 Logger.LogError(ex, $"NotificationActivity incident: {incidentId}");
             }
+        }
+
+        private async Task<IncidentBriefDto> GetIncidentByWorkflowId(Guid workflowId)
+        {
+            var request = new GetIncidentByWorkflowIdRequestDto {WorkflowIds = new[] {workflowId}};
+            var response = await _incidentMicroApi.GetIncidentByWorkflowIdAsync(request);
+            ApiResponse.ThrowExceptionIfFailed(response);
+            return response.Value.Incidents.First();
         }
     }
 }
