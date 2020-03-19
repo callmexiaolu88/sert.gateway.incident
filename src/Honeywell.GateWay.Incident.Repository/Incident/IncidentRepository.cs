@@ -63,7 +63,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var request = new UpdateWorkflowStepStatusRequestDto
             {
                 WorkflowId = workflowId,
-                IncidentNumber = (int)incident.Number,
+                IncidentNumber = incident.Number,
                 WorkflowStepId = workflowStepGuid, 
                 IsHandled = updateWorkflowStepStatusGto.IsHandled
             };
@@ -326,7 +326,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             AddStepCommentRequestDto requestDto = new AddStepCommentRequestDto
             {
                 WorkflowId = Guid.Parse(addStepCommentGto.WorkflowId),
-                IncidentNumber = (int)incident.Number,
+                IncidentNumber = incident.Number,
                 WorkflowStepId = Guid.Parse(addStepCommentGto.WorkflowStepId),
                 Comment = addStepCommentGto.Comment
             };
