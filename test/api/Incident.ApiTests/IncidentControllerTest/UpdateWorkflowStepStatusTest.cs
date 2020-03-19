@@ -22,7 +22,9 @@ namespace Incident.ApiTests.IncidentControllerTest
             var workflowStepId = incidentDetails.Value.IncidentSteps[0].Id;
             var updateWorkflowStepStatusGto = new UpdateStepStatusRequestGto
             {
-                IncidentId = incidentId, IsHandled = true, WorkflowStepId = workflowStepId.ToString()
+                WorkflowId = incidentDetails.Value.WorkflowId.ToString(),
+                IsHandled = true,
+                WorkflowStepId = workflowStepId.ToString()
             };
             var result =await IncidentGateWayApi.UpdateStepStatusAsync(updateWorkflowStepStatusGto);
             Assert.True(result.IsSuccess);
