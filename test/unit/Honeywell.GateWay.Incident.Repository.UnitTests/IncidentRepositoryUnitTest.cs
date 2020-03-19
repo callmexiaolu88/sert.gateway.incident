@@ -29,7 +29,6 @@ using IncidentGTO = Honeywell.Gateway.Incident.Api.Incident;
 using IncidentPriority = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentPriority;
 using IncidentStatus = Honeywell.Gateway.Incident.Api.Incident.GetDetail.IncidentStatus;
 using Honeywell.Micro.Services.Incident.Api.Incident.Create;
-using Honeywell.Micro.Services.Incident.Api.Incident.Summary;
 
 namespace Honeywell.GateWay.Incident.Repository.UnitTests
 {
