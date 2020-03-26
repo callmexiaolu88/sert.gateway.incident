@@ -71,7 +71,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             ApiResponse.ThrowExceptionIfFailed(response);
 
-            await NotificationActivity(incident.Id.ToString());
+            await NotificationActivity(incident.Id);
         }
 
         public async Task<IncidentDetailGto> GetIncidentById(string incidentId)
@@ -144,7 +144,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var response = await _incidentMicroApi.RespondAsync(request);
             ApiResponse.ThrowExceptionIfFailed(response);
 
-            await NotificationActivity(incidentId);
+            await NotificationActivity(incidentGuid);
         }
 
         public async Task TakeoverIncident(string incidentId)
@@ -163,7 +163,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             ApiResponse.ThrowExceptionIfFailed(response);
 
-            await NotificationActivity(incidentId);
+            await NotificationActivity(incidentGuid);
         }
 
         public async Task CloseIncident(string incidentId, string reason)
@@ -182,7 +182,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             ApiResponse.ThrowExceptionIfFailed(response);
 
-            await NotificationActivity(incidentId);
+            await NotificationActivity(incidentGuid);
         }
 
         public async Task CompleteIncident(string incidentId)
@@ -201,7 +201,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             ApiResponse.ThrowExceptionIfFailed(response);
 
-            await NotificationActivity(incidentId);
+            await NotificationActivity(incidentGuid);
         }
 
         public async Task<IncidentSummaryGto[]> GetList(PageRequest<GetListRequestGto> request)
@@ -333,17 +333,12 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             var response = await _workflowMicroApi.AddStepCommentAsync(requestDto);
 
             ApiResponse.ThrowExceptionIfFailed(response);
-            await NotificationActivity(incident.Id.ToString());
+            await NotificationActivity(incident.Id);
         }
 
-        private async Task NotificationActivity(string incidentId)
+        private async Task NotificationActivity(Guid incidentId)
         {
-            if (!Guid.TryParse(incidentId, out _))
-            {
-                Logger.LogError($"wrong incident id: {incidentId}");
-                return;
-            }
-            var activities = new IncidentActivities(incidentId);
+            var activities = new IncidentActivities(incidentId.ToString());
             try
             {
                 await _liveDataApi.SendEventData(activities);
