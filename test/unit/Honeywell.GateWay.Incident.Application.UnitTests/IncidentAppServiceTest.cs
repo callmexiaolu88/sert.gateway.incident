@@ -175,7 +175,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _mockDeviceFacadeApi.Setup(x => x.GetDeviceDetails(It.IsAny<string>(), It.IsAny<DataFilters>()))
                 .Returns(mockDeviceResult.config[0]);
 
-            _mockCameraFacadeApi.Setup(x => x.GetCameraByLogicDeviceId(It.IsAny<string>())).Returns(cameraInfo);
+            _mockCameraFacadeApi.Setup(x => x.GetCamera(It.IsAny<GetCameraRequest>())).Returns(cameraInfo);
 
             //act
             var result = _testObj.GetDetailAsync(It.IsAny<string>());
@@ -218,7 +218,7 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _mockDeviceFacadeApi.Setup(x => x.GetDeviceDetails(It.IsAny<string>(), It.IsAny<DataFilters>()))
                 .Returns(mockDeviceResult.config[0]);
 
-            _mockCameraFacadeApi.Setup(x => x.GetCameraByLogicDeviceId(It.IsAny<string>())).Returns(cameraInfo);
+            _mockCameraFacadeApi.Setup(x => x.GetCamera(It.IsAny<GetCameraRequest>())).Returns(cameraInfo);
 
             //act
             var result = _testObj.GetDetailAsync(It.IsAny<string>());
