@@ -74,7 +74,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
                 if (incidentInfo.TriggerType == Gateway.Incident.Api.IncidentTriggerType.Manual)
                 {
-                    var request = new GetCameraRequest { DeviceId = incidentInfo.TriggerId , DeviceType = deviceInfo.type};
+                    var request = new GetCameraRequestDto { DeviceId = incidentInfo.TriggerId , DeviceType = deviceInfo.type};
                     var getCameraInfo = _cameraFacadeApi.GetCamera(request);
                     MappingCameraId(incidentInfo, getCameraInfo);
                     if (incidentInfo.CreateAtUtc != null)
