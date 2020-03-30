@@ -52,7 +52,8 @@ namespace Incident.ApiTests.IncidentControllerTest
             Assert.NotNull(devices);
             Assert.True(devices.Length > 0);
 
-            var device = devices[0].Devices.FirstOrDefault(m => m.DeviceDisplayName.EndsWith("_camera"));
+            var allDevices = devices.SelectMany(x => x.Devices).ToList();
+            var device = allDevices.FirstOrDefault(m => m.DeviceDisplayName.EndsWith("_camera"));
             Assert.NotNull(device);
 
             var incidentId = await CreateIncident(device.DeviceId, device.DeviceType);
