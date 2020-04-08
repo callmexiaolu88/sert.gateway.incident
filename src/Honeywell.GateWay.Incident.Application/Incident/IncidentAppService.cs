@@ -57,7 +57,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             {
                 const string emptyDeviceId= "0x000000000000000000000000000000000000";
                 var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
-                if (string.IsNullOrEmpty(incidentInfo.DeviceId)||incidentId.Equals(emptyDeviceId, StringComparison.InvariantCultureIgnoreCase))
+                if (string.IsNullOrEmpty(incidentInfo.DeviceId)|| incidentInfo.DeviceId.Equals(emptyDeviceId, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return incidentInfo;
                 }
