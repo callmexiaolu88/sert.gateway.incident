@@ -53,7 +53,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
         private void MockLiveData()
         {
-            _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<IncidentActivities>()));
+            _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<EventData>()));
         }
 
         private UpdateStepStatusRequestGto MockStepStatusGto()
@@ -75,7 +75,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
 
             _mockIncidentMicroApi.Setup(api => api.GetIncidentByWorkflowIdAsync(It.IsAny<GetIncidentByWorkflowIdRequestDto>()))
                 .ReturnsAsync(new GetIncidentByWorkflowIdResponseDto { Incidents = new List<IncidentBriefDto> { new IncidentBriefDto() } });
-            _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<IncidentActivities>())).Throws(new Exception("any error"));
+            _mockLiveDataApi.Setup(x => x.SendEventData(It.IsAny<EventData>())).Throws(new Exception("any error"));
             _mockWorkflowMicroApi
                 .Setup(api => api.UpdateStepStatusAsync(It.IsAny<UpdateWorkflowStepStatusRequestDto>()))
                 .ReturnsAsync(new WorkflowActionResponseDto());
@@ -84,7 +84,7 @@ namespace Honeywell.GateWay.Incident.Repository.UnitTests
             await _incidentRepository.UpdateWorkflowStepStatus(stepStatusGto);
 
             //assert
-            _mockLiveDataApi.Verify(api => api.SendEventData(It.IsAny<IncidentActivities>()), Times.Once);
+            _mockLiveDataApi.Verify(api => api.SendEventData(It.IsAny<EventData>()), Times.Once);
         }
 
 
