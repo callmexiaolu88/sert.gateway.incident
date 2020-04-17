@@ -8,7 +8,5 @@ namespace Honeywell.GateWay.Incident.Repository.Incident.IncidentEvents
         {
             EventGroup = $"{nameof(IncidentList)}";
         }
-        public override string EventGroup { get; set; }
     }
-
 }
