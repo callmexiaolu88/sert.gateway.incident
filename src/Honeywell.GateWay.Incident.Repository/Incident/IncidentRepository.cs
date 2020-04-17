@@ -18,6 +18,7 @@ using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
 using Honeywell.Gateway.Incident.Api.Incident.Statistics;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
+using Honeywell.GateWay.Incident.Repository.Incident.IncidentEvents;
 using Honeywell.Infra.Core.Common.Exceptions;
 using Honeywell.Infra.Services.LiveData.Api;
 using Honeywell.Micro.Services.Incident.Api.Incident.Actions;
@@ -28,6 +29,7 @@ using Honeywell.Micro.Services.Incident.Domain.Shared;
 using CreateIncidentByAlarmDto = Honeywell.Micro.Services.Incident.Api.Incident.Create.CreateIncidentByAlarmDto;
 using CreateIncidentByAlarmRequestDto = Honeywell.Micro.Services.Incident.Api.Incident.Create.CreateIncidentByAlarmRequestDto;
 using CreateIncidentRequestDto = Honeywell.Micro.Services.Incident.Api.Incident.Create.CreateIncidentRequestDto;
+using IncidentActivities = Honeywell.GateWay.Incident.Repository.Incident.IncidentEvents.IncidentActivities;
 
 namespace Honeywell.GateWay.Incident.Repository.Incident
 {
@@ -125,7 +127,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
             var response = await _incidentMicroApi.CreateAsync(incidentRequest);
             ApiResponse.ThrowExceptionIfFailed(response);
-
+            await NotificationIncidentList();
             return response.Value.IncidentIds.First().ToString();
         }
 
@@ -183,6 +185,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             ApiResponse.ThrowExceptionIfFailed(response);
 
             await NotificationActivity(incidentGuid);
+
+            await NotificationIncidentList();
         }
 
         public async Task CompleteIncident(string incidentId)
@@ -202,6 +206,8 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             ApiResponse.ThrowExceptionIfFailed(response);
 
             await NotificationActivity(incidentGuid);
+
+            await NotificationIncidentList();
         }
 
         public async Task<IncidentSummaryGto[]> GetList(PageRequest<GetListRequestGto> request)
@@ -244,6 +250,9 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             ApiResponse.ThrowExceptionIfFailed(response,new string[] {
                 CreateIncidentByAlarmResponseDto.MessageCodeAlarmDuplication
             });
+
+
+            await NotificationIncidentList();
 
             var result=HoneyMapper.Map<CreateIncidentByAlarmResponseDto, CreateIncidentByAlarmResponseGto>(response.Value);
 
@@ -338,7 +347,7 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
 
         private async Task NotificationActivity(Guid incidentId)
         {
-            var activities = new IncidentActivities(incidentId.ToString());
+            var activities = new IncidentActivities(incidentId);
             try
             {
                 await _liveDataApi.SendEventData(activities);
@@ -346,6 +355,19 @@ namespace Honeywell.GateWay.Incident.Repository.Incident
             catch (Exception ex)
             {
                 Logger.LogError(ex, $"NotificationActivity incident: {incidentId}");
+            }
+        }
+
+        private async Task NotificationIncidentList()
+        {
+            var eventData = new IncidentList();
+            try
+            {
+                await _liveDataApi.SendEventData(eventData);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"NotificationIncidentList Update");
             }
         }
 
