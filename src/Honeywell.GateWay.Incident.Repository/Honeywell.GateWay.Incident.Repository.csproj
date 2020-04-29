@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Honeywell.Infra.Client.WebApi" Version="0.0.3.*" />
-    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.3.*" />
-    <PackageReference Include="Honeywell.Infra.HoneyMapper.AutoMapper" Version="0.0.3.*" />
-    <PackageReference Include="Honeywell.Infra.Services.LiveData.Api" Version="0.0.1.*" />
+    <PackageReference Include="Honeywell.Infra.Client.WebApi" Version="1.0.0.*" />
+    <PackageReference Include="Honeywell.Infra.Core" Version="1.0.0.*" />
+    <PackageReference Include="Honeywell.Infra.HoneyMapper.AutoMapper" Version="1.0.0.*" />
+    <PackageReference Include="Honeywell.Infra.Services.LiveData.Api" Version="1.0.0.*" />
     <PackageReference Include="Honeywell.Micro.Services.Incident.Api" Version="0.0.2.*" />
     <PackageReference Include="Honeywell.Micro.Services.Workflow.Api" Version="0.0.2.*" />
   </ItemGroup>
