@@ -6,6 +6,6 @@
 
         public bool IsHandled { get; set; }
 
-        public string IncidentId { get; set; }
+        public string WorkflowId { get; set; }
     }
 }

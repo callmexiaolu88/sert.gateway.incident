@@ -16,6 +16,7 @@ using Honeywell.Infra.Services.Isom.Api;
 using Honeywell.Infra.Services.Isom.Api.Custom;
 using Honeywell.Infra.Services.Isom.Api.Custom.Camera.GetCamera;
 using Microsoft.Extensions.Logging;
+using Proxy.Honeywell.Security.ISOM.Devices;
 
 namespace Honeywell.GateWay.Incident.Application.Incident
 {
@@ -54,8 +55,9 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             try
             {
+                const string emptyDeviceId= "0x000000000000000000000000000000000000";
                 var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
-                if (string.IsNullOrEmpty(incidentInfo.DeviceId))
+                if (string.IsNullOrEmpty(incidentInfo.DeviceId)|| incidentInfo.DeviceId.Equals(emptyDeviceId, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return incidentInfo;
                 }
@@ -73,7 +75,8 @@ namespace Honeywell.GateWay.Incident.Application.Incident
 
                 if (incidentInfo.TriggerType == Gateway.Incident.Api.IncidentTriggerType.Manual)
                 {
-                    var getCameraInfo = _cameraFacadeApi.GetCameraByLogicDeviceId(incidentInfo.TriggerId);
+                    var request = new GetCameraRequestDto { DeviceId = incidentInfo.TriggerId , DeviceType = deviceInfo.type};
+                    var getCameraInfo = _cameraFacadeApi.GetCamera(request);
                     MappingCameraId(incidentInfo, getCameraInfo);
                     if (incidentInfo.CreateAtUtc != null)
                     {

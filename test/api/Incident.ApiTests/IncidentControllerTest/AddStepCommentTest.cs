@@ -26,7 +26,7 @@ namespace Incident.ApiTests.IncidentControllerTest
             {
                 WorkflowStepId = workflowStepId.ToString(),
                 Comment = $"this is comment.|{commentRemark}",
-                IncidentId = incidentId
+                WorkflowId = incidentDetails.Value.WorkflowId.ToString()
             };
             var result = await IncidentGateWayApi.AddStepCommentAsync(addStepCommentGto);
             Assert.True(result.IsSuccess);
