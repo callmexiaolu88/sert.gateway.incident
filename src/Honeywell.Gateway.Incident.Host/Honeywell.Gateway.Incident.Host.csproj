@@ -11,7 +11,7 @@
     <PackageReference Include="Honeywell.Infra.Core" Version="1.0.0.*" />
     <PackageReference Include="Honeywell.Infra.Ddd.EfCore" Version="1.0.0.*" />
     <PackageReference Include="Honeywell.Infra.HoneyMapper.AutoMapper" Version="1.0.0.*" />
-    <PackageReference Include="Honeywell.Micro.Services.Workflow.Api" Version="0.0.2.*" />
+    <PackageReference Include="Honeywell.Micro.Services.Workflow.Api" Version="1.0.0.*" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.1" />
     <PackageReference Include="NLog" Version="4.6.6" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.4" />
