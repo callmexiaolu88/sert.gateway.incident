@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Honeywell.Infra.Api.Abstract" Version="0.0.3.*" />
-    <PackageReference Include="Honeywell.Infra.Core" Version="0.0.3.*" />
+    <PackageReference Include="Honeywell.Infra.Api.Abstract" Version="1.0.0.*" />
+    <PackageReference Include="Honeywell.Infra.Core" Version="1.0.0.*" />
   </ItemGroup>
 
 </Project>
