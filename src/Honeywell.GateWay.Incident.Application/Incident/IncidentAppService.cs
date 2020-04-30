@@ -55,6 +55,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         {
             try
             {
+                Logger.LogInformation("IncidentAppService.GetDetailAsync begin");
                 const string emptyDeviceId= "0x000000000000000000000000000000000000";
                 var incidentInfo = await _incidentRepository.GetIncidentById(incidentId);
                 if (string.IsNullOrEmpty(incidentInfo.DeviceId)|| incidentInfo.DeviceId.Equals(emptyDeviceId, StringComparison.InvariantCultureIgnoreCase))
@@ -84,11 +85,13 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                     }
                 }
 
+                Logger.LogInformation("IncidentAppService.GetDetailAsync end");
+
                 return incidentInfo;
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.ToString());
+                Logger.LogError($"GetDetailAsync Failed: {ex}", ex);
                 return ApiResponse.CreateFailed(ex).To<IncidentDetailGto>();
             }
         }
