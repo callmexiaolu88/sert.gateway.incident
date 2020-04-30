@@ -88,7 +88,7 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.ToString());
+                Logger.LogError($"GetDetailAsync Failed: {ex}", ex);
                 return ApiResponse.CreateFailed(ex).To<IncidentDetailGto>();
             }
         }
