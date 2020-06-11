@@ -286,5 +286,15 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 return ApiResponse.CreateFailed(ex);
             }
         }
+
+        public Task<ApiResponse<SiteGto[]>> GetSiteListByDeviceNameAsync(string deviceName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ApiResponse<DeviceGto[]>> GetDeviceListAsync(GetDeviceListRequestGto request)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
