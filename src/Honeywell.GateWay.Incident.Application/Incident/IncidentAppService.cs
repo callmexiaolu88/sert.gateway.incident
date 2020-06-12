@@ -177,20 +177,19 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                 var deviceConfigs = _deviceFacadeExtendApi.GetSiteListByDeviceName(deviceName);
                 foreach (var device in deviceConfigs.config)
                 {
-                    if (siteGtoList.Where(t=>t.SiteId.Equals(device.relation[0].id)).Count()==0 )
+                    if (!siteGtoList.Any(t => t.SiteId.Equals(device.relation[0].id)))
                     {
                         var site = new SiteGto
                         {
                             SiteId = device.relation[0].id,
                             SiteDisplayName = device.relation[0].entityId,
-                            DeviceCount = deviceConfigs.config
-                                .Where(d => d.relation[0].id.Equals(device.relation[0].id)).Count()
+                            DeviceCount = deviceConfigs.config.Count(d => d.relation[0].id.Equals(device.relation[0].id))
                         };
                         siteGtoList.Add(site);
                     }
                 }
 
-                return siteGtoList.ToArray();
+                return await Task.FromResult(siteGtoList.ToArray());
             }
             catch (Exception ex)
             {
@@ -214,7 +213,8 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                         DeviceType = DeviceTypeHelper.GetSystemDeviceType(x.type.ToString()),
                         DeviceLocation = x.identifiers.tag[0]
                     }).ToArray();
-                return deviceGtos;
+
+                return await Task.FromResult(deviceGtos.ToArray());
             }
             catch (Exception ex)
             {
