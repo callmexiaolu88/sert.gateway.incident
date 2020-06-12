@@ -6,6 +6,7 @@ using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
 using Honeywell.Gateway.Incident.Api.Incident.Create;
 using Honeywell.Gateway.Incident.Api.Incident.GetDetail;
 using Honeywell.Gateway.Incident.Api.Incident.GetList;
+using Honeywell.Gateway.Incident.Api.Incident.GetSiteDevice;
 using Honeywell.Gateway.Incident.Api.Incident.GetStatus;
 using Honeywell.Gateway.Incident.Api.Incident.Statistics;
 using Honeywell.Gateway.Incident.Api.Incident.UpdateStepStatus;
@@ -15,6 +16,7 @@ using Honeywell.Infra.Api.Abstract;
 using Honeywell.Infra.Services.Isom.Api;
 using Honeywell.Infra.Services.Isom.Api.Custom;
 using Honeywell.Infra.Services.Isom.Api.Custom.Camera.GetCamera;
+using Honeywell.Infra.Services.Isom.Api.Custom.Device.GetDevice;
 using Honeywell.Security.Isom.Common;
 using Moq;
 using Proxy.Honeywell.Security.ISOM.Devices;
@@ -28,17 +30,18 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
         private readonly Mock<IIncidentRepository> _mockIncidentRepository;
         private readonly Mock<IDeviceFacadeApi> _mockDeviceFacadeApi;
         private readonly Mock<ICameraFacadeApi> _mockCameraFacadeApi;
-
+        private readonly Mock<IDeviceFacadeExtendApi> _mockDeviceFacadeExtendApi;
 
         public IncidentAppServiceTest()
         {
             _mockIncidentRepository = new Mock<IIncidentRepository>();
             _mockDeviceFacadeApi = new Mock<IDeviceFacadeApi>();
             _mockCameraFacadeApi = new Mock<ICameraFacadeApi>();
+            _mockDeviceFacadeExtendApi = new Mock<IDeviceFacadeExtendApi>();
             _testObj = new IncidentAppService(
                 _mockIncidentRepository.Object,
                 _mockCameraFacadeApi.Object,
-                _mockDeviceFacadeApi.Object);
+                _mockDeviceFacadeApi.Object, _mockDeviceFacadeExtendApi.Object);
         }
 
         [Fact]
@@ -307,6 +310,58 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             _mockIncidentRepository.Setup(x => x.CloseIncident(It.IsAny<string>(), It.IsAny<string>())).ThrowsAsync(new Exception());
 
             var result = _testObj.CloseAsync(It.IsAny<string>(), It.IsAny<string>());
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void GetDeviceList_Test()
+        {
+            var mockDevice = MockDeviceEntities();
+            _mockDeviceFacadeExtendApi.Setup(x => x.GetDeviceList(It.IsAny<DeviceRequestDto>())).Returns(mockDevice);
+
+            var result = _testObj.GetDeviceListAsync(new GetDeviceListRequestGto { DeviceName = string.Empty,SiteId = string.Empty});
+
+            Assert.NotNull(result);
+            Assert.True(result.Result.Value.Length == 1);
+            Assert.Equal(result.Result.Value[0].DeviceDisplayName, mockDevice.config[0].identifiers.name);
+            Assert.Equal(result.Result.Value[0].DeviceId, mockDevice.config[0].identifiers.id);
+            Assert.Equal(result.Result.Value[0].DeviceType, DeviceTypeHelper.GetSystemDeviceType(mockDevice.config[0].type.ToString()));
+            Assert.Equal(result.Result.Value[0].DeviceLocation, mockDevice.config[0].identifiers.tag[0]);
+        }
+
+        [Fact]
+        public void GetDeviceList_ThrowException_Failed()
+        {
+            _mockDeviceFacadeExtendApi.Setup(x => x.GetDeviceList(It.IsAny<DeviceRequestDto>())).Throws(new Exception());
+
+            var result = _testObj.GetDeviceListAsync(new GetDeviceListRequestGto { DeviceName = string.Empty, SiteId = string.Empty });
+
+            Assert.NotNull(result);
+            Assert.False(result.Result.IsSuccess);
+        }
+
+        [Fact]
+        public void GetSiteListByDeviceName_Test()
+        {
+            var mockDevice = MockDeviceEntities();
+            _mockDeviceFacadeExtendApi.Setup(x => x.GetSiteListByDeviceName(It.IsAny<string>())).Returns(mockDevice);
+
+            var result = _testObj.GetSiteListByDeviceNameAsync(string.Empty);
+
+            Assert.NotNull(result);
+            Assert.True(result.Result.Value[0].DeviceCount == 1);
+            Assert.Equal(result.Result.Value[0].SiteDisplayName, mockDevice.config[0].relation[0].entityId);
+            Assert.Equal(result.Result.Value[0].SiteId, mockDevice.config[0].relation[0].id);
+        }
+
+        [Fact]
+        public void GetSiteListByDeviceName_ThrowException_Failed()
+        {
+            _mockDeviceFacadeExtendApi.Setup(x => x.GetSiteListByDeviceName(It.IsAny<string>())).Throws(new Exception());
+
+            var result = _testObj.GetSiteListByDeviceNameAsync(string.Empty);
 
             Assert.NotNull(result);
             Assert.False(result.Result.IsSuccess);
