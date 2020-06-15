@@ -15,8 +15,22 @@ namespace Incident.ApiTests.IncidentControllerTest
         [Fact]
         public async void GetDeviceListTest_Success()
         {
-            var result = await IncidentGateWayApi.GetDeviceListAsync(new GetDeviceListRequestGto { DeviceName = string.Empty,SiteId = string.Empty});
+            var getSiteResponse = await IncidentGateWayApi.GetSiteListByDeviceNameAsync(string.Empty);
+            Assert.True(getSiteResponse.IsSuccess);
+
+            var sites = getSiteResponse.Value;
+            Assert.NotNull(sites);
+            Assert.True(sites.Length > 0);
+
+            var site = sites[0];
+            Assert.NotNull(site);
+
+            var result = await IncidentGateWayApi.GetDeviceListAsync(new GetDeviceListRequestGto { DeviceName = string.Empty,SiteId = site.SiteId });
+
             Assert.NotNull(result);
+            Assert.True(result.IsSuccess);
+            Assert.True(result.Value.Length>0);
+
         }
     }
 }
