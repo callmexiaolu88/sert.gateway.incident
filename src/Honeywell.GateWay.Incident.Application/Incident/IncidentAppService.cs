@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Honeywell.Gateway.Incident.Api.Incident.AddStepComment;
@@ -15,6 +16,7 @@ using Honeywell.Infra.Core.Ddd.Application;
 using Honeywell.Infra.Services.Isom.Api;
 using Honeywell.Infra.Services.Isom.Api.Custom;
 using Honeywell.Infra.Services.Isom.Api.Custom.Camera.GetCamera;
+using Honeywell.Infra.Services.Isom.Api.Custom.Device.GetDevice;
 using Microsoft.Extensions.Logging;
 using Proxy.Honeywell.Security.ISOM.Devices;
 
@@ -27,14 +29,16 @@ namespace Honeywell.GateWay.Incident.Application.Incident
         private readonly IIncidentRepository _incidentRepository;
         private readonly ICameraFacadeApi _cameraFacadeApi;
         private readonly IDeviceFacadeApi _deviceFacadeApi;
+        private readonly IDeviceFacadeExtendApi _deviceFacadeExtendApi;
 
         public IncidentAppService(IIncidentRepository incidentRepository,
             ICameraFacadeApi cameraFacadeApi,
-            IDeviceFacadeApi deviceFacadeApi)
+            IDeviceFacadeApi deviceFacadeApi, IDeviceFacadeExtendApi deviceFacadeExtendApi)
         {
             _cameraFacadeApi = cameraFacadeApi;
             _deviceFacadeApi = deviceFacadeApi;
             _incidentRepository = incidentRepository;
+            _deviceFacadeExtendApi = deviceFacadeExtendApi;
         }
 
         public async Task<ApiResponse> UpdateStepStatusAsync(UpdateStepStatusRequestGto updateWorkflowStepStatusGto)
@@ -162,6 +166,60 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             {
                 Logger.LogError(ex.ToString());
                 return ApiResponse.CreateFailed(ex).To<SiteDeviceGto[]>();
+            }
+        }
+
+        public async Task<ApiResponse<SiteGto[]>> GetSiteListByDeviceNameAsync(string deviceName)
+        {
+            try
+            {
+                List<SiteGto> siteGtoList=new List<SiteGto>();
+                var deviceConfigs = _deviceFacadeExtendApi.GetSiteListByDeviceName(deviceName);
+                foreach (var device in deviceConfigs.config)
+                {
+                    if (!siteGtoList.Any(t => t.SiteId.Equals(device.relation[0].id)))
+                    {
+                        var site = new SiteGto
+                        {
+                            SiteId = device.relation[0].id,
+                            SiteDisplayName = device.relation[0].entityId,
+                            DeviceCount = deviceConfigs.config.Count(d => d.relation[0].id.Equals(device.relation[0].id))
+                        };
+                        siteGtoList.Add(site);
+                    }
+                }
+
+                return await Task.FromResult(siteGtoList.ToArray());
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<SiteGto[]>();
+            }
+        }
+
+        public async Task<ApiResponse<DeviceGto[]>> GetDeviceListAsync(GetDeviceListRequestGto request)
+        {
+            try
+            {
+                DeviceRequestDto deviceRequestDto = new DeviceRequestDto
+                    {SiteId = request.SiteId, DeviceName = request.DeviceName};
+                var deviceConfigs = _deviceFacadeExtendApi.GetDeviceList(deviceRequestDto);
+                var deviceGtos = deviceConfigs.config.Select(
+                    x=>new DeviceGto
+                    {
+                        DeviceDisplayName = x.identifiers.name,
+                        DeviceId = x.identifiers.id,
+                        DeviceType = DeviceTypeHelper.GetSystemDeviceType(x.type.ToString()),
+                        DeviceLocation = x.identifiers.tag[0]
+                    }).ToArray();
+
+                return await Task.FromResult(deviceGtos.ToArray());
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return ApiResponse.CreateFailed(ex).To<DeviceGto[]>();
             }
         }
 

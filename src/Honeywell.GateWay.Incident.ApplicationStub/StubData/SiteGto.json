@@ -1,0 +1,12 @@
+﻿[
+  {
+    "siteId": "1C04B4A9-5978-47E7-8383-613AE7ED5445",
+    "SiteDisplayName": "ProWatchSite 1",
+    "DeviceCount": "2"
+  },
+  {
+    "siteId": "1C04B4A9-5978-47E7-8383-613AE7ED5400",
+    "SiteDisplayName": "ProWatchSite 2",
+    "DeviceCount": "3"
+  }
+]

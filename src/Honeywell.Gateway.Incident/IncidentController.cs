@@ -62,6 +62,20 @@ namespace Honeywell.Gateway.Incident
         }
 
         [HttpPost]
+        public async Task<ApiResponse<SiteGto[]>> GetSiteListByDeviceNameAsync(string deviceName)
+        {
+            var sites = await _incidentAppService.GetSiteListByDeviceNameAsync(deviceName);
+            return sites;
+        }
+
+        [HttpPost]
+        public async Task<ApiResponse<DeviceGto[]>> GetDeviceListAsync(GetDeviceListRequestGto request)
+        {
+            var devices = await _incidentAppService.GetDeviceListAsync(request);
+            return devices;
+        }
+
+        [HttpPost]
         public async Task<ApiResponse> RespondAsync(string incidentId)
         {
             var result = await _incidentAppService.RespondAsync(incidentId);
@@ -123,5 +137,6 @@ namespace Honeywell.Gateway.Incident
             var result = await _incidentAppService.AddStepCommentAsync(addStepCommentGto);
             return result;
         }
+
     }
 }

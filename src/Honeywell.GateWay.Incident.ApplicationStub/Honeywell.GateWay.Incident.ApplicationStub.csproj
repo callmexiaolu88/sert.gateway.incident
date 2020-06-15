@@ -31,6 +31,12 @@
     <None Update="StubData\CreateWorkflowDesignResponseGto.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="StubData\DeviceGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StubData\SiteGto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="StubData\WorkflowDesignGto.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
