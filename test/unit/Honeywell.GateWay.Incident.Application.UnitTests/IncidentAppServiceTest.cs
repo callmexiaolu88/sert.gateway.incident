@@ -321,14 +321,15 @@ namespace Honeywell.GateWay.Incident.Application.UnitTests
             var mockDevice = MockDeviceEntities();
             _mockDeviceFacadeExtendApi.Setup(x => x.GetDeviceList(It.IsAny<DeviceRequestDto>())).Returns(mockDevice);
 
-            var result = _testObj.GetDeviceListAsync(new GetDeviceListRequestGto { DeviceName = string.Empty,SiteId = string.Empty});
+            var result = _testObj.GetDeviceListAsync(new GetDeviceListRequestGto { DeviceName = string.Empty,SiteId = mockDevice.config[0].relation[0].id });
 
             Assert.NotNull(result);
-            Assert.True(result.Result.Value.Length == 1);
-            Assert.Equal(result.Result.Value[0].DeviceDisplayName, mockDevice.config[0].identifiers.name);
-            Assert.Equal(result.Result.Value[0].DeviceId, mockDevice.config[0].identifiers.id);
-            Assert.Equal(result.Result.Value[0].DeviceType, DeviceTypeHelper.GetSystemDeviceType(mockDevice.config[0].type.ToString()));
-            Assert.Equal(result.Result.Value[0].DeviceLocation, mockDevice.config[0].identifiers.tag[0]);
+            Assert.True(result.Result.Value.Devices.Length == 1);
+            Assert.Equal(result.Result.Value.SiteId, mockDevice.config[0].relation[0].id);
+            Assert.Equal(result.Result.Value.Devices[0].DeviceDisplayName, mockDevice.config[0].identifiers.name);
+            Assert.Equal(result.Result.Value.Devices[0].DeviceId, mockDevice.config[0].identifiers.id);
+            Assert.Equal(result.Result.Value.Devices[0].DeviceType, DeviceTypeHelper.GetSystemDeviceType(mockDevice.config[0].type.ToString()));
+            Assert.Equal(result.Result.Value.Devices[0].DeviceLocation, mockDevice.config[0].identifiers.tag[0]);
         }
 
         [Fact]
