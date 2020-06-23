@@ -216,7 +216,6 @@ namespace Honeywell.GateWay.Incident.Application.Incident
                                 DeviceType = DeviceTypeHelper.GetSystemDeviceType(x.type.ToString()),
                                 DeviceLocation = x.identifiers.tag[0]
                             }).ToArray()
-
                 };
 
                 return await Task.FromResult(siteDeviceGto);
