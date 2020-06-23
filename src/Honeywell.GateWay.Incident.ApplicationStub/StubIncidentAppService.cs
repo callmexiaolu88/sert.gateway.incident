@@ -68,9 +68,9 @@ namespace Honeywell.GateWay.Incident.ApplicationStub
             return await StubDataAsync<SiteGto[]>();
         }
 
-        public async Task<ApiResponse<DeviceGto[]>> GetDeviceListAsync(GetDeviceListRequestGto request)
+        public async Task<ApiResponse<SiteDeviceGto>> GetDeviceListAsync(GetDeviceListRequestGto request)
         {
-            return await StubDataAsync<DeviceGto[]>();
+            return await StubDataAsync<SiteDeviceGto>();
         }
 
         public Task<ApiResponse> RespondAsync(string incidentId)

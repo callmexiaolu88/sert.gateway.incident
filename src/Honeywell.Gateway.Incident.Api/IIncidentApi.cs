@@ -26,7 +26,7 @@ namespace Honeywell.Gateway.Incident.Api
 
         Task<ApiResponse<SiteGto[]>> GetSiteListByDeviceNameAsync(string deviceName);
 
-        Task<ApiResponse<DeviceGto[]>> GetDeviceListAsync(GetDeviceListRequestGto request);
+        Task<ApiResponse<SiteDeviceGto>> GetDeviceListAsync(GetDeviceListRequestGto request);
 
         Task<ApiResponse> RespondAsync(string incidentId);
 

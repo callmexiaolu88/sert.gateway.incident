@@ -198,28 +198,33 @@ namespace Honeywell.GateWay.Incident.Application.Incident
             }
         }
 
-        public async Task<ApiResponse<DeviceGto[]>> GetDeviceListAsync(GetDeviceListRequestGto request)
+        public async Task<ApiResponse<SiteDeviceGto>> GetDeviceListAsync(GetDeviceListRequestGto request)
         {
             try
             {
                 DeviceRequestDto deviceRequestDto = new DeviceRequestDto
                     {SiteId = request.SiteId, DeviceName = request.DeviceName};
                 var deviceConfigs = _deviceFacadeExtendApi.GetDeviceList(deviceRequestDto);
-                var deviceGtos = deviceConfigs.config.Select(
-                    x=>new DeviceGto
-                    {
-                        DeviceDisplayName = x.identifiers.name,
-                        DeviceId = x.identifiers.id,
-                        DeviceType = DeviceTypeHelper.GetSystemDeviceType(x.type.ToString()),
-                        DeviceLocation = x.identifiers.tag[0]
-                    }).ToArray();
+                var siteDeviceGto = new SiteDeviceGto
+                {
+                    SiteId = request.SiteId,
+                    Devices = deviceConfigs.config.Select(
+                            x => new DeviceGto
+                            {
+                                DeviceDisplayName = x.identifiers.name,
+                                DeviceId = x.identifiers.id,
+                                DeviceType = DeviceTypeHelper.GetSystemDeviceType(x.type.ToString()),
+                                DeviceLocation = x.identifiers.tag[0]
+                            }).ToArray()
 
-                return await Task.FromResult(deviceGtos.ToArray());
+                };
+
+                return await Task.FromResult(siteDeviceGto);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-                return ApiResponse.CreateFailed(ex).To<DeviceGto[]>();
+                return ApiResponse.CreateFailed(ex).To<SiteDeviceGto>();
             }
         }
 

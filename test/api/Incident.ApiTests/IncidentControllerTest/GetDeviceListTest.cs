@@ -29,7 +29,8 @@ namespace Incident.ApiTests.IncidentControllerTest
 
             Assert.NotNull(result);
             Assert.True(result.IsSuccess);
-            Assert.True(result.Value.Length>0);
+            Assert.Equal(result.Value.SiteId, site.SiteId);
+            Assert.True(result.Value.Devices.Length>0);
 
         }
     }
